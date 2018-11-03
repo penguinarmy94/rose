@@ -1,4 +1,4 @@
-from queue import Queue
+from multiprocessing import Queue
 
 brain_motor_queue = Queue()
 arduino_motor_queue = Queue()

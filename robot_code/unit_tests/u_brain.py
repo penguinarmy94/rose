@@ -2,7 +2,7 @@ import unittest
 import time
 import json
 from sys import path
-path.insert(0, "~/Desktop/ROSE/rose/robot_code")
+path.insert(0, "/home/pi/Desktop/ROSE/rose/robot_code")
 from build import queues
 import app
 
