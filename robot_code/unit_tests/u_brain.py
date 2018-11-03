@@ -2,7 +2,7 @@ import unittest
 import time
 import json
 from sys import path
-path.insert(0, "C://Users/Luis/Desktop/Fall 2018/CMPE 295A/Robot Code/Robot Code")
+path.insert(0, "~/Desktop/ROSE/rose/robot_code")
 from build import queues
 import app
 
@@ -17,7 +17,7 @@ class BrainTest(unittest.TestCase):
 
     def test_queue_mic(self):
         messages = ["N", "S", "E", "W"]
-        delay = 2
+        delay = 30
         count = 0
 
         for message in messages:
