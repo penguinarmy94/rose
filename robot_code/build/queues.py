@@ -1,6 +1,10 @@
-from multiprocessing import Queue
+from queue import Queue
 
-brain_motor_queue = Queue()
-arduino_motor_queue = Queue()
-log = Queue()
+class PeekableQueue(Queue):
+    def peek(self):
+        return self.queue[0]
+
+brain_motor_queue = PeekableQueue()
+arduino_motor_queue = PeekableQueue()
+log = PeekableQueue()
 on = True
