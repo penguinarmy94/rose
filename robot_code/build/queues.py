@@ -5,6 +5,8 @@ class PeekableQueue(Queue):
         return self.queue[0]
 
 brain_motor_queue = PeekableQueue()
-arduino_motor_queue = PeekableQueue()
+brain_microphone_queue = PeekableQueue()
+brain_database_queue = PeekableQueue()
+brain_camera_queue = PeekableQueue()
 log = PeekableQueue()
 on = True
