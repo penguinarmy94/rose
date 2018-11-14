@@ -3,8 +3,6 @@ from sys import path
 from firebase_admin import credentials, firestore
 from . import queues
 
-path.insert(0, "C:/Users/Luis/Desktop/Fall 2018/CMPE 295A/Robot Code/robot_code")
-
 class Database():
     __auth = ""
     __db = None
@@ -23,6 +21,7 @@ class Database():
         
         self.__token_pi = config["token_pi"]
         self.__token_windows = config["token_windows"]
+        path.insert(0, config["home_path"])
 
         self.__auth = credentials.Certificate(self.__token_windows)
         firebase_admin.initialize_app(self.__auth)

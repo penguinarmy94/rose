@@ -3,7 +3,12 @@ import time
 import json
 import sys, os
 from sys import path
-path.insert(0, "C:/Users/Luis/Desktop/Fall 2018/CMPE 295A/Robot Code/robot_code")
+
+config_file = open('../config.json')
+config = json.load(config_file)
+config_file.close()
+path.insert(0, config["home_path"])
+
 from build import queues, database, behavior
 #import app
 
@@ -15,10 +20,6 @@ class DatabaseTest(unittest.TestCase):
     def setUp(self):
         self.__robot = behavior.Behavior()
         self.__robot.battery = 50
-
-        config_file = open('../config.json')
-        config = json.load(config_file)
-        config_file.close()
 
         self.__robot.robotid = config["robotid"]
         self.__robot.connection = 5
