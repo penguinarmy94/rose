@@ -7,6 +7,7 @@ class Brain():
     __dbQueue = None
     __camQueue = None
     __behavior = None
+    __idle = False
 
     def __init__(self, mQueue, miQueue, dbQueue, camQueue, behavior):
         self.__mQueue = mQueue
@@ -39,6 +40,10 @@ class Brain():
             if message_packet["type"] == "brain":
                 message_packet = json.loads(self.__mQueue.get())
                 print(message_packet["message"])
+            else:
+                if not self.__idle:
+                    self.handleBehavior("idle")
+
     
     def readMicrophone(self):
         #Check that queue is not empty
@@ -83,7 +88,12 @@ class Brain():
     def writeMotor(self, message):  
         self.__mQueue.put(json.dumps({"type": "move", "message": message}))
     
-    def handleBehavior(self, message):
-        #template for writing to microphone
-        self.writeMotor(message)
+    def handleBehavior(self, handle):
+
+        if handle == "idle":
+            #parse
+        elif handle == "detect":
+            #parse
+        else:
+            self.writeMotor(handle)
     
