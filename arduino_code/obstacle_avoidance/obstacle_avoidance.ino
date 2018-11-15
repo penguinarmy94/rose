@@ -1,9 +1,3 @@
-//Push Button Sensors - All Analog Input
-const int frontsensor = 2;
-const int backsensor = 3;
-const int leftsensor = 4;
-const int rightsensor = 5;
-
 //H-Bridge Functions
 const int a = 7;
 const int b = 8;
@@ -26,6 +20,7 @@ void setup() {
   Serial.begin(9600);
   pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
   pinMode(echoPin, INPUT); // Sets the echoPin as an Input
+//  
   pinMode(a, OUTPUT);
   pinMode(b, OUTPUT);
   pinMode(c, OUTPUT);
@@ -40,19 +35,20 @@ void loop() {
   cm = ultraSonic();
   if (cm > 150)
     {
-      forward();
-      analogWrite(ena, 200);
-      analogWrite(enb, 200);
+      analogWrite(ena, 125);
+      analogWrite(enb, 125);
     }
   else if (cm <= 25)
     {
+      analogWrite(ena, 0);
+      analogWrite(enb, 0);
       left();
       delay(25);
       
     }
   else
     {
-      slowDownSpeed = 1.4*cm + 15;
+      slowDownSpeed = (distance+35) * distToPWM;
       analogWrite(ena, slowDownSpeed);
       analogWrite(enb, slowDownSpeed);
 
@@ -76,7 +72,8 @@ void backward()
   digitalWrite(c, LOW);
   digitalWrite(d, HIGH);
   analogWrite(ena, 200);
-  analogWrite(enb, 200);  
+  analogWrite(enb, 200);
+
 }
 
 void right()
@@ -84,7 +81,7 @@ void right()
   digitalWrite(a, HIGH);
   digitalWrite(b, LOW);
   digitalWrite(c, LOW);
-  digitalWrite(d, HIGH); 
+  digitalWrite(d, HIGH);
   analogWrite(ena, 200);
   analogWrite(enb, 200);  
 }
@@ -96,8 +93,8 @@ void left()
   digitalWrite(b, HIGH);
   digitalWrite(c, HIGH);
   digitalWrite(d, LOW);
-  analogWrite(ena, 200);
-  analogWrite(enb, 200);   
+  analogWrite(ena, 150);
+  analogWrite(enb, 150);  
 }
 
 void halt()
