@@ -36,6 +36,7 @@ class DatabaseTest(unittest.TestCase):
         self.assertEqual(self.__robot.robotid, "01A1Z100BY")
         self.assertEqual(self.__robot.userid.get().to_dict()["username"], "rosellc@gmail.com")
         self.assertEqual(self.__robot.name, "robot1")
+        self.assertEqual(self.__robot.power, True)
     
     """
     def test_queue(self):
