@@ -48,13 +48,14 @@ class Database():
             if not robot["detect_behavior"] == self.__behavior.detect_behavior:
                 self.__behavior.detect_behavior = robot["detect_behavior"]
             if not robot["power"] == self.__behavior.power:
-                self.__behavior.idle_behavior = robot["power"]
+                self.__behavior.power = robot["power"]
             if not robot["name"] == self.__behavior.name:
                 self.__behavior.name = robot["name"]
             if not robot["num_of_videos"] == self.__behavior.num_of_videos:
                 self.__behavior.num_of_videos = robot["num_of_videos"]
             if not robot["userid"] == self.__behavior.userid:
                 self.__behavior.userid = robot["userid"]
+
 
         except Exception as e:
             print(str(e))
