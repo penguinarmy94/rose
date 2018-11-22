@@ -56,7 +56,13 @@ class Database():
             if not robot["userid"] == self.__behavior.userid:
                 self.__behavior.userid = robot["userid"]
 
-
         except Exception as e:
             print(str(e))
 
+        def write(self):
+
+            if not self.__dbQueue.empty():
+                message_packet = json.loads(self.__dbQueue.peek())
+
+                if message_packet["type"] == "Notification":
+                    notifier = self.__db.collection(u'Notification').document(self.__behavior.robotid)
