@@ -1,5 +1,5 @@
 import json
-import serial
+#import serial
 import sys
 from . import queues
 
@@ -11,7 +11,7 @@ class Motor():
     def __init__(self, motorQueue):
         self.__direction = ""
         self.__bqueue = motorQueue
-        self.__port = serial.Serial("/dev/ttyACM0", 9600)
+        #self.__port = serial.Serial("/dev/ttyACM0", 9600)
     
     def run(self):
         while True:
@@ -30,22 +30,29 @@ class Motor():
                     queues.log.put("Motor: No message from Brain")
 
     def move(self, direction):
-        if direction == "N":
-            success = self.__port.write(b"f")
-            print("forward")
-            return "Moved Forward"
-        elif direction == "S":
-            success = self.__port.write(b"b")
-            print("backward")
-            return "Moved Backward"
-        elif direction == "E":
-            success = self.__port.write(b"l")
-            print("left")
-            return "Moved Left"
-        elif direction == "W":
-            success = self.__port.write(b"r")
-            print("right")
-            return "Moved Right"
-        else:
-            print("Command does not exist")
-            return "Command Not Found"
+
+        try:        
+            if direction[0] == "F":
+                #success = self.__port.write(direction.encode())
+                #print(success)
+                return direction.encode()
+            elif direction[0] == "B":
+                #success = self.__port.write(direction.encode())
+                #print(success)
+                return direction.encode()
+            elif direction[0] == "L":
+                #success = self.__port.write(direction.encode())
+                #print(success)
+                return direction.encode()
+            elif direction[0] == "R":
+                #success = self.__port.write(direction.encode())
+                #print(success)
+                return direction.encode()
+            else:
+                #print("Command does not exist")
+                return "Command Not Found"
+        except Exception as e:
+            print(str(e))
+            return "Error"
+
+

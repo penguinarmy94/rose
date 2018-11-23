@@ -23,7 +23,7 @@ class DatabaseTest(unittest.TestCase):
 
         self.__robot.robotid = config["robotid"]
         self.__robot.connection = 5
-        self.__db = database.Database(queues.brain_database_queue, self.__robot)
+        self.__db = database.Database(queues.brain_database_queue, self.__robot, config)
     
     def tearDown(self):
         print("Database stopped")

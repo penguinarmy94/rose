@@ -92,8 +92,10 @@ class Brain():
 
         if handle == "idle":
             #parse
+            parse = True
         elif handle == "detect":
             #parse
+            parse = True
         else:
             self.writeMotor(handle)
     
