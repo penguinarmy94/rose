@@ -22,7 +22,7 @@ class MotorTest(unittest.TestCase):
         
 
     def test_move_up(self):
-        test_cases = ["F5-", "B3500-", "N555040-", 5]
+        test_cases = ["F5-", "B10-", "N555040-", 5]
 
         for index in range(len(test_cases) - 2):
             self.assertEquals(self.__motor.move(test_cases[index]), test_cases[index].encode())
