@@ -1,5 +1,5 @@
 import json
-#import serial
+import serial
 import sys
 from . import queues
 
@@ -11,7 +11,7 @@ class Motor():
     def __init__(self, motorQueue):
         self.__direction = ""
         self.__bqueue = motorQueue
-        #self.__port = serial.Serial("/dev/ttyACM0", 9600)
+        self.__port = serial.Serial("/dev/ttyACM0", 9600)
     
     def run(self):
         while True:
@@ -33,23 +33,23 @@ class Motor():
 
         try:        
             if direction[0] == "F":
-                #success = self.__port.write(direction.encode())
-                #print(success)
+                success = self.__port.write(direction.encode())
+                print(success)
                 return direction.encode()
             elif direction[0] == "B":
-                #success = self.__port.write(direction.encode())
-                #print(success)
+                success = self.__port.write(direction.encode())
+                print(success)
                 return direction.encode()
             elif direction[0] == "L":
-                #success = self.__port.write(direction.encode())
-                #print(success)
+                success = self.__port.write(direction.encode())
+                print(success)
                 return direction.encode()
             elif direction[0] == "R":
-                #success = self.__port.write(direction.encode())
-                #print(success)
+                success = self.__port.write(direction.encode())
+                print(success)
                 return direction.encode()
             else:
-                #print("Command does not exist")
+                print("Command does not exist")
                 return "Command Not Found"
         except Exception as e:
             print(str(e))
