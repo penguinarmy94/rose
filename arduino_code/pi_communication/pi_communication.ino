@@ -41,7 +41,11 @@ void loop() {
 //  if(Serial.available())
 //    {
 //      fromPi = Serial.read();
-      extractPackage(sample);
+      if(Serial.available()){
+        Serial.print("hi ");
+        getFromPi(sample); 
+      }
+
       if (sample.direction == 'f')
         {
           forward();
@@ -74,9 +78,8 @@ void loop() {
       //forward();  
       //cm = ultraSonic();
       //adjustSpeed(cm);
-      testindex = (testindex > 23) ? 0 : testindex;
-      halt();
-      delay(5000);
+      sample.direction = 'x';
+      sample.distance = 0;
 }
 
 void forward()
@@ -195,4 +198,22 @@ void extractPackage(PIData &package)
     }
     package.distance = n;
     testindex++;
+}
+
+void getFromPi(PIData &package)
+{
+
+    package.direction = Serial.read();
+    int n = 0;
+    while(Serial.read() != '-')
+      {
+        if(Serial.available())
+          {
+            n *= 10;
+            n += Serial.read();
+          }
+      }
+    Serial.println("ok");  
+    package.distance = n;  
+  
 }
