@@ -2,19 +2,24 @@ import unittest
 import time
 import json
 from sys import path
-path.insert(0, "/home/pi/Desktop/ROSE/rose/robot_code")
-from build import queues
-import app
+
+config_file = open('../config.json')
+config = json.load(config_file)
+config_file.close()
+path.insert(0, config["home_path"])
+
+from build import queues, brain, behavior
 
 
 class BrainTest(unittest.TestCase):
+    __brain = None
 
     def setUp(self):
-        app.init()
+        self.__brain = brain.Brain(queues.brain_motor_queue, queues.brain_microphone_queue, queues.brain_database_queue, queues.brain_camera_queue, behavior.Behavior())
+
     
     def tearDown(self):
-        queues.brain_motor_queue.put(json.dumps({"type": "destruct", "message": "Turn off system"}))
-
+        
     def test_queue_mic(self):
         messages = ["N", "S", "E", "W"]
         delay = 30

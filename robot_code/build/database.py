@@ -1,7 +1,6 @@
 import json, firebase_admin, sys, os, time
-from sys import path
 from firebase_admin import credentials, firestore
-from . import queues
+from build import queues
 
 class Database():
     __auth = ""
@@ -11,17 +10,12 @@ class Database():
     __token_windows = None
     __behavior = None
 
-    def __init__(self, dbQueue, behavior):
+    def __init__(self, dbQueue, behavior, config):
         self.__dbQueue = dbQueue
         self.__behavior = behavior
-
-        config_file = open('../config.json')
-        config = json.load(config_file)
-        config_file.close()
-        
+       
         self.__token_pi = config["token_pi"]
         self.__token_windows = config["token_windows"]
-        path.insert(0, config["home_path"])
 
         self.__auth = credentials.Certificate(self.__token_windows)
         firebase_admin.initialize_app(self.__auth)
@@ -56,7 +50,13 @@ class Database():
             if not robot["userid"] == self.__behavior.userid:
                 self.__behavior.userid = robot["userid"]
 
-
         except Exception as e:
             print(str(e))
 
+        def write(self):
+
+            if not self.__dbQueue.empty():
+                message_packet = json.loads(self.__dbQueue.peek())
+
+                if message_packet["type"] == "Notification":
+                    notifier = self.__db.collection(u'Notification').document(self.__behavior.robotid)
