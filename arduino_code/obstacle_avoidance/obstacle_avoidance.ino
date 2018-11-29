@@ -13,6 +13,8 @@ int duration;
 int distance;
 int cm;
 
+//-115.625
+
 const float distToPWM = 75/125;
 int slowDownSpeed;
 
@@ -33,22 +35,25 @@ void loop() {
   digitalWrite(c, HIGH);
   digitalWrite(d, LOW);
   cm = ultraSonic();
-  if (cm > 150)
+  Serial.println(cm);
+  if (cm > 100 || cm < 0)
     {
-      analogWrite(ena, 125);
-      analogWrite(enb, 125);
+      forward();
+      analogWrite(ena, 115);
+      analogWrite(enb, 115);
     }
-  else if (cm <= 25)
+  else if (cm <= 15)
     {
       analogWrite(ena, 0);
       analogWrite(enb, 0);
       left();
-      delay(25);
+      delay(50);
       
     }
   else
     {
-      slowDownSpeed = (distance+35) * distToPWM;
+      slowDownSpeed = distance * (40/75) + (185/3);
+      forward();
       analogWrite(ena, slowDownSpeed);
       analogWrite(enb, slowDownSpeed);
 
@@ -61,8 +66,6 @@ void forward()
   digitalWrite(b, LOW);
   digitalWrite(c, HIGH);
   digitalWrite(d, LOW);
-  analogWrite(ena, 200);
-  analogWrite(enb, 200);
 }
 
 void backward()
