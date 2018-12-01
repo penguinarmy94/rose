@@ -15,7 +15,7 @@ import json
 config_file = open('config.json')
 config = json.load(config_file)
 config_file.close()
-path.insert(0, config["windows_home_path"])
+path.insert(0, config["home_path"])
 
 # In[2]:
 
