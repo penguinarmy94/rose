@@ -101,6 +101,11 @@ else
       slowDownLeft = map(rightdist, 50, 150, 70, 100);
       analogWrite(enb, slowDownLeft);
     }  
+
+  if (leftdist < 25 && leftdist >= 0 && rightdist < 25 && rightdist >= 0)
+    {
+      backward();  
+    }
 }     
   delay(50);  
 }
@@ -136,7 +141,7 @@ void right()
   forwardright();
   analogWrite(ena, 100);
   analogWrite(enb, 100);
-  delay(400);
+  delay(100);
   analogWrite(ena, 0);
   analogWrite(enb, 0);
 }
@@ -147,9 +152,22 @@ void left()
   forwardleft();
   analogWrite(ena, 100);
   analogWrite(enb, 100);
-  delay(400);
+  delay(100);
   analogWrite(ena, 0);
   analogWrite(enb, 0);
+}
+
+void backward()
+{
+  backwardleft();
+  backwardright();
+  analogWrite(ena, 100);
+  analogWrite(enb, 100);
+  delay(200);
+  rightdist = ultraSonic(echoPin2, trigPin2);
+  leftdist = ultraSonic(echoPin1, trigPin1);    
+  (leftdist > rightdist) ? right() : left();
+  
 }
 
 int ultraSonic(int echoPin, int trigPin)
