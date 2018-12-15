@@ -17,7 +17,7 @@ const float distToPWM = 125/125;
 int slowDownSpeed;
 
 bool noObstacle = false;
-char fromPi;
+char fromPi[10];
 char test[24] = {'f', '1', '2', '4', '8', '-', 'l', '2', '1', '6', '7', '-', 'b', '0', '9', '2', '7', '-', 'r', '1', '2', '4', '8', '-'};
 int testindex;
 struct PIData {
@@ -38,48 +38,50 @@ void setup() {
 }
 
 void loop() {
-//  if(Serial.available())
-//    {
-//      fromPi = Serial.read();
       if(Serial.available()){
-        Serial.print("hi ");
-        getFromPi(sample); 
+        extractPackage(sample);
       }
 
-      if (sample.direction == 'f')
+      if (sample.direction == 'F')
         {
           forward();
           delay(sample.distance);
+          sample.direction = 'A';
+          halt();
         }
-      else if (sample.direction == 'b')
+      else if (sample.direction == 'B')
         {
-          Serial.println("Going Back");
           right();
-          delay(200);
+          delay(715);
           forward();
           delay(sample.distance);
+          sample.direction = 'A';
+
+          halt();
         }
-      else if (sample.direction == 'r')
+      else if (sample.direction == 'R')
         {
           right();  
-          delay(100);
+          delay(250);
           forward();
           delay(sample.distance);
+          sample.direction = 'A';
+
+          halt();
         }
-      else if (sample.direction == 'l')
+      else if (sample.direction == 'L')
         {
           left();  
-          delay(100);
+          delay(250);
           forward();
           delay(sample.distance);
+          sample.direction = 'A';
+
+          halt();
         }
+
+        delay(2000);
       
-    //}
-      //forward();  
-      //cm = ultraSonic();
-      //adjustSpeed(cm);
-      sample.direction = 'x';
-      sample.distance = 0;
 }
 
 void forward()
@@ -185,35 +187,19 @@ int getDistanceFromPi()
 
 void extractPackage(PIData &package)
 {
-  package.direction = test[testindex];
-  Serial.println(package.direction);
-  testindex++;
-  int n = test[testindex] - '0';
-  testindex++;
-  while (test[testindex] != '-')
+  Serial.readBytesUntil('-', fromPi, 10); 
+  package.direction = fromPi[0];
+  int dist = 0;
+  int i = 1;
+  while(fromPi[i] >= '0' && i < 10)
     {
-      n *= 10;
-      n += test[testindex] - '0';
-      testindex++;
+      dist *= 10;
+      dist += (fromPi[i] - '0');
+      i++;
     }
-    package.distance = n;
-    testindex++;
-}
-
-void getFromPi(PIData &package)
-{
-
-    package.direction = Serial.read();
-    int n = 0;
-    while(Serial.read() != '-')
-      {
-        if(Serial.available())
-          {
-            n *= 10;
-            n += Serial.read();
-          }
-      }
-    Serial.println("ok");  
-    package.distance = n;  
-  
+    package.distance = dist;
+  for (int j = 0; j < 10; j++)
+    {
+      fromPi[j] = 0;  
+    }
 }
