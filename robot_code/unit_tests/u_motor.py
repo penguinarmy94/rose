@@ -20,7 +20,7 @@ class MotorTest(unittest.TestCase):
     def tearDown(self):
         self.__motor = None
         
-
+"""
     def test_move_up(self):
         test_cases = ["F5-", "B10-", "N555040-", 5]
 
@@ -29,6 +29,13 @@ class MotorTest(unittest.TestCase):
 
         self.assertEquals(self.__motor.move(test_cases[2]), "Command Not Found")
         self.assertEquals(self.__motor.move(test_cases[3]), "Error")
+"""
+    def test_valid(self):
+        test_cases = ["F5-", "B10-", "L3-"]
+
+        for value in test_cases:
+            self.__motor.move(value)
+            time.sleep(2)
        
                 
 if __name__ == "__main__":
