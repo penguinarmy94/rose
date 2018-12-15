@@ -21,7 +21,7 @@ class MotorTest(unittest.TestCase):
         self.__motor = None
 
     def test_valid(self):
-        test_cases = ["F5-", "B10-", "L3-"]
+        test_cases = ["L500-", "R1000-", "L2000-"]
 
         for value in test_cases:
             self.__motor.move(value)
