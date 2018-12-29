@@ -1,27 +1,16 @@
 #include "Motor.h"
+#include "Microphone.h"
 
 Motor left(12, 13, 11);
 Motor right(7, 8, 9);
-void setup() {
-
+void setup() 
+{
+Serial.begin(9600);
 }
 
-void loop() {
-  Forward(left, right, 150);
-  delay(1000);
-  Halt(left, right);
-  delay(1000);
-  Backward(left, right, 150);
-  delay(1000);
-  Halt(left, right);
-  delay(1000);
-  Left(left, right, 150);
-  delay(1000);
-  Halt(left, right);
-  delay(1000);
-  Right(left, right, 150);
-  delay(1000);
-
+void loop()
+{
+Serial.println("Hello from ROSE");
 }
 
 void Forward(Motor left, Motor right, int speed)
