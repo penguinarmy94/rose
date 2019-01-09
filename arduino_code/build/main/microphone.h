@@ -7,7 +7,8 @@ class Microphone
 {
   public:
     Microphone(int Input);
-    void record();
+    int record();
+    void storeIntoBuffer(int soundValue);
     void clearBuffer();
     int getMax();
     

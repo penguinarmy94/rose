@@ -8,6 +8,7 @@ struct PIData {
   
 Motor left(12, 13, 11);
 Motor right(7, 8, 9);
+char fromPi[10];
 void setup() 
 {
 Serial.begin(9600);

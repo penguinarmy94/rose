@@ -7,19 +7,21 @@ Microphone::Microphone(int Input)
 	kCounter = 0;
 }
 
-void Microphone::record()
+int Microphone::record()
 {
-	int max;
 	int rawAmplitude;
 	int trueAmplitude;
-	for (int i = 0; i < 1000; i++)
-	{
-		rawAmplitude = analogRead(kInputPin);
-		trueAmplitude = map(rawAmplitude, 184, 430, 0, 1023);
-		max = (trueAmplitude > max) ? trueAmplitude : max;
-	}
-	kBuffer[kCounter] = max;
-	kCounter = (kCounter == 9) ? 0 : kCounter + 1;
+	rawAmplitude = analogRead(kInputPin);
+	trueAmplitude = map(rawAmplitude, 184, 430, 0, 1023);
+	return trueAmplitude;
+	
+}
+
+void Microphone::storeIntoBuffer(int soundValue)
+{
+  kBuffer[kCounter] = soundValue;
+  kCounter = (kCounter == 9) ? 0 : kCounter + 1;
+  
 }
 
 void Microphone::clearBuffer()
