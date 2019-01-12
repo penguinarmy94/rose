@@ -6,8 +6,10 @@ struct PIData {
   int distance;
   };
   
-Motor left(12, 13, 11);
-Motor right(7, 8, 9);
+Motor left(13, 12, 11);
+Motor right(8, 7, 9);
+Microphone a(3);
+Microphone b(4);
 char fromPi[10];
 void setup() 
 {
@@ -16,7 +18,19 @@ Serial.begin(9600);
 
 void loop()
 {
-Serial.println("Hello from ROSE");
+Forward(left, right, 150);
+if (a.record() >= 700 || b.record() >= 700)
+{
+  if (a.record() > b.record())
+    {
+      Left(left, right, 150);
+    }
+  else
+    {
+      Right(left, right, 150);  
+    }
+}
+delay(100);
 }
 
 void Forward(Motor left, Motor right, int speed)
