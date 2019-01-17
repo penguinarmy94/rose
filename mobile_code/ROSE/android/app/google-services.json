@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "44291961481",
+    "firebase_url": "https://rose-9876.firebaseio.com",
+    "project_id": "rose-9876",
+    "storage_bucket": "rose-9876.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:44291961481:android:1d20d8d3df00951b",
+        "android_client_info": {
+          "package_name": "com.rose"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "44291961481-cbokjf50lpt5lrrh63gts80mclou47u4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClzAMZKJIuBNPKhpbWJlWDwO2EXZ41r5g"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
