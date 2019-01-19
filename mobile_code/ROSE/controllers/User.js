@@ -1,19 +1,57 @@
 export default class User {
-    constructor(u_name = "No Name", robots = [], behaviors = []) {
-        this._username = u_name;
-        this._robots = robots;
-        this._behaviors = behaviors;
-        this._numofrobots = robots.length;
-        this._numofbehaviors = behaviors.length;
+    constructor(user) {
+        if(user.username && user.robots && user.behaviors) {
+            this._username = user.username;
+            this._robots = [];
+            this._behaviors = [];
+            this._numofrobots = 0;
+            this._numofbehaviors = 0;
+
+            user.robots.forEach((value, index) => {               
+                value.get().then((doc) => {
+                    if(doc.exists) {
+                        this._robots.push(doc.data());
+                        this._numofrobots += 1;
+                    }
+                }).catch((error) => {
+                    alert(error);
+                });
+            });
+            user.behaviors.forEach((value, index) => {
+                value.get().then((doc) => {
+                    if(doc.exists) {
+                        this._behaviors.push(doc.data());
+                        this._numofbehaviors += 1;
+                    }
+                }).catch((error) => {
+                    alert(error);
+                });
+            });
+            this._userObj = user;
+        }
+        else {
+            this._username = "none";
+            this._robots = [];
+            this._behaviors = [];
+            this._numofrobots = 0;
+            this._numofbehaviors = 0;
+            this._userObj = "none";
+        }
+    }
+
+    getUserObject = () => {
+        return this._userObj;
     }
 
     addRobot = (robot) => {
         this._robots.push(robot);
+        this._userObj.robots = this._robots;
         this._numofrobots += 1;
     }
 
     addBenavior = (behavior) => {
         this._behaviors.push(behavior);
+        this._userObj.behaviors = this._behaviors;
         this._numofbehaviors += 1;
     }
 
