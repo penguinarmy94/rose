@@ -10,7 +10,12 @@ Motor left(13, 12, 11);
 Motor right(8, 7, 9);
 Microphone a(3);
 Microphone b(4);
+int aMax;
+int aSample;
+int bSample;
+int bMax;
 char fromPi[10];
+int count;
 void setup() 
 {
 Serial.begin(9600);
@@ -18,18 +23,47 @@ Serial.begin(9600);
 
 void loop()
 {
-Forward(left, right, 150);
-if (a.record() >= 700 || b.record() >= 700)
+//Forward(left, right, 150);
+//if (a.record() >= 700 || b.record() >= 700)
+//{
+//  if (a.record() > b.record())
+//    {
+//      Left(left, right, 150);
+//    }
+//  else
+//    {
+//      Right(left, right, 150);  
+//    }
+//}
+while (count < 1000 && !Serial.available())
 {
-  if (a.record() > b.record())
-    {
-      Left(left, right, 150);
-    }
-  else
-    {
-      Right(left, right, 150);  
-    }
+  aSample = a.record();
+  bSample = b.record();
+  aMax = (aSample > aMax) ? aSample : aMax;
+  bMax = (bSample > bMax) ? bSample : bMax;
 }
+  a.storeIntoBuffer(aMax);
+  b.storeIntoBuffer(bMax);
+  if (Serial.available())
+    {
+      if (Serial.read() == 'r')
+        {
+          aMax = a.getMax();
+          bMax = b.getMax();
+        }
+      if (aMax > bMax)
+      {
+        Serial.println("a was louder");  
+      }
+      else
+      {
+        Serial.println("b was louder");
+      }
+      a.clearBuffer();
+      b.clearBuffer();
+    }
+  aMax = 0;
+  bMax = 0;    
 delay(100);
 }
 
