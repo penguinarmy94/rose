@@ -3,7 +3,6 @@ import {Platform, StyleSheet, Text, View, TextInput, Image, Button} from 'react-
 import firebase from 'react-native-firebase';
 import NotificationManager from '../controllers/NotificationManager';
 import Session from '../controllers/Session';
-import User from '../controllers/User';
 
 export default class InfoScreen extends Component {
   constructor(props) {
