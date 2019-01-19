@@ -35,6 +35,6 @@ const LandingContainer =  createAppContainer(landingNav);
 
 export default class LandingStack extends Component {
   render() {
-    return <LandingContainer screenProps={{ rootNav: this.props.navigation }} />
+    return <LandingContainer screenProps={{ rootNav: this.props.navigation, data: this.props.navigation.getParam("userId", "1234") }} />
   }
 }
