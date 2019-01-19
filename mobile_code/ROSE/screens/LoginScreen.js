@@ -63,7 +63,7 @@ export default class LoginScreen extends Component {
     firebase.auth().onAuthStateChanged((user) => {
         if(user) {
             alert("You are signed in");
-            this.props.screenProps.rootNav.navigate("Home");
+            this.props.screenProps.rootNav.navigate("Home", {userId: user.uid});
         }
         else {
             //nothing
