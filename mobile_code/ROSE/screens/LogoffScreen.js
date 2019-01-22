@@ -1,55 +1,24 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, TextInput, Image, Button} from 'react-native';
+import {StyleSheet, Text, View, Image, Button} from 'react-native';
 import firebase from 'react-native-firebase';
-import {NavigationActions, StackActions} from 'react-navigation';
-import LandingStack from '../navigators/LandingStack';
 
-const logo = require("../assets/images/logo.png");
-const title = "R.O.S.E";
+let logout_message = "Are you sure you want to logout?";
 
 export default class LogoffScreen extends Component {
   constructor(props) {
     super(props);
-    this.users = firebase.firestore().collection('Users');
-    this.state = { username: null, password: null };
-    this.authenticate = this.authenticate.bind(this);
-    this.register = this.register.bind(this);
   }
 
-  authenticate() {
-    let current = this.state;
-    current.title = "";
-
-    firebase.firestore().collection("Users").get().then((query) => {
-        query.forEach((doc) => {
-            current.title += (doc.data().username + " ");
-        });
-
-        this.setState(current);
-        //this.props.navigation.navigate("Home", { "state": current});
-    });
+  logout = () => {
+      firebase.auth().signOut().then(() => {
+        this.props.screenProps.rootNav.navigate("Main");
+        alert("You have been signed out!");
+      }).catch((error) => {
+        alert(error.message);
+      }); 
   }
 
-  register() {
-      /*
-    this.props.navigation.dispatch(
-        StackActions.reset({
-            index: 0,
-            key: null,
-            actions: [NavigationActions.navigate({ routeName: "Info"})]
-        })
-    )
-    */
-    firebase.auth().signOut().then(() => {
-      this.props.screenProps.rootNav.navigate("Main");
-      alert("You have been signed out!");
-    }).catch((error) => {
-      alert(error.message);
-    });
-   
-  }
-
-  debugLogoff = () => {
+  debugLogout = () => {
     this.props.screenProps.rootNav.navigate("Main");
     alert("You have been signed out!");
   }
@@ -57,10 +26,9 @@ export default class LogoffScreen extends Component {
   render() {
     return(
       <View style={styles.container}>
-        <Image source={logo} />
-        <Text style={styles.welcome}>{title}</Text>
-        <Button title="Logoff" onPress={this.register} />
-        <Button title="Debug Logoff" onPress={this.debugLogoff} />
+        <Text style={styles.welcome}>{logout_message}</Text>
+        <Button title="Logout" onPress={this.logout} />
+        <Button title="Debug Logout" onPress={this.debugLogout} />
       </View>
     );
   }
