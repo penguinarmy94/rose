@@ -2,31 +2,10 @@ export default class User {
     constructor(user) {
         if(user.username && user.robots && user.behaviors) {
             this._username = user.username;
-            this._robots = [];
-            this._behaviors = [];
-            this._numofrobots = 0;
-            this._numofbehaviors = 0;
-
-            user.robots.forEach((value, index) => {               
-                value.get().then((doc) => {
-                    if(doc.exists) {
-                        this._robots.push(doc.data());
-                        this._numofrobots += 1;
-                    }
-                }).catch((error) => {
-                    alert(error);
-                });
-            });
-            user.behaviors.forEach((value, index) => {
-                value.get().then((doc) => {
-                    if(doc.exists) {
-                        this._behaviors.push(doc.data());
-                        this._numofbehaviors += 1;
-                    }
-                }).catch((error) => {
-                    alert(error);
-                });
-            });
+            this._robots = user.robots;
+            this._behaviors = user.behaviors;
+            this._numofrobots = user.robots.length;
+            this._numofbehaviors = user.behaviors.length;
             this._userObj = user;
         }
         else {
