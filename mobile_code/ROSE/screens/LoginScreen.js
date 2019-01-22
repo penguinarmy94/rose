@@ -1,9 +1,15 @@
+/**
+ * @author Luis Otero
+ * @title R.O.S.E - LoginScreen
+ * @description Login UI with username/password authentication, link to registration page, and password recovery
+ */
+
 import React, {Component} from 'react';
 import {StyleSheet, Text, View, Image, Button} from 'react-native';
 import {FormInput} from 'react-native-elements';
-import {NavigationActions, StackActions} from 'react-navigation';
 import firebase from 'react-native-firebase';
 import Session from '../controllers/Session';
+import {config} from '../assets/config/config';
 
 const logo = require("../assets/images/logo.png");
 const title = "R.O.S.E";
@@ -12,32 +18,35 @@ export default class LoginScreen extends Component {
   constructor(props) {
     super(props);
     this.state = { username: "", password: "" };
-    this.errorCodes = ["auth/invalid-eamil", "auth/user-disabled", "auth/user-not-found", "auth/auth-wrong-passowrd"];
+    this.errorCodes = config.errorCodes;
+
     this.usernameChange = (text) => {
         let currentState = this.state;
         currentState.username = text;
         this.setState(currentState);
     }
+
     this.passwordChange = (text) => {
         let currentState = this.state;
         currentState.password = text;
         this.setState(currentState);
     }
-    this.authenticate = this.authenticate.bind(this);
+
     this.register = this.register.bind(this);
   }
 
-  authenticate() {
-    let current = this.state;
+  authenticate = () => {
+    let {username, password} = this.state;
 
     this.usernameField.blur();
     this.passwordField.blur();
 
-    if(current.username == "" || current.password == "") {
-        //alert("Username and/or password are missing!");
+    if(username == "" || password == "") {
+        alert("Username and/or password are missing!");
         return;
     }
-    firebase.auth().signInWithEmailAndPassword(current.username, current.password).catch((error) => {
+
+    firebase.auth().signInWithEmailAndPassword(username, password).catch((error) => {
         let code = error.code;
 
         if(code == this.errorCodes[3]) {
@@ -45,28 +54,26 @@ export default class LoginScreen extends Component {
             this.passwordField.shake();
         }
         else if(code == this.errorCodes[0]) {
-            alert("Username is incorrect");
+            this.usernameField.shake();
+            //alert("Username is incorrect");
         }
         else if(code == this.errorCodes[1]) {
             alert("You have been disabled. Please try again later");
         }
         else if(code == this.errorCodes[2]) {
-            //alert("No user found with this email");
             this.usernameField.shake();
             this.passwordField.shake();
+            alert("No user found with this email");
         }
         else {
-            alert(error.message);
+            alert(code);
         }
     });
 
     firebase.auth().onAuthStateChanged((user) => {
         if(user) {
-            alert("You are signed in");
-            this.props.screenProps.rootNav.navigate("Home", {userId: user.uid});
-        }
-        else {
-            //nothing
+            let session = new Session(user.uid);
+            this.props.screenProps.rootNav.navigate("Home", {sessionVar: session});
         }
     });
     
@@ -74,6 +81,11 @@ export default class LoginScreen extends Component {
 
   register() {
     this.props.navigation.navigate("Register", {errorCodes: this.errorCodes});
+  }
+
+  debugLogin = () => {
+    let session = new Session(config.debugId);
+    this.props.screenProps.rootNav.navigate("Home", {sessionVar: session})
   }
 
   render() {
@@ -91,6 +103,7 @@ export default class LoginScreen extends Component {
             onChangeText={this.passwordChange} 
             value={this.state.password} />
         <Button title="Login" onPress={this.authenticate} />
+        <Button title="Debug Login" onPress={this.debugLogin} />
         <Button title="Register" onPress={this.register} />
       </View>
     );
