@@ -13,10 +13,13 @@ class Session {
         let db_user = this._db.getUser(user_id);
 
         if(db_user) {
-            this._user = "abc";           
+            this._user = db_user;
+            /*           
             db_user.get().then((doc) => {
                 if(doc.exists) {
                     this._user = new User(doc.data());
+                    this._signedIn = true;
+                    this._actions = this._db.getActions();
                 }
                 else {
                     alert("no data found");
@@ -25,16 +28,20 @@ class Session {
             }).catch((error) => {
                 alert(error);
             })
+            */
             
-            this._signedIn = true;
-            this._actions = this._db.getActions();
         }
         else {
             this._signedIn = false;
         }
     }
 
+    createUser = () => {
+        return this._user.get();
+    }
+
     isSignedIn = () => {
+
         return this._signedIn;
     }
 
@@ -62,6 +69,16 @@ class Session {
                 this._currentRobot = robots[index];
                 break;
             }
+        }
+    }
+
+    setUser = (userObject) => {
+        if (userObject instanceof User) {
+            this._user = userObject;
+            return true;
+        }
+        else {
+            return false;
         }
     }
 }
