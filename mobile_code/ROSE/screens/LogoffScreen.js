@@ -49,12 +49,18 @@ export default class LogoffScreen extends Component {
    
   }
 
+  debugLogoff = () => {
+    this.props.screenProps.rootNav.navigate("Main");
+    alert("You have been signed out!");
+  }
+
   render() {
     return(
       <View style={styles.container}>
         <Image source={logo} />
         <Text style={styles.welcome}>{title}</Text>
         <Button title="Logoff" onPress={this.register} />
+        <Button title="Debug Logoff" onPress={this.debugLogoff} />
       </View>
     );
   }
