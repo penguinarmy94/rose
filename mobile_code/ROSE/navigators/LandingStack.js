@@ -8,16 +8,16 @@
 
 import React, {Component} from 'react';
 import {createBottomTabNavigator, createAppContainer} from 'react-navigation';
-import InfoScreen from '../screens/InfoScreen';
-import VideosScreen from '../screens/VideosScreen';
+import InfoStack from '../navigators/InfoStack';
+import VideoStack from '../navigators/VideoStack';
 import SettingsStack from '../navigators/SettingsStack';
 import LogoffScreen from '../screens/LogoffScreen';
 
 
 const landingNav = createBottomTabNavigator(
     {
-        Info: InfoScreen,
-        Videos: VideosScreen,
+        Info: InfoStack,
+        Videos: VideoStack,
         Settings: SettingsStack,
         Logoff: LogoffScreen,
     }, 
