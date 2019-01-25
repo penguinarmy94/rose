@@ -19,11 +19,6 @@ const appNav = createSwitchNavigator(
     }, 
     {
         initialRouteName: "Main",
-        backBehavior: "none",
-        headerMode: 'none',
-        navigationOptions: {
-            headerVisible: false,
-        }
     }
 );
 
