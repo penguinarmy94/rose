@@ -7,12 +7,12 @@
  */
 
 import React, {Component} from 'react';
-import {createSwitchNavigator, createAppContainer} from 'react-navigation';
+import {createStackNavigator, createAppContainer} from 'react-navigation';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 
 
-const loginNav = createSwitchNavigator(
+const loginNav = createStackNavigator(
     {
         Login: { screen: LoginScreen },
         Register: { screen: RegisterScreen },
@@ -20,7 +20,8 @@ const loginNav = createSwitchNavigator(
     {
         initialRouteName: "Login",
         backBehavior: "none",
-        //headerMode: 'none',
+        headerMode: 'none',
+        
         navigationOptions: {
             headerVisible: true,
             headerTitle: 'this is a title'
