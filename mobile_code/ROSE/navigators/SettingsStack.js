@@ -8,29 +8,36 @@
 
 import React, {Component} from 'react';
 import {createStackNavigator, createAppContainer} from 'react-navigation';
-import LoginScreen from '../screens/LoginScreen';
-import RegisterScreen from '../screens/RegisterScreen';
+import SettingsScreen from '../screens/SettingsScreen';
+import AddRobotScreen from '../screens/AddRobotScreen';
+import ChangeRobotScreen from '../screens/ChangeRobotScreen';
+import BehaviorStack from '../navigators/BehaviorStack';
+import { config } from '../assets/config/config';
 
 
 const settingsNav = createStackNavigator(
     {
-        Login: {screen: LoginScreen, navigationOptions: {headerLeft: null}},
-        Register: {screen: RegisterScreen},
+        SettingsHome: { screen: SettingsScreen },
+        //AddRobot: { screen: AddRobotScreen },
+        //ChangeRobot: { screen: ChangeRobotScreen },
+        //Behaviors: { screen: BehaviorStack }
     }, 
     {
-        initialRouteName: "Login",
-        backBehavior: "none",
-        headerMode: 'none',
-        navigationOptions: {
-            headerVisible: false,
-        }
+        initialRouteName: "SettingsHome",
     }
 );
 
 const SettingsContainer =  createAppContainer(settingsNav);
 
 export default class SettingsStack extends Component {
+    static navigationOptions = ({navigation}) => ({
+        tabBarOnPress: ({navigation, defaultHandler}) => {
+            navigation.setParams({headerTitle: config.headerTitle});
+            defaultHandler();
+        }
+    });
+
   render() {
-    return <SettingsContainer />
+    return <SettingsContainer screenProps={{rootNav: this.props.screenProps.rootNav}} />
   }
 }
