@@ -14,22 +14,7 @@ class Session {
 
         if(db_user) {
             this._user = db_user;
-            /*           
-            db_user.get().then((doc) => {
-                if(doc.exists) {
-                    this._user = new User(doc.data());
-                    this._signedIn = true;
-                    this._actions = this._db.getActions();
-                }
-                else {
-                    alert("no data found");
-                }
-
-            }).catch((error) => {
-                alert(error);
-            })
-            */
-            
+            this._signedIn = true;
         }
         else {
             this._signedIn = false;
