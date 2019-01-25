@@ -4,10 +4,18 @@ import firebase from 'react-native-firebase';
 import NotificationManager from '../controllers/NotificationManager';
 import Session from '../controllers/Session';
 import User from '../controllers/User';
+import { config } from '../assets/config/config';
 
 let isMounted = false;
 
 export default class InfoScreen extends Component {
+
+  static navigationOptions = ({navigation}) => {
+    return({
+      title: navigation.getParam("headerTitle", "No Robot Selected")
+    });
+  }
+
   constructor(props) {
     super(props);
 
@@ -20,10 +28,12 @@ export default class InfoScreen extends Component {
       detect: "none",
       recordings: 0,
       connectionColor: "green",
-      batteryColor: "green"
+      batteryColor: "green",
+      header: config.headerTitle
     };
 
     this.session = this.props.screenProps.data;
+
     isMounted = true;
 
     alert("Welcome back!");
@@ -35,9 +45,21 @@ export default class InfoScreen extends Component {
           if(robot.exists && isMounted) {
             let idle = robot.data().idle_behavior;
             let detect = robot.data().detect_behavior;
-            this.currentRobot = robot.data();
-            this.currentRobot.idle_behavior = "";
-            this.currentRobot.detect_behavior = "";
+            this.currentRobot = {
+              battery: robot.data().battery,
+              charging: robot.data().charging,
+              connection: robot.data().connection,
+              detect_behavior: "",
+              idle_behavior: "",
+              id: robot.data().id,
+              num_of_videos: robot.data().num_of_videos,
+
+            };
+
+            config.headerTitle = robot.data().name;
+            config.robotObject = robot.data();
+            this.props.navigation.setParams({headerTitle: config.headerTitle});
+
 
             idle.get().then((doc) => { 
               if(doc.exists && isMounted) { 
@@ -83,6 +105,9 @@ export default class InfoScreen extends Component {
     current.idle = robot.idle_behavior;
     current.detect = robot.detect_behavior; 
     current.recordings = robot.num_of_videos;
+    current.header = config.headerTitle;
+    
+    config.session = this.session;
 
     this.setState(current);
   }
