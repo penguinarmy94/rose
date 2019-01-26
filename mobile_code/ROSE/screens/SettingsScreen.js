@@ -68,7 +68,7 @@ export default class SettingsScreen extends Component {
     }
 
     editBehaviors = () => {
-        alert("want to edit behaviors");
+        this.props.screenProps.rootNav.navigate("Behaviors");
     }
 
     render() {
