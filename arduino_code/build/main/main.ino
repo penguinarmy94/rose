@@ -19,6 +19,9 @@ int count;
 void setup() 
 {
 Serial.begin(9600);
+// Wire.begin();
+
+// laserSensor.setNumber(SENSORS);
 }
 
 void loop()
@@ -35,6 +38,9 @@ void loop()
 //      Right(left, right, 150);  
 //    }
 //}
+
+//readLaser();
+
 while (count < 1000 && !Serial.available())
 {
   aSample = a.record();
@@ -114,4 +120,41 @@ void parsePackage(PIData &package)
     {
       fromPi[j] = 0;  
     }
+}
+
+void readLaser() {
+    int state = laserSensor.getState();
+  if (state > 0) {
+    if (!waitSensor  && !turning) {
+      waitSensor = 25;
+    } 
+    else if (waitSensor) {
+      waitSensor--;
+    }
+      if (!waitSensor) {
+        turning = 1;
+        if (BLOCKED == state) {
+          Serial.println("Turn around");
+        } 
+        else if (BLOCKED_LEFT == state) {
+          Serial.println("Turn right");
+        } 
+        else if (BLOCKED_RIGHT == state) {
+          Serial.println("Turn left");
+        }
+      }
+   }
+    else {
+      waitSensor = 0;
+      turning = 0;
+  }
+ 
+  if (wait++ > 10) {
+    wait = 0;
+    if (waitSensor || turning) {
+      Serial.println("Zzz.....");
+    } else {
+      Serial.println("Chugga Chugga Choo Choo");
+    }  
+  }
 }
