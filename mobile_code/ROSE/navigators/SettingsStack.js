@@ -7,23 +7,24 @@
  */
 
 import React, {Component} from 'react';
-import {createStackNavigator, createAppContainer} from 'react-navigation';
-import SettingsScreen from '../screens/SettingsScreen';
+import {createSwitchNavigator, createAppContainer} from 'react-navigation';
+import SettingsHomeStack from '../navigators/SettingsHomeStack';
 import AddRobotScreen from '../screens/AddRobotScreen';
 import ChangeRobotScreen from '../screens/ChangeRobotScreen';
 import BehaviorStack from '../navigators/BehaviorStack';
 import { config } from '../assets/config/config';
 
 
-const settingsNav = createStackNavigator(
+const settingsNav = createSwitchNavigator(
     {
-        SettingsHome: { screen: SettingsScreen },
+        SettingsHome: { screen: SettingsHomeStack },
         //AddRobot: { screen: AddRobotScreen },
         //ChangeRobot: { screen: ChangeRobotScreen },
-        //Behaviors: { screen: BehaviorStack }
+        Behaviors: { screen: BehaviorStack }
     }, 
     {
         initialRouteName: "SettingsHome",
+        headerMode: "screen"
     }
 );
 
