@@ -45,15 +45,12 @@ export default class User {
         }
     }
 
-    removeBehavior = (behavior) => {
-        let index = 0;
+    removeBehavior = (index) => {        
+        this._behaviors.splice(index, 1);
+        this._numofbehaviors -= 1;
+    }
 
-
-        for (index = 0; index < this._numofbehaviors; index++) {
-            if (this._behaviors[index] === behavior) {
-                //delete 
-            }
-        }
-
+    getBehaviorList = () => {
+        return this._behaviors;
     }
 }
