@@ -10,6 +10,7 @@ Motor left(13, 12, 11);
 Motor right(8, 7, 9);
 Microphone a(3);
 Microphone b(4);
+LaserSensor lasersensor;
 int aMax;
 int aSample;
 int bSample;
