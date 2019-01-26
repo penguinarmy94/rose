@@ -1,5 +1,6 @@
 #include "Motor.h"
 #include "Microphone.h"
+#include "laserSensor.h"
 
 struct PIData {
   char direction;
@@ -17,12 +18,18 @@ int bSample;
 int bMax;
 char fromPi[10];
 int count;
+
+LaserSensor laserSensor;
+int waitSensor = 0;
+int turning = 0;
+int wait = 0;
+
 void setup() 
 {
 Serial.begin(9600);
-// Wire.begin();
+Wire.begin();
 
-// laserSensor.setNumber(SENSORS);
+laserSensor.setNumber(SENSORS);
 }
 
 void loop()
