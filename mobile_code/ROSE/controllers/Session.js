@@ -7,8 +7,10 @@ class Session {
         this._db = new Database();
         this._signedIn = false;
         this._user = "no user assigned yet";
-        this._actions = [];
         this._currentRobot = "none";
+        this._idleBehavior = "none";
+        this._detectBehavior = "none";
+        this._actions = this._db.getActions();
         
         let db_user = this._db.getUser(user_id);
 
@@ -55,6 +57,18 @@ class Session {
                 break;
             }
         }
+    }
+
+    setIdleBehavior = (idle) => {
+        this._idleBehavior = idle;
+    }
+
+    setDetectBehavior = (detect) => {
+        this._detectBehavior = detect;
+    }
+
+    getBehaviors = () => {
+        return {idle: this._idleBehavior, detect: this._detectBehavior};
     }
 
     setUser = (userObject) => {
