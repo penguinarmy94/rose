@@ -27,15 +27,7 @@ export default class Database {
     }
 
     getActions = () => {
-        this._actionRef.get().then((snapshot) => {
-            let actionList = [];
-            snapshot.forEach((doc) => {
-                actionList.push(doc.data());
-            });
-            return actionList;
-        }).catch((error) => {
-            alert("No actions available");
-        });
+        return this._actionRef;
     }
 
     updateUser = (user, id = 0, newRobot = null, type) => {
