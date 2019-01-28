@@ -64,6 +64,7 @@ export default class InfoScreen extends Component {
             idle.get().then((doc) => { 
               if(doc.exists && isMounted) { 
                 this.currentRobot.idle_behavior = doc.data().name;
+                this.session.setIdleBehavior(doc.data().name);
                 this.updateInfo();
               }
             }).catch((error) => {
@@ -73,6 +74,7 @@ export default class InfoScreen extends Component {
             detect.get().then((doc) => {
               if(doc.exists && isMounted) {
                 this.currentRobot.detect_behavior = doc.data().name;
+                this.session.setDetectBehavior(doc.data().name);
                 this.updateInfo();
               }
             }).catch((error) => {
