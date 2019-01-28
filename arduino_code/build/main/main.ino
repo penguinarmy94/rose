@@ -1,5 +1,6 @@
 #include "Motor.h"
 #include "Microphone.h"
+#include "laserSensor.h"
 
 struct PIData {
   char direction;
@@ -10,15 +11,25 @@ Motor left(13, 12, 11);
 Motor right(8, 7, 9);
 Microphone a(3);
 Microphone b(4);
+LaserSensor lasersensor;
 int aMax;
 int aSample;
 int bSample;
 int bMax;
 char fromPi[10];
 int count;
+
+LaserSensor laserSensor;
+int waitSensor = 0;
+int turning = 0;
+int wait = 0;
+
 void setup() 
 {
 Serial.begin(9600);
+Wire.begin();
+
+laserSensor.setNumber(SENSORS);
 }
 
 void loop()
@@ -35,6 +46,9 @@ void loop()
 //      Right(left, right, 150);  
 //    }
 //}
+
+//readLaser();
+
 while (count < 1000 && !Serial.available())
 {
   aSample = a.record();
@@ -114,4 +128,41 @@ void parsePackage(PIData &package)
     {
       fromPi[j] = 0;  
     }
+}
+
+void readLaser() {
+    int state = laserSensor.getState();
+  if (state > 0) {
+    if (!waitSensor  && !turning) {
+      waitSensor = 25;
+    } 
+    else if (waitSensor) {
+      waitSensor--;
+    }
+      if (!waitSensor) {
+        turning = 1;
+        if (BLOCKED == state) {
+          Serial.println("Turn around");
+        } 
+        else if (BLOCKED_LEFT == state) {
+          Serial.println("Turn right");
+        } 
+        else if (BLOCKED_RIGHT == state) {
+          Serial.println("Turn left");
+        }
+      }
+   }
+    else {
+      waitSensor = 0;
+      turning = 0;
+  }
+ 
+  if (wait++ > 10) {
+    wait = 0;
+    if (waitSensor || turning) {
+      Serial.println("Zzz.....");
+    } else {
+      Serial.println("Chugga Chugga Choo Choo");
+    }  
+  }
 }
