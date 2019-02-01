@@ -1,32 +1,20 @@
 #ifndef laserSensor_h
 #define laserSensor_h
 
+#include "Arduino.h"
+#include "Adafruit_VL53L0X.h"
+
 class LaserSensor {
   private:
-    int number;
-    int stopValue;
-    int slowValue;
-    int freeValue;
-    void init();
+    uint8_t address;
+    int xshut;
+    Adafruit_VL53L0X lox;
+    VL53L0X_RangingMeasurementData_t measure;
   public:
-    LaserSensor();
-    //LaserSensor(int);
-    //LaserSensor(int, int);
-    setNumber(int);
-    setLongRange();
-    setHighSpeed();
-    setHighAccuracy();
-    setLongRange(int);
-    setHighSpeed(int);
-    setHighAccuracy(int);
-    setStopValue(int);
-    setSlowValue(int);
-    setFreeValue(int);
-    //setSensorGroup(int, int []);
-    int getValue(int);
-    int getState(int);
-    int getState();
-    getSensorGroup(int);
+    LaserSensor(uint8_t i2c_address, int xshutpin);
+    void init();
+    bool setAddress();
+    int getDistance();
 };
 
 #endif
