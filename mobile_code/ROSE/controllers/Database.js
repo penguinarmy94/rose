@@ -5,6 +5,7 @@ export default class Database {
         this._userRef = firebase.firestore().collection('Users');
         this._actionRef = firebase.firestore().collection('Action');
         this._defaultBehavior = firebase.firestore().collection('Behaviors').doc('default');
+        this._behaviorRef = firebase.firestore().collection('Behaviors');
     }
 
     getUser = (id) => {
@@ -18,8 +19,8 @@ export default class Database {
         }
     }
 
-    getBehavior = (id) => {
-
+    getBehaviorReference = () => {
+        return this._behaviorRef;
     }
 
     getRobot = (id) => {

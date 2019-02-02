@@ -67,8 +67,13 @@ class Session {
         this._detectBehavior = detect;
     }
 
-    getBehaviors = () => {
-        return {idle: this._idleBehavior, detect: this._detectBehavior};
+    getBehaviors = (reference = false) => {
+        if(reference) {
+            return this._db.getBehaviorReference();
+        }
+        else {
+            return {idle: this._idleBehavior, detect: this._detectBehavior};
+        }
     }
 
     setUser = (userObject) => {
