@@ -15,19 +15,21 @@ export default class BehaviorEditHomeScreen extends Component {
 
         this.props.navigation.setParams({rootNav: this.props.screenProps.parentNav});
         let user = config.session.getUser();
-        let userObject = user.getUserObject();
         let behaviorList = [];
         let behaviorComponents = [];
         let behaviorPickerItems = [];
         let behaviors = user.getBehaviorList();
+        let idle = config.session.getBehaviors().idle;
+        let detect = config.session.getBehaviors().detect;
 
         this.state = {
             behaviorComponents: [],
             behaviors: behaviors,
             behaviorList: [],
             behaviorPickerItems: [],
-            idle: config.session.getBehaviors().idle,
-            detect: config.session.getBehaviors().detect
+            idle: idle,
+            detect: detect,
+            defaultPickers: []
         };
 
         this.state.behaviors.forEach((elementValue, index) => {
@@ -49,12 +51,11 @@ export default class BehaviorEditHomeScreen extends Component {
                                     type="material-community" 
                                     name="minus-circle" 
                                     color="red" 
-                                    onPress={() => this.deleteBehavior(behavior.data())}
+                                    onPress={() => this.deleteBehavior(behavior)}
                                 />
                             </View>
                         );
                     }
-
 
                     behaviorPickerItems.push({name: behavior.data().name, element: index});
 
@@ -64,6 +65,26 @@ export default class BehaviorEditHomeScreen extends Component {
                         behaviorPickerItems: behaviorPickerItems,
                     });
                 }
+
+                if(this.state.behaviorList.length == this.state.behaviors.length) {
+                    let pickers = this.state.defaultPickers;
+
+                    pickers.push({
+                        key: "1",
+                        text: "Idle Behavior: ",
+                        selected: this.state.idle,
+                        changeFunction: this.changeIdleBehavior
+                    });
+                    pickers.push({
+                        key: "2",
+                        text: "Detect Behavior: ",
+                        selected: this.state.detect,
+                        changeFunction: this.changeDetectBehavior
+                    });
+
+                    this.setState({defaultPickers: pickers});
+                }
+
             }).catch((error) => {
                 alert(error);
             });
@@ -71,10 +92,11 @@ export default class BehaviorEditHomeScreen extends Component {
 
     }
 
-    deleteBehavior = (key) => {
+    deleteBehavior = (behaviorToDelete) => {
         let behaviors = this.state.behaviorList;
         let components = this.state.behaviorComponents;
         let pickerItems = this.state.behaviorPickerItems;
+        let key = behaviorToDelete.data();
 
         Alert.alert(
             'Delete Behavior',
@@ -82,7 +104,7 @@ export default class BehaviorEditHomeScreen extends Component {
             [
               {text: 'OK', onPress: () => {
                 for(index = 0; index < behaviors.length; index++) {
-                    if(behaviors[index] == key) {
+                    if(behaviors[index].name === key.name) {
                         if(this.state.idle == key.name) {
                             this.changeIdleBehavior("default", -1);
                         }
@@ -95,7 +117,7 @@ export default class BehaviorEditHomeScreen extends Component {
                         components.splice(index, 1);
                         pickerItems.splice(index, 1);
                         this.setState({behaviorList: behaviors, behaviorComponents: components, behaviorPickerItems: pickerItems});
-                        config.session.getUser().removeBehavior(index);
+                        config.session.getUser().removeBehavior(behaviorToDelete);
                         return;
                     }
                 }
@@ -108,16 +130,19 @@ export default class BehaviorEditHomeScreen extends Component {
     }
 
     addBehavior = () => {
-        this.props.navigation.navigate("BehaviorAdd");
+        this.props.navigation.navigate("BehaviorAdd", {behaviorObjects: this.state.behaviorList});
     }
 
     changeIdleBehavior = (value, ele) => {
         let behaviorObjects = this.state.behaviorPickerItems;
         let index;
 
-        if(this.state.idle != value) {
+        if(this.state.idle !== value) {
+            let defaultPickers = this.state.defaultPickers;
+            defaultPickers[0].selected = value;
 
-            this.setState({idle: value});
+            this.setState({idle: value, defaultPickers: defaultPickers});
+
             for(index = 0; index < behaviorObjects.length; index++) {
                 if(value == behaviorObjects[index].name) {
                     let robot = config.session.currentRobot();
@@ -132,6 +157,7 @@ export default class BehaviorEditHomeScreen extends Component {
                     }).catch((error) => {
                         alert(error);
                     });
+
                     return;
                 }
             }
@@ -143,7 +169,10 @@ export default class BehaviorEditHomeScreen extends Component {
         let index;
 
         if(this.state.detect != value) {
-            this.setState({detect: value});
+            let defaultPickers = this.state.defaultPickers;
+            defaultPickers[1].selected = value;
+
+            this.setState({detect: value, defaultPickers: defaultPickers});
             for(index = 0; index < behaviorObjects.length; index++) {
                 if(value == behaviorObjects[index].name) {
                     let robot = config.session.currentRobot();
@@ -153,6 +182,7 @@ export default class BehaviorEditHomeScreen extends Component {
 
                     robot.set(robotObject).then(() => {
                         if(ele != -1) {
+                            config.session.setDetectBehavior(value);
                             alert("Detect Behavior has been changed successfully!");
                         }
                     }).catch((error) => {
@@ -164,36 +194,31 @@ export default class BehaviorEditHomeScreen extends Component {
         }
     }
 
+    renderBlock = (key, text, selected, changeFunction) => {
+        return(
+            <View key={key} style={styles.dropdown}>
+                <Text style={styles.spacing}>{text} </Text>
+                <Picker 
+                    selectedValue={selected}
+                    onValueChange={changeFunction}
+                    enabled
+                    mode="dropdown"
+                    style={{height: 50, width: 200}}>
+                        {this.state.behaviorPickerItems.map((val, ele) => {
+                            return(<Picker.Item label={val.name} value={val.name} key={ele}/>);
+                        })}
+                </Picker>
+            </View>
+        );
+    }
+
     render() {
         return(
             <View style={styles.container}>
                 <View>
-                    <View style={styles.dropdown}>
-                        <Text style={styles.spacing}>Idle Behavior: </Text>
-                        <Picker 
-                            selectedValue={this.state.idle}
-                            onValueChange={this.changeIdleBehavior}
-                            enabled
-                            mode="dropdown"
-                            style={{height: 50, width: 200}}>
-                                {this.state.behaviorPickerItems.map((val, ele) => {
-                                    return(<Picker.Item label={val.name} value={val.name} key={ele}/>);
-                                })}
-                        </Picker>
-                    </View>
-                    <View style={styles.dropdown}>
-                        <Text style={styles.spacing}>Detect Behavior: </Text>
-                        <Picker 
-                            selectedValue={this.state.detect}
-                            onValueChange={this.changeDetectBehavior}
-                            enabled
-                            mode="dropdown"
-                            style={{height: 50, width: 200}}>
-                                {this.state.behaviorPickerItems.map((val, ele) => {
-                                    return(<Picker.Item label={val.name} value={val.name} key={ele}/>);
-                                })}
-                        </Picker>
-                    </View>
+                    {this.state.defaultPickers.map((picker, index) => {
+                        return this.renderBlock(picker.key, picker.text, picker.selected, picker.changeFunction);
+                    })}
                 </View>
                 <View>
                     <Text style={[styles.spacing, styles.sectionSpacing]}>All Behaviors:</Text>
