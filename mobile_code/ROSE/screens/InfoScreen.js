@@ -40,7 +40,7 @@ export default class InfoScreen extends Component {
 
     this.session.createUser().then((user) => {
       if(user.exists) {
-        this.session.setUser(new User(user.data()));
+        this.session.setUser(new User(user));
         this.robotSnapshot = this.session.currentRobot().onSnapshot((robot) => {
           if(robot.exists && isMounted) {
             let idle = robot.data().idle_behavior;
