@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, Picker, Alert } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { config } from "../assets/config/config";
+import { NavigationActions, StackActions } from 'react-navigation';
 
 export default class BehaviorEditHomeScreen extends Component {
     static navigationOptions = ({navigation}) => {
@@ -109,11 +110,24 @@ export default class BehaviorEditHomeScreen extends Component {
                             alert("Cannot delete behavior because it is being used");
                             return;
                         }
-                        behaviors.splice(index, 1);
-                        components.splice(index, 1);
-                        pickerItems.splice(index, 1);
-                        this.setState({behaviorList: behaviors, behaviorComponents: components, behaviorPickerItems: pickerItems});
+
                         config.session.getUser().removeBehavior(behaviorRef);
+                        behaviorRef.ref.delete().catch((error) => {
+                            alert(error);
+                        });
+
+                        let userRef = config.session.getUser().getUserRef();
+
+                        userRef.update({
+                            behaviors: config.session.getUser().getBehaviorList()
+                        }).catch((error) => {
+                            alert(error);
+                        });
+
+                        this.props.navigation.dispatch(StackActions.reset({
+                            index: 0,
+                            actions: [NavigationActions.navigate({routeName: 'BehaviorHome'})]
+                        }));
                         return;
                     }
                 }
