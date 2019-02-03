@@ -50,10 +50,9 @@ export default class User {
         }
     }
 
-    removeBehavior = (behavior) => { 
-        alert(behavior.path);       
+    removeBehavior = (behavior) => {       
         for (index = 0; index < this._behaviors.length; index++) {
-            if(this._behaviors[index].path === behavior.path) {
+            if(this._behaviors[index].path === behavior.ref.path) {
                 this._behaviors.splice(index, 1);
                 this._userObj.behaviors = this._behaviors;
                 this._numofbehaviors -= 1;

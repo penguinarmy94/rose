@@ -177,6 +177,8 @@ export default class BehaviorAddScreen extends Component {
                 }
             });
 
+            behaviorToBeCreated.used = 0;
+
             let behaviorRef = config.session.getBehaviors(true);
 
             behaviorRef.add(behaviorToBeCreated).then( (createdBehavior) => {

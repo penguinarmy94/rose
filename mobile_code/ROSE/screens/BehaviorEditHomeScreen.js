@@ -51,13 +51,13 @@ export default class BehaviorEditHomeScreen extends Component {
                                     type="material-community" 
                                     name="minus-circle" 
                                     color="red" 
-                                    onPress={() => this.deleteBehavior(behavior)}
+                                    onPress={() => this.deleteBehavior(behavior.data(), behavior)}
                                 />
                             </View>
                         );
                     }
 
-                    behaviorPickerItems.push({name: behavior.data().name, element: index});
+                    behaviorPickerItems.push({name: behavior.data().name, element: index, ref: behavior});
 
                     this.setState({
                         behaviorList: behaviorList, 
@@ -92,32 +92,28 @@ export default class BehaviorEditHomeScreen extends Component {
 
     }
 
-    deleteBehavior = (behaviorToDelete) => {
+    deleteBehavior = (key, behaviorRef) => {
         let behaviors = this.state.behaviorList;
         let components = this.state.behaviorComponents;
         let pickerItems = this.state.behaviorPickerItems;
-        let key = behaviorToDelete.data();
 
         Alert.alert(
             'Delete Behavior',
             'Are you sure you want to delete this behavior?' ,
             [
               {text: 'OK', onPress: () => {
+
                 for(index = 0; index < behaviors.length; index++) {
                     if(behaviors[index].name === key.name) {
-                        if(this.state.idle == key.name) {
-                            this.changeIdleBehavior("default", -1);
+                        if(behaviors[index].used > 0) {
+                            alert("Cannot delete behavior because it is being used");
+                            return;
                         }
-
-                        if(this.state.detect == key.name) {
-                            this.changeDetectBehavior("default", -1);
-                        }
-
                         behaviors.splice(index, 1);
                         components.splice(index, 1);
                         pickerItems.splice(index, 1);
                         this.setState({behaviorList: behaviors, behaviorComponents: components, behaviorPickerItems: pickerItems});
-                        config.session.getUser().removeBehavior(behaviorToDelete);
+                        config.session.getUser().removeBehavior(behaviorRef);
                         return;
                     }
                 }
@@ -133,20 +129,57 @@ export default class BehaviorEditHomeScreen extends Component {
         this.props.navigation.navigate("BehaviorAdd", {behaviorObjects: this.state.behaviorList});
     }
 
+    untagBehavior = (behavior, index) => {
+        let list = this.state.behaviorList;
+        let count = list[index].used;
+
+        if(count <= 0) {
+            list[index].used = 0;
+        }
+        else {
+            list[index].used -= 1;
+        }
+
+        this.setState({behaviorList: list});
+        
+        behavior.ref.update({used: list[index].used}).catch((error) => {
+            alert(error);
+        });
+    }
+
+    tagBehavior = (behavior, index) => {
+        let list = this.state.behaviorList;
+
+        list[index].used += 1;
+
+        this.setState({behaviorList: list});
+
+        behavior.ref.update({used: list[index].used}).catch((error) => {
+            alert(error);
+        });
+    }
+
     changeIdleBehavior = (value, ele) => {
         let behaviorObjects = this.state.behaviorPickerItems;
         let index;
+        let previousValue = this.state.idle;
 
         if(this.state.idle !== value) {
+
             let defaultPickers = this.state.defaultPickers;
             defaultPickers[0].selected = value;
 
             this.setState({idle: value, defaultPickers: defaultPickers});
 
             for(index = 0; index < behaviorObjects.length; index++) {
-                if(value == behaviorObjects[index].name) {
+                if(previousValue == behaviorObjects[index].name) {
+                    this.untagBehavior(behaviorObjects[index].ref, index);
+                }
+                else if(value == behaviorObjects[index].name) {
                     let robot = config.session.currentRobot();
                     let robotObject = config.robotObject;
+
+                    this.tagBehavior(behaviorObjects[index].ref, index);
 
                     robotObject.idle_behavior = this.state.behaviors[behaviorObjects[index].element];
 
@@ -157,8 +190,9 @@ export default class BehaviorEditHomeScreen extends Component {
                     }).catch((error) => {
                         alert(error);
                     });
-
-                    return;
+                }
+                else {
+                    continue;
                 }
             }
         }
@@ -167,28 +201,36 @@ export default class BehaviorEditHomeScreen extends Component {
     changeDetectBehavior = (value, ele) => {
         let behaviorObjects = this.state.behaviorPickerItems;
         let index;
+        let previousValue = this.state.detect;
 
         if(this.state.detect != value) {
             let defaultPickers = this.state.defaultPickers;
             defaultPickers[1].selected = value;
 
             this.setState({detect: value, defaultPickers: defaultPickers});
+
             for(index = 0; index < behaviorObjects.length; index++) {
-                if(value == behaviorObjects[index].name) {
+                if(previousValue == behaviorObjects[index].name) {
+                    this.untagBehavior(behaviorObjects[index].ref, index);
+                }
+                else if(value == behaviorObjects[index].name) {
                     let robot = config.session.currentRobot();
                     let robotObject = config.robotObject;
+
+                    this.tagBehavior(behaviorObjects[index].ref, index);
 
                     robotObject.detect_behavior = this.state.behaviors[behaviorObjects[index].element];
 
                     robot.set(robotObject).then(() => {
                         if(ele != -1) {
-                            config.session.setDetectBehavior(value);
                             alert("Detect Behavior has been changed successfully!");
                         }
                     }).catch((error) => {
                         alert(error);
                     });
-                    return;
+                }
+                else {
+                    continue;
                 }
             }
         }
