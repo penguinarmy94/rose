@@ -18,7 +18,7 @@ import { config } from '../assets/config/config';
 const settingsNav = createSwitchNavigator(
     {
         SettingsHome: { screen: SettingsHomeStack },
-        //AddRobot: { screen: AddRobotScreen },
+        AddRobot: { screen: AddRobotScreen },
         //ChangeRobot: { screen: ChangeRobotScreen },
         Behaviors: { screen: BehaviorStack }
     }, 
