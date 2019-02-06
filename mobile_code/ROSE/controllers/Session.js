@@ -10,7 +10,7 @@ class Session {
         this._currentRobot = "none";
         this._idleBehavior = "none";
         this._detectBehavior = "none";
-        this._actions = this._db.getActions();
+        this._actions = this._db.getActionCollection();
         
         let db_user = this._db.getUser(user_id);
 
@@ -69,11 +69,24 @@ class Session {
 
     getBehaviors = (reference = false) => {
         if(reference) {
-            return this._db.getBehaviorReference();
+            return this._db.getBehaviorCollection();
         }
         else {
             return {idle: this._idleBehavior, detect: this._detectBehavior};
         }
+    }
+
+    getRobots = (reference = false)  => {
+        if(reference) {
+            return this._db.getRobotCollection();
+        }
+        else {
+            return this._user.getRobotList();
+        }
+    }
+
+    getRobotTags = () => {
+        return this._db.getRobotTagCollection();
     }
 
     setUser = (userObject) => {
@@ -84,6 +97,10 @@ class Session {
         else {
             return false;
         }
+    }
+
+    updateUser = (ref, obj) => {
+        return this._db.updateUser(ref, obj);
     }
 }
 

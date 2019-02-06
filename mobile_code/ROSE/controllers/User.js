@@ -8,6 +8,7 @@ export default class User {
             this._numofbehaviors = user.data().behaviors.length;
             this._userObj = user.data();
             this._userRef = user.ref;
+            this._id = user.id;
         }
         else {
             this._username = "none";
@@ -27,6 +28,10 @@ export default class User {
         return this._userRef;
     }
 
+    getUserId = () => {
+        return this._id;
+    }
+
     addRobot = (robot) => {
         this._robots.push(robot);
         this._userObj.robots = this._robots;
@@ -40,28 +45,42 @@ export default class User {
     }
 
     removeRobot = (robot) => {
-        let index = 0;
-
-
-        for (index = 0; index < this._numofrobots; index++) {
-            if (this._robots[index] === robot) {
-                //delete 
+        try {
+            for (index = 0; index < this._numofrobots; index++) {
+                if (this._robots[index].path === robot.ref.path) {
+                    this._robots.splice(index, 1);
+                    this._userObj.robots = this._robots;
+                    this._numofrobots -= 1;
+                    return true;
+                }
             }
+        }
+        catch(error) {
+            return false;
         }
     }
 
-    removeBehavior = (behavior) => {       
-        for (index = 0; index < this._behaviors.length; index++) {
-            if(this._behaviors[index].path === behavior.ref.path) {
-                this._behaviors.splice(index, 1);
-                this._userObj.behaviors = this._behaviors;
-                this._numofbehaviors -= 1;
-                return;
+    removeBehavior = (behavior) => {
+        try {       
+            for (index = 0; index < this._behaviors.length; index++) {
+                if(this._behaviors[index].path === behavior.ref.path) {
+                    this._behaviors.splice(index, 1);
+                    this._userObj.behaviors = this._behaviors;
+                    this._numofbehaviors -= 1;
+                    return true;
+                }
             }
+        }
+        catch(error) {
+            return false;
         }
     }
 
     getBehaviorList = () => {
         return this._behaviors;
+    }
+
+    getRobotList = () => {
+        return this._robots;
     }
 }

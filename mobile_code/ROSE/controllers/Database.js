@@ -6,6 +6,8 @@ export default class Database {
         this._actionRef = firebase.firestore().collection('Action');
         this._defaultBehavior = firebase.firestore().collection('Behaviors').doc('default');
         this._behaviorRef = firebase.firestore().collection('Behaviors');
+        this._robotRef = firebase.firestore().collection('Robots');
+        this._robotTagRef = firebase.firestore().collection('RobotTags');
     }
 
     getUser = (id) => {
@@ -19,29 +21,28 @@ export default class Database {
         }
     }
 
-    getBehaviorReference = () => {
+    getBehaviorCollection = () => {
         return this._behaviorRef;
     }
 
-    getRobot = (id) => {
-
+    getRobotCollection = () => {
+        return this._robotRef;
     }
 
-    getActions = () => {
+    getActionCollection = () => {
         return this._actionRef;
     }
 
-    updateUser = (user, id = 0, newRobot = null, type) => {
-        if (type == "add") {
-            let user = {
-                username: user,
-                behaviors: [this._defaultBehavior],
-                robots: [newRobot]
-            };
-            this._userRef.doc(id).set(user);
+    getRobotTagCollection = () => {
+        return this._robotTagRef;
+    }
+
+    updateUser = (ref, obj) => {
+        if(ref instanceof firebase.firestore.DocumentReference) {
+            return ref.update(obj);
         }
-        else if (type == "update") {
-            this._userRef.doc(id).set(user);
+        else {
+            alert("Update Error: Cannot update user because reference is not of type firebase.firestore.DocumentReference");
         }
     }
 
@@ -68,4 +69,6 @@ export default class Database {
             
         }
     }
+
+
 }
