@@ -60,7 +60,7 @@ export default class SettingsScreen extends Component {
     }
 
     createNewRobot = () => {
-        alert("want to add new robot");
+        this.props.screenProps.rootNav.navigate("AddRobot");
     }
 
     changeRobot = () => {

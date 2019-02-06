@@ -194,7 +194,6 @@ export default class BehaviorAddScreen extends Component {
                                 index: 0,
                                 actions: [NavigationActions.navigate({routeName: 'BehaviorHome'})]
                             }));
-                            //this.props.navigation.navigate("BehaviorHome");
                         }
                     }]);
 
