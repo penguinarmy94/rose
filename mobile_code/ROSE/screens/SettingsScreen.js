@@ -64,7 +64,7 @@ export default class SettingsScreen extends Component {
     }
 
     changeRobot = () => {
-        alert("want to change robot");
+        this.props.screenProps.rootNav.navigate("ChangeRobot");
     }
 
     editBehaviors = () => {

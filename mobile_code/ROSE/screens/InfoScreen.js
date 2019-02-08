@@ -32,66 +32,74 @@ export default class InfoScreen extends Component {
       header: config.headerTitle
     };
 
-    this.session = this.props.screenProps.data;
+    if(config.session) {
+      config.robotSnapshot();
+      this.updateRobot();
+    }
+    else {
+        config.session = this.props.screenProps.data;
+        alert("Welcome back!");
 
-    isMounted = true;
+        isMounted = true;
 
-    alert("Welcome back!");
-
-    this.session.createUser().then((user) => {
-      if(user.exists) {
-        this.session.setUser(new User(user));
-        this.robotSnapshot = this.session.currentRobot().onSnapshot((robot) => {
-          if(robot.exists && isMounted) {
-            let idle = robot.data().idle_behavior;
-            let detect = robot.data().detect_behavior;
-            this.currentRobot = {
-              battery: robot.data().battery,
-              charging: robot.data().charging,
-              connection: robot.data().connection,
-              detect_behavior: "",
-              idle_behavior: "",
-              id: robot.data().id,
-              num_of_videos: robot.data().num_of_videos,
-
-            };
-
-            config.headerTitle = robot.data().name;
-            config.robotObject = robot.data();
-            this.props.navigation.setParams({headerTitle: config.headerTitle});
-
-
-            idle.get().then((doc) => { 
-              if(doc.exists && isMounted) { 
-                this.currentRobot.idle_behavior = doc.data().name;
-                this.session.setIdleBehavior(doc.data().name);
-                this.updateInfo();
-              }
-            }).catch((error) => {
-              alert(error);
-            });
-
-            detect.get().then((doc) => {
-              if(doc.exists && isMounted) {
-                this.currentRobot.detect_behavior = doc.data().name;
-                this.session.setDetectBehavior(doc.data().name);
-                this.updateInfo();
-              }
-            }).catch((error) => {
-              alert(error);
-            });
-
+        config.session.createUser().then((user) => {
+          if(user.exists) {
+            config.session.setUser(new User(user));
+            this.updateRobot();
           }
+        }).catch((error) => {
+          alert(error);
         });
-      }
-    }).catch((error) => {
-      alert(error);
-    });
+    }
   }
 
   componentWillUnmount = () => {
     this.isMounted = false;
-    this.robotSnapshot();
+    config.robotSnapshot();
+  }
+
+  updateRobot = () => {
+    config.robotSnapshot = config.session.currentRobot().onSnapshot((robot) => {
+      if(robot.exists && isMounted) {
+        let idle = robot.data().idle_behavior;
+        let detect = robot.data().detect_behavior;
+        this.currentRobot = {
+          battery: robot.data().battery,
+          charging: robot.data().charging,
+          connection: robot.data().connection,
+          detect_behavior: "",
+          idle_behavior: "",
+          id: robot.data().id,
+          num_of_videos: robot.data().num_of_videos,
+        };
+
+        config.headerTitle = robot.data().name;
+        config.robotObject = robot.data();
+        this.props.navigation.setParams({headerTitle: config.headerTitle});
+
+
+        idle.get().then((doc) => { 
+          if(doc.exists && isMounted) { 
+            this.currentRobot.idle_behavior = doc.data().name;
+            config.session.setIdleBehavior(doc.data().name);
+            this.updateInfo();
+          }
+        }).catch((error) => {
+          alert(error);
+        });
+
+        detect.get().then((doc) => {
+          if(doc.exists && isMounted) {
+            this.currentRobot.detect_behavior = doc.data().name;
+            config.session.setDetectBehavior(doc.data().name);
+            this.updateInfo();
+          }
+        }).catch((error) => {
+          alert(error);
+        });
+
+      }
+    });
   }
 
   updateInfo = () => {
@@ -108,8 +116,6 @@ export default class InfoScreen extends Component {
     current.detect = robot.detect_behavior; 
     current.recordings = robot.num_of_videos;
     current.header = config.headerTitle;
-    
-    config.session = this.session;
 
     this.setState(current);
   }
