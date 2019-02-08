@@ -49,28 +49,36 @@ export default class AddRobotScreen extends Component {
         tagRef.doc(robot.id).get().then((document) => {
 
             if(document.exists) {
-                tagRef.doc(robot.id).update({activated: true}).catch((error) => {
-                    alert("TagRef Update: " + error);
-                });
+                if(document.data().activated) {
+                    Alert.alert("Robot Creation Error", "Robot with this ID has already been created", [{
+                        text: "OK", onPress: () => {}
+                    }]);
+                }
+                else {
 
-                robotRef.doc(robot.id).set(robot).then(() => {
-                    user.addRobot(robotRef.doc(robot.id));
-      
-                    userRef.update({robots: user.getRobotList()}).then(() => {
-                        Alert.alert("Robot Creation Complete", "The robot was created successfully!", [{
-                            text: "OK", onPress: () => {this.props.navigation.navigate("SettingsHome");}
-                        }]);
+                    tagRef.doc(robot.id).update({activated: true}).catch((error) => {
+                        alert("TagRef Update: " + error);
+                    });
+
+                    robotRef.doc(robot.id).set(robot).then(() => {
+                        user.addRobot(robotRef.doc(robot.id));
+        
+                        userRef.update({robots: user.getRobotList()}).then(() => {
+                            Alert.alert("Robot Creation Complete", "The robot was created successfully!", [{
+                                text: "OK", onPress: () => {this.props.navigation.navigate("SettingsHome");}
+                            }]);
+                        }).catch((error) => {
+                            Alert.alert("Robot Creation Error", error, [{
+                                text: "OK", onPress: () => {}
+                            }]);
+                        });
+                        
                     }).catch((error) => {
                         Alert.alert("Robot Creation Error", error, [{
-                            text: "OK", onPress: () => {}
+                            title: "OK", onPress: () => {}
                         }]);
                     });
-                    
-                }).catch((error) => {
-                    Alert.alert("Robot Creation Error", error, [{
-                        title: "OK", onPress: () => {}
-                    }]);
-                });
+                }
                 
             }
             else {
