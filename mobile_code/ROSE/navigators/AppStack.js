@@ -10,15 +10,17 @@ import React, {Component} from 'react';
 import {createSwitchNavigator, createAppContainer} from 'react-navigation';
 import LoginStack from '../navigators/LoginStack';
 import LandingStack from '../navigators/LandingStack';
+import LoadingScreen from '../screens/LoadingScreen';
 
 
 const appNav = createSwitchNavigator(
     {
         Main: { screen: LoginStack },
         Home: { screen: LandingStack },
+        Loading: { screen: LoadingScreen }
     }, 
     {
-        initialRouteName: "Main",
+        initialRouteName: "Main"
     }
 );
 
