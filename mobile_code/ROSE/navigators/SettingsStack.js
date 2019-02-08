@@ -19,7 +19,7 @@ const settingsNav = createSwitchNavigator(
     {
         SettingsHome: { screen: SettingsHomeStack },
         AddRobot: { screen: AddRobotScreen },
-        //ChangeRobot: { screen: ChangeRobotScreen },
+        ChangeRobot: { screen: ChangeRobotScreen },
         Behaviors: { screen: BehaviorStack }
     }, 
     {
@@ -39,6 +39,6 @@ export default class SettingsStack extends Component {
     });
 
   render() {
-    return <SettingsContainer screenProps={{rootNav: this.props.screenProps.rootNav}} />
+    return <SettingsContainer screenProps={{rootNav: this.props.screenProps.rootNav, parentNav: this.props.navigation}} />
   }
 }

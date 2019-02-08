@@ -14,6 +14,7 @@
     "react-native-firebase": "^5.2.0",
     "react-native-gesture-handler": "^1.0.12",
     "react-native-rabbitmq": "^0.5.17",
+    "react-native-simple-radio-button": "^2.7.3",
     "react-native-threads": "0.0.15",
     "react-native-uuid": "^1.4.9",
     "react-native-vector-icons": "^6.1.0",
