@@ -1,6 +1,8 @@
 #include "Motor.h"
 #include "Microphone.h"
 #include "laserSensor.h"
+#include "Wire.h"
+#include "VL53L0X.h"
 
 struct PIData {
   char direction;
@@ -18,6 +20,7 @@ int bSample;
 int bMax;
 char fromPi[10];
 int count;
+int state;
 
 LaserSensor laserSensor;
 int waitSensor = 0;
@@ -28,7 +31,6 @@ void setup()
 {
 Serial.begin(9600);
 Wire.begin();
-
 laserSensor.setNumber(SENSORS);
 }
 
@@ -49,36 +51,38 @@ void loop()
 
 //readLaser();
 
-while (count < 1000 && !Serial.available())
-{
-  aSample = a.record();
-  bSample = b.record();
-  aMax = (aSample > aMax) ? aSample : aMax;
-  bMax = (bSample > bMax) ? bSample : bMax;
-}
-  a.storeIntoBuffer(aMax);
-  b.storeIntoBuffer(bMax);
-  if (Serial.available())
-    {
-      if (Serial.read() == 'r')
-        {
-          aMax = a.getMax();
-          bMax = b.getMax();
-        }
-      if (aMax > bMax)
-      {
-        Serial.println("a was louder");  
-      }
-      else
-      {
-        Serial.println("b was louder");
-      }
-      a.clearBuffer();
-      b.clearBuffer();
-    }
-  aMax = 0;
-  bMax = 0;    
-delay(100);
+//while (count < 1000 && !Serial.available())
+//{
+//  aSample = a.record();
+//  bSample = b.record();
+//  aMax = (aSample > aMax) ? aSample : aMax;
+//  bMax = (bSample > bMax) ? bSample : bMax;
+//}
+//  a.storeIntoBuffer(aMax);
+//  b.storeIntoBuffer(bMax);
+//  if (Serial.available())
+//    {
+//      if (Serial.read() == 'r')
+//        {
+//          aMax = a.getMax();
+//          bMax = b.getMax();
+//        }
+//      if (aMax > bMax)
+//      {
+//        Serial.println("a was louder");  
+//      }
+//      else
+//      {
+//        Serial.println("b was louder");
+//      }
+//      a.clearBuffer();
+//      b.clearBuffer();
+//    }
+//  aMax = 0;
+//  bMax = 0;    
+//delay(100);
+readLaser();
+delay(1);
 }
 
 void Forward(Motor left, Motor right, int speed)
@@ -131,7 +135,7 @@ void parsePackage(PIData &package)
 }
 
 void readLaser() {
-    int state = laserSensor.getState();
+  state = laserSensor.getState();
   if (state > 0) {
     if (!waitSensor  && !turning) {
       waitSensor = 25;
@@ -142,19 +146,23 @@ void readLaser() {
       if (!waitSensor) {
         turning = 1;
         if (BLOCKED == state) {
+          Backward(left, right, 150);
           Serial.println("Turn around");
         } 
         else if (BLOCKED_LEFT == state) {
           Serial.println("Turn right");
+          Right(left, right, 150);
         } 
         else if (BLOCKED_RIGHT == state) {
           Serial.println("Turn left");
+          Left(left, right, 150);
         }
       }
    }
     else {
       waitSensor = 0;
       turning = 0;
+      Forward(left, right, 150);
   }
  
   if (wait++ > 10) {
