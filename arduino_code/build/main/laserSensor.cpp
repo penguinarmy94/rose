@@ -11,7 +11,7 @@ LaserSensor::LaserSensor() {
   }
 
 // Set the number of sensors to be monitored
-LaserSensor::setNumber(int number) {
+void LaserSensor::setNumber(int number) {
   this->number = number;
   this->init();
 }
@@ -19,7 +19,7 @@ LaserSensor::setNumber(int number) {
 // Set long rsnge reading for all sensors. This increases the sensitivity of the sensor and 
 // extends its potential range, but increases the likelihood of getting an inaccurate reading 
 // because of reflections from objects other than the intended target. It works best in dark conditions.
-LaserSensor::setLongRange() {
+void LaserSensor::setLongRange() {
 
  for (int i = 0; i < this->number; i++) {
   // lower the return signal rate limit (default is 0.25 MCPS)
@@ -32,7 +32,7 @@ LaserSensor::setLongRange() {
 
 // Set high speed reading for all sensors. High speed comes at the cost of accuracy. High speed and high accuracy
 // are mutually exclusive.
-LaserSensor::setHighSpeed() {
+void LaserSensor::setHighSpeed() {
 
  for (int i = 0; i < this->number; i++) {
     // reduce timing budget to 20 ms (default is about 33 ms)
@@ -42,7 +42,7 @@ LaserSensor::setHighSpeed() {
 
 // Set high accuracy reading for all sensors. High accuracy comes at the cost of speed. High accuracy and high speed
 // are mutually exclusive.
-LaserSensor::setHighAccuracy() {
+void LaserSensor::setHighAccuracy() {
 
  for (int i = 0; i < this->number; i++) {
   // increase timing budget to 200 ms
@@ -53,7 +53,7 @@ LaserSensor::setHighAccuracy() {
 // Set long range reading for a particular sensor. This increases the sensitivity of the sensor and 
 // extends its potential range, but increases the likelihood of getting an inaccurate reading 
 // because of reflections from objects other than the intended target. It works best in dark conditions.
-LaserSensor::setLongRange(int number) {
+void LaserSensor::setLongRange(int number) {
 
   if (number <= this->number) {
     // lower the return signal rate limit (default is 0.25 MCPS)
@@ -66,7 +66,7 @@ LaserSensor::setLongRange(int number) {
 
 // Set high speed reading for a particular sensor. High speed comes at the cost of accuracy. High speed and high accuracy
 // are mutually exclusive.
-LaserSensor::setHighSpeed(int number) {
+void LaserSensor::setHighSpeed(int number) {
 
   if (number <= this->number) {
     // reduce timing budget to 20 ms (default is about 33 ms)
@@ -76,7 +76,7 @@ LaserSensor::setHighSpeed(int number) {
 
 // Set high accuracy reading for a particular sensor. High accuracy comes at the cost of speed. High accuracy and high speed
 // are mutually exclusive.
-LaserSensor::setHighAccuracy(int number) {
+void LaserSensor::setHighAccuracy(int number) {
 
   if (number <= this->number) {
     // increase timing budget to 200 ms
@@ -85,17 +85,17 @@ LaserSensor::setHighAccuracy(int number) {
 }
 
 // A value <= the stop value (in mm) is interpreted as sensor being blocked.
-LaserSensor::setStopValue(int stopValue) {
+void LaserSensor::setStopValue(int stopValue) {
   this->stopValue = stopValue;
 }
 
 // A value between the stop value and the slow value (in mm) is interpreted as an obstacle is near.
-LaserSensor::setSlowValue(int slowValue) {
+void LaserSensor::setSlowValue(int slowValue) {
   this->slowValue = slowValue;
 }
 
 // A value less than the free value (in mm) means that we are sensing an obstacle but it is still far enough to not adjust behavior.
-LaserSensor::setFreeValue(int freeValue) {
+void LaserSensor::setFreeValue(int freeValue) {
   this->freeValue = freeValue;
 }
 
