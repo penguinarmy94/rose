@@ -9,10 +9,10 @@ struct PIData {
   int distance;
   };
   
-Motor left(13, 12, 11);
-Motor right(8, 7, 9);
+Motor left(10, 9, 11);
+Motor right(8, 7, 6);
 Microphone a(3);
-Microphone b(4);
+Microphone b(5);
 LaserSensor lasersensor;
 int aMax;
 int aSample;
@@ -21,6 +21,7 @@ int bMax;
 char fromPi[10];
 int count;
 int state;
+PIData piCommand;
 
 LaserSensor laserSensor;
 int waitSensor = 0;
@@ -31,57 +32,58 @@ void setup()
 {
 Serial.begin(9600);
 Wire.begin();
-laserSensor.setNumber(SENSORS);
+a.clearBuffer();
+b.clearBuffer();
+//laserSensor.setNumber(SENSORS);
 }
 
 void loop()
 {
-//Forward(left, right, 150);
-//if (a.record() >= 700 || b.record() >= 700)
-//{
-//  if (a.record() > b.record())
-//    {
-//      Left(left, right, 150);
-//    }
-//  else
-//    {
-//      Right(left, right, 150);  
-//    }
-//}
-
-//readLaser();
-
-//while (count < 1000 && !Serial.available())
-//{
-//  aSample = a.record();
-//  bSample = b.record();
-//  aMax = (aSample > aMax) ? aSample : aMax;
-//  bMax = (bSample > bMax) ? bSample : bMax;
-//}
-//  a.storeIntoBuffer(aMax);
-//  b.storeIntoBuffer(bMax);
-//  if (Serial.available())
-//    {
-//      if (Serial.read() == 'r')
-//        {
-//          aMax = a.getMax();
-//          bMax = b.getMax();
-//        }
-//      if (aMax > bMax)
-//      {
-//        Serial.println("a was louder");  
-//      }
-//      else
-//      {
-//        Serial.println("b was louder");
-//      }
-//      a.clearBuffer();
-//      b.clearBuffer();
-//    }
-//  aMax = 0;
-//  bMax = 0;    
-//delay(100);
-readLaser();
+if (!Serial.available())
+{
+//readLaser(); 
+  if (count < 1000)
+    {
+      aSample = a.record();
+      bSample = b.record();
+      aMax = (aSample > aMax) ? aSample : aMax;
+      bMax = (bSample > bMax) ? bSample : bMax;
+      count ++;
+    }   
+  else
+  {
+    a.storeIntoBuffer(aMax);
+    b.storeIntoBuffer(bMax);
+    count = 0;  
+  }
+}
+else
+{
+  parsePackage(piCommand);
+    if (piCommand.direction == 'y')
+      {
+        aMax = a.getMax();
+        bMax = b.getMax();
+        if (aMax > bMax)
+        {
+          Serial.println("a was louder than b");
+          Serial.println(aMax);
+          Serial.println(bMax);
+          Serial.println("--------");
+        }
+        else
+        {
+          Serial.println("b was louder than a");
+          Serial.println(aMax);
+          Serial.println(bMax);
+          Serial.println("--------");
+        }        
+        a.clearBuffer();
+        b.clearBuffer();
+        aMax = 0;
+        bMax = 0; 
+      }
+}
 delay(1);
 }
 
@@ -146,31 +148,32 @@ void readLaser() {
       if (!waitSensor) {
         turning = 1;
         if (BLOCKED == state) {
-          Backward(left, right, 150);
-          Serial.println("Turn around");
+          Right(left, right, 75);
         } 
-        else if (BLOCKED_LEFT == state) {
-          Serial.println("Turn right");
-          Right(left, right, 150);
-        } 
-        else if (BLOCKED_RIGHT == state) {
-          Serial.println("Turn left");
-          Left(left, right, 150);
-        }
+//        else if (BLOCKED_LEFT == state) {
+//          Serial.println("Turn right");
+//          Right(left, right, 150);
+//        } 
+//        else if (BLOCKED_RIGHT == state) {
+//          Serial.println("Turn left");
+//          Left(left, right, 150);
+//        }
       }
    }
     else {
       waitSensor = 0;
       turning = 0;
-      Forward(left, right, 150);
+      Forward(left, right, 75);
   }
  
   if (wait++ > 10) {
     wait = 0;
     if (waitSensor || turning) {
-      Serial.println("Zzz.....");
+      Halt(left, right);
+      //Serial.println("Zzz.....");
     } else {
-      Serial.println("Chugga Chugga Choo Choo");
+      Forward(left, right, 75);
+      //Serial.println("Chugga Chugga Choo Choo");
     }  
   }
 }

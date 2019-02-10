@@ -35,7 +35,7 @@ void Microphone::clearBuffer()
 
 int Microphone::getMax()
 {
-	int max;
+	int max = 0;
 	for (int i = 0; i < 10; i++)
 	{
 		max = (max > kBuffer[i]) ? max : kBuffer[i];
