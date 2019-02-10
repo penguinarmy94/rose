@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Alert, Button} from 'react-native';
+import { View, ScrollView, Text, StyleSheet, Alert, Button} from 'react-native';
 import { Icon } from 'react-native-elements';
 import { config } from "../assets/config/config";
 import { StackActions, NavigationActions } from 'react-navigation';
 import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
 
 export default class ChangeRobotScreen extends Component {
+    static navigationOptions = {
+        title: "Change Current Robot"
+    };
+
     constructor(props) {
         super(props);
 
@@ -43,40 +47,20 @@ export default class ChangeRobotScreen extends Component {
     renderBlock = (key, robots, selected, changeFunction) => {
         if(this.state.index > -1) {
             return(
-                <View key={key} style={styles.dropdown}>
+                <ScrollView key={key} style={{margin: 20}}>
                     <RadioForm
                         formHorizontal={false}
                         animation={true}
                         onPress={changeFunction}
                         initial={this.state.index}
                         radio_props={robots}
-                    >
-                    {robots.map((robot, index) => {
-                        <RadioButton labelHorizontal={true} key={index} >
-                            <RadioButtonLabel
-                                obj={robot}
-                                index={index}
-                                labelHorizontal={false}
-                                onPress={changeFunction}
-                                labelStyle={{fontSize: 20, color: 'black'}}
-                                labelWrapStyle={{}}
-                            />
-                            <RadioButtonInput
-                                obj={robot}
-                                index={index}
-                                isSelected={selected === robot.value}
-                                onPress={changeFunction}
-                                borderWidth={1}
-                                buttonInnerColor={'#e74c3c'}
-                                buttonOuterColor={selected === robot.value ? '#2196f3' : '#000'}
-                                buttonSize={40}
-                                buttonOuterSize={80}
-                                buttonStyle={{}}
-                            />
-                            </RadioButton>
-                        })} 
-                    </RadioForm>
-                </View>
+                        buttonColor={"green"}
+                        labelColor={"#000"}
+                        selectedButtonColor={"green"}
+                        selectedLabelColor={"#000"}
+                        buttonSize={15}
+                    />
+                </ScrollView>
             );
         }
         else {
@@ -93,20 +77,18 @@ export default class ChangeRobotScreen extends Component {
     }
 
     cancel = () => {
-        this.props.navigation.navigate("SettingsHome");
+        this.props.screenProps.parentNav.navigate("SettingsHome");
     }
 
     render() {
         return(
             <View style={styles.container}>
-                <View>
-                    {
-                        this.renderBlock(0, this.state.robots, this.state.selected, (value, index) => {
-                            this.setState({selected: value});
-                        })
-                    }
-                </View>
-                <View>
+                {
+                    this.renderBlock(0, this.state.robots, this.state.selected, (value, index) => {
+                        this.setState({selected: value});
+                    })
+                }
+                <View style={styles.buttonContainer}>
                     <Button title="Confim" onPress={this.confirm} />
                     <Button title="Cancel" onPress={this.cancel} />
                 </View>
@@ -117,10 +99,12 @@ export default class ChangeRobotScreen extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 0,
-        flexDirection: 'column',
-        justifyContent: 'space-between',
+        marginTop: 20
     },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-evenly'
+    },  
     spacing: {
         margin: 15
     },

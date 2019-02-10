@@ -87,12 +87,15 @@ export default class SettingsScreen extends Component {
                 <Text style={{display: this.state.display, color: "red"}}>Waiting to be applied</Text>
                 <TouchableOpacity style={styles.bar} onPress={this.createNewRobot}>
                     <Text style={styles.text}>Add Robot</Text>
+                    <Text style={styles.text}>></Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.bar} onPress={this.changeRobot}>
                     <Text style={styles.text}>Change Robot</Text>
+                    <Text style={styles.text}>></Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.bar} onPress={this.editBehaviors}>
                     <Text style={styles.text}>Behaviors</Text>
+                    <Text style={styles.text}>></Text>
                 </TouchableOpacity>
             </View>
         );
@@ -103,17 +106,15 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 18,
         fontWeight: "bold",
-        margin: 20
+        margin: 20,
+        marginRight: 30
     },
     container: {
-      flex: 0,
-      justifyContent: 'center',
-      alignItems: 'center',
       marginTop: 20
     },
     bar: {
-      textAlign: 'center',
-      width: Dimensions.get('window').width,
+      flexDirection: "row",
+      justifyContent: "space-between",
       backgroundColor: "#FFFFFF"
     },
     instructions: {
