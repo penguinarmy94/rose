@@ -4,6 +4,10 @@ import { FormInput } from 'react-native-elements';
 import { config } from '../assets/config/config';
 
 export default class AddRobotScreen extends Component {
+    static navigationOptions = {
+        title: "Add Robot"
+    };
+
     constructor(props) {
         super(props);
 
@@ -92,14 +96,14 @@ export default class AddRobotScreen extends Component {
     }
 
     cancel = () => {
-        this.props.navigation.navigate("SettingsHome");
+        this.props.screenProps.parentNav.navigate("SettingsHome");
     }
 
     render() {
         return(
             <View>
-                <View>
-                    <Text>Name: </Text>
+                <View style={styles.inputBlock}>
+                    <Text style={styles.label}>Name: </Text>
                     <FormInput 
                         placeholder="Enter the name of the robot"
                         ref={input => this.state.input.nameRef = input}
@@ -113,8 +117,8 @@ export default class AddRobotScreen extends Component {
                         style={styles.form}
                     />
                 </View>
-                <View>
-                    <Text>ID: </Text>
+                <View style={styles.inputBlock}>
+                    <Text style={styles.label}>ID: </Text>
                     <FormInput 
                         placeholder="Enter the robot's ID"
                         ref={input => this.state.input.idRef = input}
@@ -128,9 +132,14 @@ export default class AddRobotScreen extends Component {
                         style={styles.form}
                     />
                 </View>
-
-                <Button title="Submit" onPress={this.createRobot} />
-                <Button title="Cancel" onPress={this.cancel} />
+                <View style={styles.buttonBlock}>
+                    <View style={styles.button}>
+                        <Button title="Submit" onPress={this.createRobot} />
+                    </View>
+                    <View style={styles.button}>
+                        <Button color="white" title="Cancel" onPress={this.cancel} />
+                    </View>
+                </View>
             </View>
         );
     }
@@ -141,5 +150,22 @@ const styles = StyleSheet.create({
         width: 200,
         height: 50,
         justifyContent: 'flex-end'
+    },
+    label: {
+        fontSize: 16,
+        margin: 10,
+    },
+    inputBlock: {
+        flexDirection: "row",
+        justifyContent: "flex-start",
+        marginTop: 10
+    },
+    buttonBlock: {
+        flexDirection: "row",
+        justifyContent: "center"
+    },
+    button: {
+        marginLeft: 10,
+        marginRight: 10,
     }
 });
