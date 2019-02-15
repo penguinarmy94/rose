@@ -1,35 +1,59 @@
 import json
 from . import queues
 
+
 class Brain():
     __mQueue = None
     __miQueue = None
-    __dbQueue = None
+    __db = None
     __camQueue = None
-    __behavior = None
+    __idle_behavior = None
+    __detect_behavior = None
     __idle = False
+    __config = {}
 
-    def __init__(self, mQueue, miQueue, dbQueue, camQueue, behavior):
-        self.__mQueue = mQueue
-        self.__miQueue = miQueue
-        self.__dbQueue = dbQueue
-        self.__camQueue = camQueue
-        self.__behavior = behavior
+    def __init__(self, database, robot, config):
+        self.__mQueue = queues.brain_motor_queue
+        self.__miQueue = queues.brain_microphone_queue
+        self.__camQueue = queues.brain_camera_queue
+        self.__idle_behavior = []
+        self.__detect_behavior = []
+        self.__db = database
+        self.__robot = robot
+        self.__state = "idle"
+        self.__config = config
+        
+        idle = robot.idle_behavior.get().to_dict()
+        detect = robot.detect_behavior.get().to_dict()
+
+        for action in idle["actions"]:
+            actionDict = action["action"].get().to_dict()
+            val = action["value"]
+            self.__idle_behavior.append(actionDict["prefix"] + str(val))
+        
+        for action in detect["actions"]:
+            actionDict = action["action"].get().to_dict()
+            val = action["value"]
+            self.__detect_behavior.append(actionDict["prefix"] + str(val))
     
     def begin(self):
         #Run for as long as queues are active
-        while queues.on == True:
+        while self.__robot.power is True:
             #Read Motor queue for new updates
-            self.readMotor()
+            self.read_motor()
             #Read Microphone queue for new updates
-            self.readMicrophone()
-            #Read Database queue for new updates
-            self.readDatabase()
+            self.read_microphone()
             #read Camera queue for new updates
-            self.readCamera()
+            self.read_camera()
+            #handle Behavior
+            self.handle_behavior()
+        
+        self.__turn_off()
+        self.__db.close()
+        print("Powered Off")
 
     
-    def readMotor(self):
+    def read_motor(self):
         #Check that queue is not empty
         if not self.__mQueue.empty():
             #read first item in the queue
@@ -41,11 +65,12 @@ class Brain():
                 message_packet = json.loads(self.__mQueue.get())
                 print(message_packet["message"])
             else:
-                if not self.__idle:
-                    self.handleBehavior("idle")
+                print("Message not intended for Brain")
+        else:
+            print("No message from motor")
 
     
-    def readMicrophone(self):
+    def read_microphone(self):
         #Check that queue is not empty
         if not self.__miQueue.empty():
             #read first item in the queue
@@ -54,48 +79,61 @@ class Brain():
             #Message incoming from microphone
             if message_packet["type"] == "brain":
                 message_packet = json.loads(self.__miQueue.get())
-                #check Behavior
-                #parse Behavior items
-                #send to different areas
-                self.handleBehavior(message_packet["message"])
+                print(message_packet["message"])
+            else:
+                print("Message not intended for Brain")
+        else:
+            print("No message from microphone")
 
-    def readDatabase(self):
+    def read_camera(self):
         #Check that queue is not empty
-        if not self.__dbQueue.empty():
-            #read first item in the queue
-            message_packet = json.loads(self.__dbQueue.peek())
-
-            #Message incoming from database
-            if message_packet["type"] == "power":
-                message_packet = json.loads(self.__dbQueue.get())
-                #change power setting
-            elif message_packet["type"] == "idle_behavior":
-                message_packet = json.loads(self.__dbQueue.get())
-                #change idle behavior setting
-            elif message_packet["type"] == "detect_behavior":
-                message_packet = json.loads(self.__dbQueue.get())
-                #change detect behavior setting
-    
-    def readCamera(self):
-        #Check that queue is not empty
-        if not self.__camQueue.empty():
+        if not self.__miQueue.empty():
             #read first item in the queue
             message_packet = json.loads(self.__camQueue.peek())
 
             #Message incoming from camera
+            if message_packet["type"] == "brain":
+                message_packet = json.loads(self.__camQueue.get())
+                print(message_packet["message"])
+            else:
+                print("No message from camera")
 
-    
-    def writeMotor(self, message):  
-        self.__mQueue.put(json.dumps({"type": "move", "message": message}))
-    
-    def handleBehavior(self, handle):
+    def __action_map(self, action):
+        mapper = self.__db.get_actions()
 
-        if handle == "idle":
-            #parse
-            parse = True
-        elif handle == "detect":
-            #parse
-            parse = True
+        for mapped_action in mapper:
+            if action[0] == mapped_action["prefix"]:
+                self.__send_message(mapped_action["name"], action[1:])
+                break
+    
+    def __send_message(self, action_name, value):
+        mapper = self.__config["functions"]
+
+        if action_name in mapper["motor"]:
+            if action_name == "Move Towards Sound":
+                self.__write_motor("Y" + value + "-")
+            else:
+                self.__write_motor("F" + value + "-")
         else:
-            self.writeMotor(handle)
+            print("Write to logs")
+    
+    def __turn_off(self):
+        self.__mQueue.put(json.dumps({"type": "off", "message": "power off"}))
+        self.__miQueue.put(json.dumps({"type": "off", "message": "power off"}))
+        self.__camQueue.put(json.dumps({"type": "off", "message": "power off"}))
+        
+    def __write_motor(self, message):  
+        self.__mQueue.put(json.dumps({"type": "motor", "message": message}))
+    
+    def __write_microphone(self, message):
+        self.__miQueue.put(json.dumps({"type": "microphone", "message": message}))
+    
+    def handle_behavior(self):
+        if self.__state == "idle":
+            for action in self.__idle_behavior:
+                self.__action_map(action)
+        elif self.__state == "detect":
+            for action in self.__detect_behavior:
+                self.__action_map(action)
+        
     

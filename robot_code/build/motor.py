@@ -22,6 +22,7 @@ class Motor():
                     message_packet = json.loads(self.__bqueue.get())
                     log = self.move(message_packet["message"])
                     queues.log.put(log)
+                    self.move(message_packet["message"])
                 elif message_packet["type"] == "off":
                     message_packet = json.loads(self.__bqueue.get())
                     queues.log.put("Motor Off")
@@ -30,24 +31,13 @@ class Motor():
                     queues.log.put("Motor: No message from Brain")
 
     def move(self, direction):
+        directions = ["F", "B", "L", "R", "Y"]
 
-        try:        
-            if direction[0] == "F":
+        try:
+            if direction[0] in directions
                 success = self.__port.write(direction.encode())
                 print(success)
-                return direction.encode()
-            elif direction[0] == "B":
-                success = self.__port.write(direction.encode())
-                print(success)
-                return direction.encode()
-            elif direction[0] == "L":
-                success = self.__port.write(direction.encode())
-                print(success)
-                return direction.encode()
-            elif direction[0] == "R":
-                success = self.__port.write(direction.encode())
-                print(success)
-                return direction.encode()
+                return direction.encode()        
             else:
                 print("Command does not exist")
                 return "Command Not Found"
