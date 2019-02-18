@@ -43,14 +43,12 @@ class Brain():
                 #handle Behavior
                 self.__update_behaviors()
                 self.handle_behavior()
-                print(self.__robot.power)
             except Exception as e:
                 logger.write(str(datetime.datetime.now()) + " - Brain Error: " + str(e))
                 break
 
         self.__write_motor(message_type="off", message="turn off")
         self.__write_microphone(message_type="off", message="turn off")
-        self.__db.close()
         logger.write(str(datetime.datetime.now()) + " - Brain: Powered Off")
         time.sleep(1)
         logger.write("turn off")
@@ -58,7 +56,9 @@ class Brain():
     def __update_behaviors(self):
 
         if not self.__behaviorRef["idle"] == self.__robot.idle_behavior:
+            self.__behaviorRef["idle"] = self.__robot.idle_behavior
             idle = self.__robot.idle_behavior.get().to_dict()
+            self.__idle_behavior = []
 
             for action in idle["actions"]:
                 actionDict = action["action"].get().to_dict()
@@ -68,7 +68,9 @@ class Brain():
             logger.write(str(datetime.datetime.now()) + " - Brain: Idle Behavior Updated")
         
         if not self.__behaviorRef["detect"] == self.__robot.detect_behavior:
+            self.__behaviorRef["detect"] = self.__robot.detect_behavior
             detect = self.__robot.detect_behavior.get().to_dict()
+            self.__detect_behavior = []
         
             for action in detect["actions"]:
                 actionDict = action["action"].get().to_dict()

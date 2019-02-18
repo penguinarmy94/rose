@@ -1,4 +1,4 @@
-import json, functools
+import json, functools, time, sys
 from threading import Thread
 from sys import path
 
@@ -22,22 +22,26 @@ def init():
     if initialized == 1:  
         db.create_subscriber_model()
 
-        print("Waiting for robot initialization")
         counter = 0
         while rob.isInitialized() is False:
             if counter%4 == 0 and counter == 0:
-                print("Waiting for robot initialization\r")
+                print("Waiting for robot initialization", end="\r")
             elif counter%4 == 1:
-                print("Waiting for robot initialization.\r")
+                print("Waiting for robot initialization.", end="\r")
             elif counter%4 == 2:
-                print("Waiting for robot initialization..\r")
+                print("Waiting for robot initialization..", end="\r")
             elif counter %4 == 3:
-                print("Waiting for robot initialization...\r")
+                print("Waiting for robot initialization...", end="\r")
                 counter = -1
             else:
                 counter = -1
 
             counter += 1
+            time.sleep(0.2)
+
+        if rob.power is False:
+            queues.logger_queue.put("turn off")
+            return
 
         br = brain.Brain(db, rob, config)
         mtr = motor.Motor(queues.brain_motor_queue)

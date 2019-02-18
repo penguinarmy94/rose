@@ -8,9 +8,10 @@ class Microphone():
         self.__micQueue = queue
 
     def run(self):
-        self.record()
-        isThreat = self.getClassification()
-        self.writeBrain()
+        while True:
+            self.record()
+            isThreat = self.getClassification()
+            self.writeBrain()
     
     def record(self):
         record = ""
