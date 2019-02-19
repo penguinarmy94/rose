@@ -3,11 +3,12 @@
 
 #include "VL53L0X.h"
 
-#define BLOCKED B1
-//#define BLOCKED_RIGHT B01
-//#define BLOCKED_LEFT B10
+#define BLOCKED B11
+#define BLOCKED_FRONT B00
+#define BLOCKED_RIGHT B01
+#define BLOCKED_LEFT B10
 
-#define SENSORS 1
+#define SENSORS 2
 #define START_ADDRESS 40
 
 class LaserSensor {
@@ -17,7 +18,7 @@ class LaserSensor {
     int slowValue;
     int freeValue;
     void init();
-    int pinXShut[SENSORS] = {2};
+    int pinXShut[SENSORS] = {2, 3};
     VL53L0X sensor[SENSORS];
     
   public:
