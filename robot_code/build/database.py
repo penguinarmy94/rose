@@ -1,62 +1,85 @@
 import json, firebase_admin, sys, os, time
 from firebase_admin import credentials, firestore
-from build import queues
+from build import queues, robot as rob
 
 class Database():
-    __auth = ""
     __db = None
     __dbQueue = None
-    __token_pi = None
-    __token_windows = None
-    __behavior = None
+    __robot = None
+    __robotRef = None
+    __subscriber = None
+    __initialized = False
+    __actionRef = None
+    __actions = []
 
-    def __init__(self, dbQueue, behavior, config):
-        self.__dbQueue = dbQueue
-        self.__behavior = behavior
-       
-        self.__token_pi = config["token_pi"]
-        self.__token_windows = config["token_windows"]
+    def __init__(self, config = None):
+        
+        #token_pi = config["token_pi"]
+        token_windows = config["token_windows"]
 
-        self.__auth = credentials.Certificate(self.__token_windows)
-        firebase_admin.initialize_app(self.__auth)
+        auth = credentials.Certificate(token_windows)
+
+        firebase_admin.initialize_app(auth)
+
         self.__db = firestore.client()
+
+        self.__robotRef = self.__db.collection(u"Robots").document(u"01A1Z100BY")
+        self.__actionRef = self.__db.collection(u"Action")
+
     
-    def run(self):
-        while True:
-            self.read()
-            time.sleep(5)
-           #perform database tasks like read() and write()
+    def initialize(self, robot = None):
+
+        if self.__robot == None:
+            if type(robot) is type(rob.Robot()):
+                self.__robot = robot
+                self._initialized = True
+                return 1
+            else:
+                print("robot object and/or queue is not of correct type")
+                return -1
+        else:
+            print("Database has already been initialized")
+            return 0
+
+    
+    def create_subscriber_model(self):
+
+        if self.__subscriber == None:
+            def snapshotHandler(snapshot, change, time):
+                for doc in snapshot:
+                    bot = doc.to_dict()
+                    self.__robot.from_dict(bot)
+
+            self.__subscriber = self.__robotRef.on_snapshot(snapshotHandler)
+        else:
+            print("Subscriber model has already been created. Current subscriber needs to be closed first")
+    
 
     def close(self):
-        #self.__db.close()
-        print("closed")
-    
-    def read(self):
-        results = self.__db.collection(u'Robots').document(self.__behavior.robotid)
+        self.__subscriber.unsubscribe()
+        self.__subscriber = None
+        self.__initialized = False
 
-        try:
-            robot = results.get().to_dict()
+    def get_actions(self):
+        if not len(self.__actions) == 0:
+            return self.__actions
+        else:
+            documents = self.__actionRef.get()
 
-            if not robot["idle_behavior"] == self.__behavior.idle_behavior:
-                self.__behavior.idle_behavior = robot["idle_behavior"]
-            if not robot["detect_behavior"] == self.__behavior.detect_behavior:
-                self.__behavior.detect_behavior = robot["detect_behavior"]
-            if not robot["power"] == self.__behavior.power:
-                self.__behavior.power = robot["power"]
-            if not robot["name"] == self.__behavior.name:
-                self.__behavior.name = robot["name"]
-            if not robot["num_of_videos"] == self.__behavior.num_of_videos:
-                self.__behavior.num_of_videos = robot["num_of_videos"]
-            if not robot["userid"] == self.__behavior.userid:
-                self.__behavior.userid = robot["userid"]
+            for document in documents:
+                self.__actions.append(document.to_dict())
+            
+            return self.__actions
 
-        except Exception as e:
-            print(str(e))
 
-        def write(self):
-
-            if not self.__dbQueue.empty():
-                message_packet = json.loads(self.__dbQueue.peek())
-
-                if message_packet["type"] == "Notification":
-                    notifier = self.__db.collection(u'Notification').document(self.__behavior.robotid)
+    def update_robot(self):
+        if not self.__robot == None:
+            self.__robotRef.update({
+                u'connection': self.__robot.connection,
+                u'charging': self.__robot.charging,
+                u'battery': self.__robot.battery,
+                u'num_of_videos': self.__robot.num_of_videos,
+                u'videos': self.__robot.videos
+            })
+        else:
+            print("Robot has not been set yet")

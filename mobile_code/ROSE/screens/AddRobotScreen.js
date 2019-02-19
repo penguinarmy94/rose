@@ -137,7 +137,7 @@ export default class AddRobotScreen extends Component {
                         <Button title="Submit" onPress={this.createRobot} />
                     </View>
                     <View style={styles.button}>
-                        <Button color="white" title="Cancel" onPress={this.cancel} />
+                        <Button title="Cancel" onPress={this.cancel} />
                     </View>
                 </View>
             </View>

@@ -10,7 +10,7 @@ import React, {Component} from 'react';
 import {createSwitchNavigator, createAppContainer} from 'react-navigation';
 import SettingsHomeStack from '../navigators/SettingsHomeStack';
 import AddRobotStack from '../navigators/AddRobotStack';
-import ChangeRobotScreen from '../screens/ChangeRobotScreen';
+import ChangeRobotStack from '../navigators/ChangeRobotStack';
 import BehaviorStack from '../navigators/BehaviorStack';
 import { config } from '../assets/config/config';
 
@@ -19,7 +19,7 @@ const settingsNav = createSwitchNavigator(
     {
         SettingsHome: { screen: SettingsHomeStack },
         AddRobot: { screen: AddRobotStack },
-        ChangeRobot: { screen: ChangeRobotScreen },
+        ChangeRobot: { screen: ChangeRobotStack },
         Behaviors: { screen: BehaviorStack }
     }, 
     {

@@ -4,3 +4,5 @@ robot_code/build/car_horn/*
 robot_code/build/gun_shot/*
 robot_code/build/wav files.zip
 robot_code/build/pyAudioAnalysis
+robot_code/assets/*
+robot_code/logs/*
