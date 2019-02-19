@@ -30,18 +30,19 @@ int wait = 0;
 
 void setup() 
 {
-Serial.begin(9600);
+Serial.begin(9600); //Unusued in project. Mainly for debugging purposes.
+Serial1.begin(9600);
 Wire.begin();
 a.clearBuffer();
 b.clearBuffer();
-//laserSensor.setNumber(SENSORS);
+laserSensor.setNumber(SENSORS);
 }
 
 void loop()
 {
-if (!Serial.available())
+if (!Serial1.available())
 {
-//readLaser(); 
+readLaser(); 
   if (count < 1000)
     {
       aSample = a.record();
@@ -66,17 +67,11 @@ else
         bMax = b.getMax();
         if (aMax > bMax)
         {
-          Serial.println("a was louder than b");
-          Serial.println(aMax);
-          Serial.println(bMax);
-          Serial.println("--------");
+          Right(left, right, 175);
         }
         else
         {
-          Serial.println("b was louder than a");
-          Serial.println(aMax);
-          Serial.println(bMax);
-          Serial.println("--------");
+          Left(left, right, 175);
         }        
         a.clearBuffer();
         b.clearBuffer();
@@ -117,9 +112,20 @@ void Halt(Motor left, Motor right)
   right.halt();
 }
 
+int getDistance(char arr[])
+{
+  int i = 1;
+  int distance = 0;
+  while (i < 10 && arr[i] != 0)
+  {
+    distance *= 10;
+    distance += arr[i] - '0';
+  }
+  return distance;
+}
 void parsePackage(PIData &package)
 {
-  Serial.readBytesUntil('-', fromPi, 10); 
+  Serial1.readBytesUntil('-', fromPi, 10); 
   package.direction = fromPi[0];
   int dist = 0;
   int i = 1;
@@ -138,6 +144,8 @@ void parsePackage(PIData &package)
 
 void readLaser() {
   state = laserSensor.getState();
+  Serial.print("State is ");
+  Serial.println(state);
   if (state > 0) {
     if (!waitSensor  && !turning) {
       waitSensor = 25;
@@ -147,33 +155,40 @@ void readLaser() {
     }
       if (!waitSensor) {
         turning = 1;
-        if (BLOCKED == state) {
-          Right(left, right, 75);
+        Serial.println("Turning");
+        if (BLOCKED_FRONT & state) {
+          Serial.println("Front Block...Backing Up");
+          Backward(left, right, 200);
         } 
-//        else if (BLOCKED_LEFT == state) {
-//          Serial.println("Turn right");
-//          Right(left, right, 150);
-//        } 
-//        else if (BLOCKED_RIGHT == state) {
-//          Serial.println("Turn left");
-//          Left(left, right, 150);
-//        }
+        else if ((state & BLOCKED_LEFT) | (state & BLOCKED_RIGHT)) {
+          if (state & BLOCKED_RIGHT)
+          {
+            Serial.println("Blocked Right...Going Left");
+            Left(left, right, 200);
+          }
+          else
+          {
+            Serial.println("Blocked Left...Going Right");
+            Right(left, right, 200);
+          }
+        } 
       }
    }
     else {
       waitSensor = 0;
       turning = 0;
-      Forward(left, right, 75);
+      Forward(left, right, 175);
+      Serial.println("GO");
   }
  
   if (wait++ > 10) {
     wait = 0;
     if (waitSensor || turning) {
       Halt(left, right);
-      //Serial.println("Zzz.....");
+      Serial.println("Zzz.....");
     } else {
-      Forward(left, right, 75);
-      //Serial.println("Chugga Chugga Choo Choo");
+      Forward(left, right, 200);
+      Serial.println("Chugga Chugga Choo Choo");
     }  
   }
 }

@@ -5,7 +5,7 @@
 // Default constructor
 LaserSensor::LaserSensor() {
   this->number = 1;
-  this->stopValue = 500;
+  this->stopValue = 300;
   this->slowValue = 1000;
   this->freeValue = 8190;
   }
