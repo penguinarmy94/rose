@@ -1,13 +1,14 @@
 import json, functools, time, sys
 from threading import Thread
 from sys import path
+from multiprocessing import Process
 
 config_file = open('config.json')
 config = json.load(config_file)
 config_file.close()
 path.insert(0, config["home_path"])
 
-from build import brain, motor, robot, database, queues, logger
+from build import brain, motor, robot, database, queues, logger, speaker
 
 
 def init():
@@ -45,19 +46,17 @@ def init():
 
         br = brain.Brain(db, rob, config)
         mtr = motor.Motor(queues.brain_motor_queue)
+        #spkr = speaker.Speaker(queues.brain_speaker_queue)
         brain_thread = Thread(target=functools.partial(br.begin))
         motor_thread = Thread(target=functools.partial(mtr.run))
+        #speaker_thread = Thread(target=functools.partial(spkr.run))
         logger_thread = Thread(target=functools.partial(logger.runLogger))
         brain_thread.start()
         motor_thread.start()
         logger_thread.start()
+        #speaker_thread.start()
     else:
         return
-
-    #motor_thread = Thread(target=functools.partial(mtr.run))
-    #motor_thread.start()
-    #brain_thread = Thread(target=functools.partial(br.begin))
-    #brain_thread.start()
 
 
 if __name__ == "__main__":

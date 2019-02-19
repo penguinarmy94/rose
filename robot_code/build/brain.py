@@ -5,6 +5,7 @@ from . import queues, logger
 class Brain():
     __mQueue = None
     __miQueue = None
+    __spkQueue = None
     __db = None
     __camQueue = None
     __idle_behavior = None
@@ -16,6 +17,7 @@ class Brain():
     def __init__(self, database, robot, config):
         self.__mQueue = queues.brain_motor_queue
         self.__miQueue = queues.brain_microphone_queue
+        self.__spkQueue = queues.brain_speaker_queue
         self.__camQueue = queues.brain_camera_queue
         self.__behaviorRef = {"idle": "", "detect": ""}
         self.__idle_behavior = []
@@ -46,11 +48,13 @@ class Brain():
             except Exception as e:
                 logger.write(str(datetime.datetime.now()) + " - Brain Error: " + str(e))
                 break
-
+        
+        self.__spkQueue.clear()
         self.__write_motor(message_type="off", message="turn off")
         self.__write_microphone(message_type="off", message="turn off")
+        self.__write_speaker(message_type="off", message="turn off")
         logger.write(str(datetime.datetime.now()) + " - Brain: Powered Off")
-        time.sleep(1)
+        time.sleep(5)
         logger.write("turn off")
 
     def __update_behaviors(self):
@@ -90,6 +94,7 @@ class Brain():
             if message_packet["type"] == "brain":
                 message_packet = json.loads(self.__mQueue.get())
                 logger.write(str(datetime.datetime.now()) + " - Motor to Brain: Brain Message Received -- " + message_packet["message"])
+                self.__write_speaker(message_type="speaker", message="Hi sir. Would you like a lemonade?")
                 self.__motorBusy = False
             else:
                 return
@@ -158,6 +163,9 @@ class Brain():
     
     def __write_microphone(self, message_type="microphone", message="no message"):
         self.__miQueue.put(json.dumps({"type": message_type, "message": message}))
+    
+    def __write_speaker(self, message_type="speaker", message="no message"):
+        self.__spkQueue.put(json.dumps({"type": message_type, "message": message}))
     
     def handle_behavior(self):
         if self.__state == "idle":

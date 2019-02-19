@@ -1,5 +1,5 @@
-#from . import logger
-import json, datetime, pyttsx3
+from . import logger
+import json, datetime, time, pyttsx3
 
 class Speaker():
     __spQueue = None
@@ -8,34 +8,38 @@ class Speaker():
     def __init__(self, queue):
         self.__spQueue = queue
         self.__player = pyttsx3.init()
-
-        voices = self.__player.getProperty('voices')
-        voices.append(pyttsx3.voice.Voice(age=30, gender="female", id="voice1", name="Lila"))
-        self.__player.setProperty('voices', voices)
-        self.__player.setProperty('voice', "voice1")
+        self.__player.setProperty("rate", 100)
 
     def run(self):
         while True:
-            print("read")
-            print("write")
+            if not self.__spQueue.empty():
+                result = self.read_queue()
+                if result == 2:
+                    break
+                else:
+                    continue
+            else:
+                continue
+        
+        logger.write(str(datetime.datetime.now()) + " - Brain: Powered off")
     
     def read_queue(self):
         message_packet = json.loads(self.__spQueue.peek())
 
         if message_packet["type"] == "speaker":
             message_packet = json.loads(self.__spQueue.get())
-            #logger.write(str(datetime.datetime.now()) + " - Brain to Speaker: Speaker Message Received -- " + message_packet["message"])
+            logger.write(str(datetime.datetime.now()) + " - Brain to Speaker: Speaker Message Received -- " + message_packet["message"])
             self.say(message_packet["message"])
             return 1
+        elif message_packet["type"] == "off":
+            message_packet = json.loads(self.__spQueue.get())
+            logger.write(str(datetime.datetime.now()) + " - Brain to Speaker: Off Message Received -- " + message_packet["message"])
+            return 2
         else:
             return -1
 
-    def say(self, message):
+    def say(self, message=""):
         self.__player.say(message)
         self.__player.runAndWait()
-        print("Message finished")
-        #logger.write(str(datetime.datetime.now()) + " - Speaker: " + message)
-    
-   
-speaker = Speaker("")
-speaker.say("This is me and my robotic voice")
+
+        logger.write(str(datetime.datetime.now()) + " - Speaker: " + message)
