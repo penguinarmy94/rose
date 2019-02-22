@@ -50,12 +50,20 @@ class Brain():
                 break
         
         self.__spkQueue.clear()
+        #self.__clear_speaker_queue()
         self.__write_motor(message_type="off", message="turn off")
         self.__write_microphone(message_type="off", message="turn off")
-        self.__write_speaker(message_type="off", message="turn off")
+        self.__write_speaker(message_type="off", message="Powered Off")
         logger.write(str(datetime.datetime.now()) + " - Brain: Powered Off")
-        time.sleep(5)
-        logger.write("turn off")
+        #time.sleep(5)
+        #logger.write("turn off")
+
+    def __clear_speaker_queue(self):
+        while not self.__spkQueue.empty():
+            self.__spkQueue.get()
+
+        self.__write_speaker(message_type="off", message="Powered Off")
+        
 
     def __update_behaviors(self):
 

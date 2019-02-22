@@ -1,4 +1,5 @@
 from queue import Queue
+from multiprocessing import Queue as q
 import json
 
 class PeekableQueue(Queue):
@@ -11,8 +12,28 @@ class PeekableQueue(Queue):
     def clear(self):
         self.queue.clear()
 
+class ProcessQueue():
+    __queue = None
+
+    def __init__(self):
+        self.__queue = q()
+
+    def empty(self):
+        return self.__queue.empty()
+    
+    def get(self):
+        return self.__queue.get()
+
+    def put(self, obj):
+        self.__queue.put(obj)
+
+    def clear(self):
+        while not self.__queue.empty():
+            self.__queue.get()
+
+
 brain_motor_queue = PeekableQueue()
 brain_microphone_queue = PeekableQueue()
-logger_queue = PeekableQueue()
+logger_queue = PeekableQueue()#q() #PeekableQueue()
 brain_camera_queue = PeekableQueue()
-brain_speaker_queue = PeekableQueue()
+brain_speaker_queue = PeekableQueue() #q() #PeekableQueue()

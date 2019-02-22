@@ -10,6 +10,9 @@ path.insert(0, config["home_path"])
 
 from build import brain, motor, robot, database, queues, logger, speaker
 
+def runSpeaker(queue, logger):
+    spkr = speaker.Speaker(queue)
+    spkr.run()
 
 def init():
     rob = robot.Robot()
@@ -46,15 +49,19 @@ def init():
 
         br = brain.Brain(db, rob, config)
         mtr = motor.Motor(queues.brain_motor_queue)
-        #spkr = speaker.Speaker(queues.brain_speaker_queue)
+        spkr = speaker.Speaker(queues.brain_speaker_queue)
         brain_thread = Thread(target=functools.partial(br.begin))
         motor_thread = Thread(target=functools.partial(mtr.run))
-        #speaker_thread = Thread(target=functools.partial(spkr.run))
+        speaker_thread = Thread(target=functools.partial(spkr.run))
         logger_thread = Thread(target=functools.partial(logger.runLogger))
         brain_thread.start()
         motor_thread.start()
         logger_thread.start()
-        #speaker_thread.start()
+        speaker_thread.start()
+        brain_thread.join()
+        motor_thread.join()
+        speaker_thread.join()
+        logger.write("turn off")
     else:
         return
 

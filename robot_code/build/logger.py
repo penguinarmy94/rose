@@ -5,8 +5,6 @@ def write(message):
     queues.logger_queue.put(message)
 
 def runLogger():
-    ended = False
-    timer = None
     while True:
         file_name = "logs/Logs-" + str(datetime.date.today())
         if not queues.logger_queue.empty():

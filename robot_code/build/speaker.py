@@ -1,5 +1,6 @@
 from . import logger
-import json, datetime, time, pyttsx3
+from threading import Thread
+import json, datetime, time, pyttsx3, functools
 
 class Speaker():
     __spQueue = None
@@ -8,23 +9,25 @@ class Speaker():
     def __init__(self, queue):
         self.__spQueue = queue
         self.__player = pyttsx3.init()
-        self.__player.setProperty("rate", 100)
+        #self.__player.setProperty("rate", 120)
 
     def run(self):
         while True:
             if not self.__spQueue.empty():
                 result = self.read_queue()
                 if result == 2:
+                    print("something")
                     break
                 else:
+                    print("good")
                     continue
             else:
                 continue
         
-        logger.write(str(datetime.datetime.now()) + " - Brain: Powered off")
+        logger.write(str(datetime.datetime.now()) + " - Speaker: Powered off")
     
     def read_queue(self):
-        message_packet = json.loads(self.__spQueue.peek())
+        message_packet = json.loads(self.__spQueue.get())
 
         if message_packet["type"] == "speaker":
             message_packet = json.loads(self.__spQueue.get())

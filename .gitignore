@@ -1,5 +1,5 @@
 classifier/*
-robot_code/build/rose_env/*
+robot_code/rose_env/*
 robot_code/build/car_horn/*
 robot_code/build/gun_shot/*
 robot_code/build/wav files.zip
