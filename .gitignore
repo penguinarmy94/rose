@@ -6,3 +6,5 @@ robot_code/build/wav files.zip
 robot_code/build/pyAudioAnalysis
 robot_code/assets/*
 robot_code/logs/*
+mobile_code/ROSE/android/gradle.properties
+mobile_code/ROSE/android/app/google-services.json
