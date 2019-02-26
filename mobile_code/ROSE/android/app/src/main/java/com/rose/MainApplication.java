@@ -3,7 +3,6 @@ package com.rose;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import nl.kega.reactnativerabbitmq.ReactNativeRabbitMqPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import io.invertase.firebase.RNFirebasePackage;
 import io.invertase.firebase.firestore.RNFirebaseFirestorePackage;
@@ -32,8 +31,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new ReactNativeRabbitMqPackage(),
-            new VectorIconsPackage(),
+          new VectorIconsPackage(),
           new RNFirebasePackage(),
           new RNFirebaseFirestorePackage(),
           new RNThreadPackage(mReactNativeHost),
