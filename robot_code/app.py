@@ -10,58 +10,70 @@ path.insert(0, config["home_path"])
 
 from build import brain, motor, robot, database, queues, logger, speaker
 
-def runSpeaker(queue, logger):
-    spkr = speaker.Speaker(queue)
-    spkr.run()
+def runSpeakerThread():
+    spkr = speaker.Speaker(queues.brain_speaker_queue)
+    speaker_thread = Thread(target=functools.partial(spkr.run))
+    speaker_thread.start()
+    return speaker_thread
+
+def runMotorThread():
+    mtr = motor.Motor(queues.brain_motor_queue)
+    motor_thread = Thread(target=functools.partial(mtr.run))
+    motor_thread.start()
+    return motor_thread
+
+def runBrainThread(db, rob, config):
+    br = brain.Brain(db, rob, config)
+    brain_thread = Thread(target=functools.partial(br.begin))
+    brain_thread.start()
+    return brain_thread
+
+def runLoggerThread():
+    logger_thread = Thread(target=functools.partial(logger.runLogger))
+    logger_thread.start()
+    return logger_thread
 
 def init():
     rob = robot.Robot()
     rob.id = config["robotid"]
 
-    #br = brain.Brain(queues.brain_motor_queue, queues.brain_microphone_queue, queues.brain_database_queue, queues.brain_camera_queue, "")
-    #mtr = motor.Motor(queues.brain_motor_queue)
     db = database.Database(config) 
     initialized = db.initialize(rob)
 
     if initialized == 1:  
         db.create_subscriber_model()
 
-        counter = 0
         while rob.isInitialized() is False:
-            if counter%4 == 0 and counter == 0:
-                print("Waiting for robot initialization", end="\r")
-            elif counter%4 == 1:
-                print("Waiting for robot initialization.", end="\r")
-            elif counter%4 == 2:
-                print("Waiting for robot initialization..", end="\r")
-            elif counter %4 == 3:
-                print("Waiting for robot initialization...", end="\r")
-                counter = -1
-            else:
-                counter = -1
-
-            counter += 1
+            print("Waiting for robot initialization", end="\r")
+            time.sleep(0.2)
+            print("Waiting for robot initialization.", end="\r")
+            time.sleep(0.2)
+            print("Waiting for robot initialization..", end="\r")
+            time.sleep(0.2)
+            print("Waiting for robot initialization...", end="\r")
             time.sleep(0.2)
 
+        if rob.battery == 0:
+            rob.power = False
+            db.update_robot()
+            return
+            
         if rob.power is False:
             queues.logger_queue.put("turn off")
             return
 
-        br = brain.Brain(db, rob, config)
-        mtr = motor.Motor(queues.brain_motor_queue)
-        spkr = speaker.Speaker(queues.brain_speaker_queue)
-        brain_thread = Thread(target=functools.partial(br.begin))
-        motor_thread = Thread(target=functools.partial(mtr.run))
-        speaker_thread = Thread(target=functools.partial(spkr.run))
-        logger_thread = Thread(target=functools.partial(logger.runLogger))
-        brain_thread.start()
-        motor_thread.start()
-        logger_thread.start()
-        speaker_thread.start()
-        brain_thread.join()
-        motor_thread.join()
-        speaker_thread.join()
-        logger.write("turn off")
+        try:
+            br_thread = runBrainThread(db,rob,config)
+            mtr_thread = runMotorThread()
+            #spk_thread = runSpeakerThread()
+            log_thread = runLoggerThread()
+
+            br_thread.join()
+            mtr_thread.join()
+            #spk_thread.join()
+            logger.write("turn off")
+        except Exception as e:
+            print(str(e))
     else:
         return
 
