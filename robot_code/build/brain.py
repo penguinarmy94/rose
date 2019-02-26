@@ -1,11 +1,12 @@
 import json, datetime, time
-from . import queues, logger
+from . import queues, logger, status_manager as sm
 
 
 class Brain():
     __mQueue = None
     __miQueue = None
     __spkQueue = None
+    __robot = None
     __db = None
     __camQueue = None
     __idle_behavior = None
@@ -31,12 +32,15 @@ class Brain():
 
         self.__behaviorRef["idle"] = robot.idle_behavior
         self.__behaviorRef["detect"] = robot.detect_behavior
+
+        sm.battery_level = self.__robot.battery
     
     def begin(self):
         #Run for as long as queues are active
         while self.__robot.power is True:
             try:
                 #Read Motor queue for new updates
+                self.report_status()
                 self.read_motor()
                 #Read Microphone queue for new updates
                 #self.read_microphone()
@@ -58,11 +62,21 @@ class Brain():
         #time.sleep(5)
         #logger.write("turn off")
 
-    def __clear_speaker_queue(self):
-        while not self.__spkQueue.empty():
-            self.__spkQueue.get()
+    def report_status(self):
+        success, wifi = sm.get_wifi_signal_strength()
+        battery = sm.get_battery_level()
 
-        self.__write_speaker(message_type="off", message="Powered Off")
+        if battery == 0:
+            self.__robot.power = False
+            self.__robot.battery = battery
+            self.__db.update_robot()
+            return
+
+        if success:
+            if not wifi == self.__robot.connection or not battery == self.__robot.battery:
+                self.__robot.connection = wifi
+                self.__robot.battery = battery
+                self.__db.update_robot()
         
 
     def __update_behaviors(self):

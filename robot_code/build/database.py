@@ -77,6 +77,7 @@ class Database():
             self.__robotRef.update({
                 u'connection': self.__robot.connection,
                 u'charging': self.__robot.charging,
+                u'power': self.__robot.power,
                 u'battery': self.__robot.battery,
                 u'num_of_videos': self.__robot.num_of_videos,
                 u'videos': self.__robot.videos
