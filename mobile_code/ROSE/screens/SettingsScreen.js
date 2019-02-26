@@ -19,12 +19,18 @@ export default class SettingsScreen extends Component {
             display: "none"
         };
         this.props.navigation.setParams({headerTitle: config.headerTitle});
+
+        config.session.currentRobot().onSnapshot((robot) => {
+            if(robot.exists) {
+                this.setState({"power": robot.data().power});
+            }
+        });
     }
 
     componentDidUpdate() {
         if(this.state.headerTitle != config.headerTitle) {
             this.state.headerTitle = config.headerTitle;
-            this.props.navigation.setParams({headerTitle: config.headerTitle});
+            this.props.navigation.setParams({headerTitle: config.headerTitle, power: config.robotObject.power});
         }
         if(this.state.session != config.session) {
             this.state.session = config.session;

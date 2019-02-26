@@ -30,6 +30,7 @@ export default class SettingsHomeStack extends Component {
     static navigationOptions = ({navigation}) => ({
         tabBarOnPress: ({navigation, defaultHandler}) => {
             navigation.setParams({headerTitle: config.headerTitle});
+
             defaultHandler();
         }
     });
