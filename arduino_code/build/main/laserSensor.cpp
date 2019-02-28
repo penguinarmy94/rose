@@ -105,13 +105,14 @@ void LaserSensor::init() {
   // Reset all sensors by setting their XSHUT pins low
   for (int i = 0; i < number; i++) {
     pinMode(pinXShut[i], OUTPUT);
+    digitalWrite(pinXShut[i], LOW);
   } 
 
   // Set sensor i2c address by setting XSHUT pin to high  
   for (int i = 0; i < this->number; i++) {
-    pinMode(pinXShut[i], INPUT);
+    digitalWrite(pinXShut[i], HIGH);
     delay(10);
-    sensor[i].setAddress(40+i);
+    sensor[i].setAddress(40+(2*i));
     sensor[i].init();
     sensor[i].setTimeout(500);
     sensor[i].startContinuous();
