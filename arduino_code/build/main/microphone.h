@@ -10,6 +10,9 @@ class Microphone
     int record();
     void storeIntoBuffer(int soundValue);
     void clearBuffer();
+    void setCalibrationValue(int value);
+    int testMic();
+    int getCalibrationValue();
     int getMax();
     
 
@@ -17,6 +20,7 @@ class Microphone
     int kBuffer[10];
     int kInputPin;
     int kCounter;
+    int kCalibrationValue;
 };
 
 #endif

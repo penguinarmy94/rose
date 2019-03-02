@@ -22,7 +22,7 @@ char fromPi[10];
 int count;
 int state;
 PIData piCommand;
-int statetest;
+int i = 0;
 
 LaserSensor laserSensor;
 int waitSensor = 0;
@@ -41,51 +41,97 @@ laserSensor.setNumber(SENSORS);
 
 void loop()
 {
-    Serial.print("State is: ");
-    statetest = laserSensor.getState();
-    Serial.println(statetest);
-  delay(500);
-//if (!Serial1.available())
-//{
-//readLaser(); 
-//delay(500);
-//  if (count < 1000)
-//    {
-//      aSample = a.record();
-//      bSample = b.record();
-//      aMax = (aSample > aMax) ? aSample : aMax;
-//      bMax = (bSample > bMax) ? bSample : bMax;
-//      count ++;
-//    }   
-//  else
-//  {
-//    a.storeIntoBuffer(aMax);
-//    b.storeIntoBuffer(bMax);
-//    count = 0;  
-//  }
-//}
-//else
-//{
-//  parsePackage(piCommand);
-//    if (piCommand.direction == 'y')
-//      {
-//        aMax = a.getMax();
-//        bMax = b.getMax();
-//        if (aMax > bMax)
-//        {
-//          Right(left, right, 175);
-//        }
-//        else
-//        {
-//          Left(left, right, 175);
-//        }        
-//        a.clearBuffer();
-//        b.clearBuffer();
-//        aMax = 0;
-//        bMax = 0; 
-//      }
-//}
-//delay(1);
+readLaser();  
+if (!Serial1.available())
+{
+  if (count < 1000)
+    {
+      aSample = a.record();
+      bSample = b.record();
+      aMax = (aSample > aMax) ? aSample : aMax;
+      bMax = (bSample > bMax) ? bSample : bMax;
+      count ++;
+    }   
+  else
+  {
+    a.storeIntoBuffer(aMax);
+    b.storeIntoBuffer(bMax);
+    count = 0;  
+  }
+}
+else
+{
+  parsePackage(piCommand);
+    if (piCommand.direction == 'y')
+      {
+        aMax = a.getMax();
+        bMax = b.getMax();
+        Serial.print(aMax);
+        Serial.print(", ");
+        Serial.println(bMax);
+        if (aMax > (bMax + b.getCalibrationValue()))
+        {
+          Right(left, right, 175);
+          Serial.println("A was Louder");
+        }
+        else
+        {
+          Left(left, right, 175);
+          Serial.println("B was Louder");
+        }        
+        a.clearBuffer();
+        b.clearBuffer();
+        aMax = 0;
+        bMax = 0; 
+      }
+    else if (piCommand.direction == 'c')
+    {
+      calibrateMicrophones(a, b);  
+    }
+    else if (piCommand.direction == 'f')
+    {
+      while (i < piCommand.distance)
+      {
+        readLaser();
+        i++;
+      }
+      i = 0;
+    }
+    else if (piCommand.direction == 'b')
+    {
+      Left(left, right, 200);
+      delay(100);
+      while (i < piCommand.distance)
+      {
+        readLaser();
+        i++;
+      }
+      i = 0;
+    }
+    else if (piCommand.direction == 'l')
+    {
+      Left(left, right, 200);
+      delay(50);
+      while (i < piCommand.distance)
+      {
+        readLaser();
+        i++;
+      }
+      i = 0;
+    }
+    else if (piCommand.direction == 'r')
+    {
+      Right(left, right, 200);
+      delay(50);
+      while (i < piCommand.distance)
+      {
+        readLaser();
+        i++;
+      }
+      i = 0;
+    }
+}
+delay(1);
 }
 
 void Forward(Motor left, Motor right, int speed)
@@ -149,54 +195,51 @@ void parsePackage(PIData &package)
 }
 
 void readLaser() {
-  Serial.print("State is: ");
-  Serial.println(lasersensor.getState());
-  delay(500);
-//  Serial.print("State is ");
-//  Serial.println(state);
-//  if (state > 0) {
-//    if (!waitSensor  && !turning) {
-//      waitSensor = 25;
-//    } 
-//    else if (waitSensor) {
-//      waitSensor--;
-//    }
-//      if (!waitSensor) {
-//        turning = 1;
-//        Serial.println("Turning");
-//        if (BLOCKED_FRONT & state) {
-//          Serial.println("Front Block...Backing Up");
-//          Backward(left, right, 200);
-//        } 
-//        else if ((state & BLOCKED_LEFT) | (state & BLOCKED_RIGHT)) {
-//          if (state & BLOCKED_RIGHT)
-//          {
-//            Serial.println("Blocked Right...Going Left");
-//            Left(left, right, 200);
-//          }
-//          else
-//          {
-//            Serial.println("Blocked Left...Going Right");
-//            Right(left, right, 200);
-//          }
-//        } 
-//      }
-//   }
-//    else {
-//      waitSensor = 0;
-//      turning = 0;
-//      Forward(left, right, 175);
-//      Serial.println("GO");
-//  }
-// 
-//  if (wait++ > 10) {
-//    wait = 0;
-//    if (waitSensor || turning) {
-//      Halt(left, right);
-//      Serial.println("Zzz.....");
-//    } else {
-//      Forward(left, right, 200);
-//      Serial.println("Chugga Chugga Choo Choo");
-//    }  
-//  }
+  state = laserSensor.getState();
+  if (state > 0) {
+    if (!waitSensor  && !turning) {
+      waitSensor = 25;
+    } 
+    else if (waitSensor) {
+      waitSensor--;
+    }
+      if (!waitSensor) {
+        turning = 1;
+        if (BLOCKED_FRONT & state) {
+          Backward(left, right, 200);
+        } 
+        else 
+        {
+          (laserSensor.getValue(LEFT_SENSOR) < laserSensor.getValue(RIGHT_SENSOR)) ? Right(left, right, 200) : Left(left, right, 200);
+        }
+      }
+   }
+    else {
+      waitSensor = 0;
+      turning = 0;
+      Forward(left, right, 175);
+  }
+ 
+  if (wait++ > 10) {
+    wait = 0;
+    if (waitSensor || turning) {
+      Halt(left, right);
+    } else {
+      Forward(left, right, 200);
+    }  
+  }
+}
+
+void calibrateMicrophones(Microphone &a, Microphone &b)
+{
+  int aCumulative = 0;
+  int bCumulative = 0;
+  int calibration;
+  int i = 0;
+  while(i < 5000)
+  {
+    aCumulative += a.testMic();
+    bCumulative += b.testMic();
+  }
+  b.setCalibrationValue((bCumulative/5000) - (aCumulative/5000));
 }
