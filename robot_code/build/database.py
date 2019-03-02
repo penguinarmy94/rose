@@ -14,8 +14,8 @@ class Database():
 
     def __init__(self, config = None):
         
-        #token_pi = config["token_pi"]
-        token_windows = config["token_windows"]
+        token_pi = config["token_pi"]
+        #token_windows = config["token_windows"]
 
         auth = credentials.Certificate(token_windows)
 

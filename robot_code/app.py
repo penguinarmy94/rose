@@ -7,6 +7,7 @@ config_file = open('config.json')
 config = json.load(config_file)
 config_file.close()
 path.insert(0, config["home_path"])
+#path.insert(0, config["windows_home_path"])
 
 from build import brain, motor, robot, database, queues, logger, speaker
 
@@ -59,8 +60,8 @@ def init():
             return
             
         if rob.power is False:
-            queues.logger_queue.put("turn off")
-            return
+            rob.power = True
+            db.update_robot()
 
         try:
             br_thread = runBrainThread(db,rob,config)
