@@ -130,7 +130,7 @@ int LaserSensor::getValue(int number) {
   
   if (number <= this->number) {
     value = sensor[number].readRangeSingleMillimeters();
-    if (sensor[number].timeoutOccurred()) value = -2;
+    if (sensor[number].timeoutOccurred()) value = 8191; //Make the lack of timeout yield a value greater than max
   }
 
   return value;

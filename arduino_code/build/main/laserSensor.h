@@ -3,12 +3,17 @@
 
 #include "VL53L0X.h"
 
-#define BLOCKED B111
-#define BLOCKED_FRONT B100
-#define BLOCKED_RIGHT B001
-#define BLOCKED_LEFT B010
 
-#define SENSORS 3
+#define BLOCKED_FRONT B1100 //Will eventually change to inclue the up and down sensor
+#define BLOCKED_RIGHT B0001
+#define BLOCKED_LEFT B0010
+
+#define FRONT_UP_SENSOR 3
+#define FRONT_SENSOR 2 //refers to index on pinXShut
+#define LEFT_SENSOR 1
+#define RIGHT_SENSOR 0
+
+#define SENSORS 4
 #define START_ADDRESS 40
 
 class LaserSensor {
@@ -18,7 +23,7 @@ class LaserSensor {
     int slowValue;
     int freeValue;
     void init();
-    int pinXShut[SENSORS] = {2, 3, 4};
+    int pinXShut[SENSORS] = {2, 3, 4, 5};
     VL53L0X sensor[SENSORS];
     
   public:
