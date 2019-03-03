@@ -1,7 +1,7 @@
 import json, sys, datetime
-import serial
+#import serial
 from . import queues
-#from . import serial
+from . import serial
 from . import logger
 
 class Motor():

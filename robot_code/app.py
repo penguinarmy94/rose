@@ -6,10 +6,10 @@ from multiprocessing import Process
 config_file = open('config.json')
 config = json.load(config_file)
 config_file.close()
-path.insert(0, config["home_path"])
-#path.insert(0, config["windows_home_path"])
+#path.insert(0, config["home_path"])
+path.insert(0, config["windows_home_path"])
 
-from build import brain, motor, robot, database, queues, logger, speaker
+from build import brain, motor, robot, database, queues, logger, speaker, notification_manager
 
 def runSpeakerThread():
     spkr = speaker.Speaker(queues.brain_speaker_queue)
@@ -33,6 +33,12 @@ def runLoggerThread():
     logger_thread = Thread(target=functools.partial(logger.runLogger))
     logger_thread.start()
     return logger_thread
+
+def runNotificationManager(rob, config, initialized = False):
+    nm = notification_manager.NotificationManager(queues.brain_notifier_queue, config, initialized, rob)
+    nm_thread = Thread(target=functools.partial(nm.run))
+    nm_thread.start()
+    return nm_thread
 
 def init():
     rob = robot.Robot()
@@ -64,13 +70,15 @@ def init():
             db.update_robot()
 
         try:
-            br_thread = runBrainThread(db,rob,config)
+            br_thread = runBrainThread(db=db,rob=rob,config=config)
             mtr_thread = runMotorThread()
+            nm_thread = runNotificationManager(rob=rob,config=config,initialized=True)
             #spk_thread = runSpeakerThread()
             log_thread = runLoggerThread()
 
             br_thread.join()
             mtr_thread.join()
+            nm_thread.join()
             #spk_thread.join()
             logger.write("turn off")
         except Exception as e:

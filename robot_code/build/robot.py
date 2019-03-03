@@ -8,6 +8,7 @@ class Robot():
     idle_behavior = None
     num_of_videos = 0
     power = True
+    light = False
     videos = []
     charging = False
 
@@ -18,6 +19,8 @@ class Robot():
             return True
 
     def from_dict(self, map):
+        if not map["name"] == None:
+            self.name = map["name"]
         if not map["id"] and type(map["id"] == "String"):
             self.id = map["id"]
         if not map["userid"] == None:
@@ -34,6 +37,8 @@ class Robot():
             self.num_of_videos = map["num_of_videos"]
         if not map["power"] == None:
             self.power = map["power"]
+        if not map["light"] == None:
+            self.light = map["light"]
         if not map["videos"] == None:
             self.videos = map["videos"]
 

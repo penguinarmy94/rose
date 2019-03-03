@@ -56,6 +56,7 @@ export default class InfoScreen extends Component {
   componentWillUnmount = () => {
     this.isMounted = false;
     config.robotSnapshot();
+    //this.notifier.unsubscribeFromRobot();
   }
 
   updateRobot = () => {
@@ -76,6 +77,7 @@ export default class InfoScreen extends Component {
         config.headerTitle = robot.data().name;
         config.robotObject = robot.data();
         this.props.navigation.setParams({headerTitle: config.headerTitle});
+        this.notifier = new NotificationManager(robot.id);
 
 
         idle.get().then((doc) => { 

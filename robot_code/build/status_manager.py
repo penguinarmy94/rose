@@ -2,7 +2,7 @@ import subprocess, re, random, datetime
 
 current_date = datetime.datetime.now()
 battery_level = 100
-os = "linux"
+os = "windows"
 
 def get_wifi_signal_strength():
     global os

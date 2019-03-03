@@ -16,13 +16,14 @@ export default class SettingsScreen extends Component {
             headerTitle: config.headerTitle, 
             session: config.session,
             power: config.robotObject.power,
+            light: config.robotObject.light,
             display: "none"
         };
         this.props.navigation.setParams({headerTitle: config.headerTitle});
 
-        config.session.currentRobot().onSnapshot((robot) => {
+        this.robotSnapshot = config.session.currentRobot().onSnapshot((robot) => {
             if(robot.exists) {
-                this.setState({"power": robot.data().power});
+                this.setState({"power": robot.data().power, "light": robot.data().light});
             }
         });
     }
@@ -35,6 +36,10 @@ export default class SettingsScreen extends Component {
         if(this.state.session != config.session) {
             this.state.session = config.session;
         }
+    }
+
+    componentWillUnmount() {
+        this.robotSnapshot();
     }
 
     changePower = (value) => {
@@ -65,6 +70,34 @@ export default class SettingsScreen extends Component {
         
     }
 
+    changeLight = (value) => {
+        let current = config.robotObject;
+        let state = this.state;
+        let prevLightState = state.light;
+
+        if(this.state.power == true) {
+            current.light = false;
+        }
+        else {
+            current.light = true;
+        }
+
+        state.display = "flex";
+        state.light = current.light;
+        this.setState(state);
+        
+        this.state.session.currentRobot().set(current).then(() => {
+            config.robotObject = current;
+            state.display = "none";
+            this.setState(state);
+        }).catch((error) => {
+            alert(error);
+            state.light = prevLightState;
+        });
+        
+        
+    }
+
     createNewRobot = () => {
         this.props.screenProps.rootNav.navigate("AddRobot");
     }
@@ -86,6 +119,16 @@ export default class SettingsScreen extends Component {
                         style={{flex: 1, justifyContent: 'flex-end', margin: 30}}
                         onValueChange={this.changePower} 
                         value={this.state.power}
+                        activeText="ON"
+                        inActiveText="OFF" 
+                    />
+                </View>
+                <View style={[{flexDirection: "row"}]}>
+                    <Text style={styles.text}>Light:</Text>
+                    <Switch
+                        style={{flex: 1, justifyContent: 'flex-end', margin: 30}}
+                        onValueChange={this.changeLight} 
+                        value={this.state.light}
                         activeText="ON"
                         inActiveText="OFF" 
                     />

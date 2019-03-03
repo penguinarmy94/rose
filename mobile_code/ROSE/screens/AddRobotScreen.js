@@ -32,6 +32,7 @@ export default class AddRobotScreen extends Component {
                 connection: 0,
                 num_of_videos: 0,
                 power: true,
+                light: false,
                 userid: user.getUserId(),
                 videos: []
             }

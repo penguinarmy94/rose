@@ -4,6 +4,7 @@ from . import queues, logger, status_manager as sm
 
 class Brain():
     __mQueue = None
+    __nmQueue = None
     __miQueue = None
     __spkQueue = None
     __robot = None
@@ -17,6 +18,7 @@ class Brain():
 
     def __init__(self, database, robot, config):
         self.__mQueue = queues.brain_motor_queue
+        self.__nmQueue = queues.brain_notifier_queue
         self.__miQueue = queues.brain_microphone_queue
         self.__spkQueue = queues.brain_speaker_queue
         self.__camQueue = queues.brain_camera_queue
@@ -54,10 +56,10 @@ class Brain():
                 break
         
         self.__spkQueue.clear()
-        #self.__clear_speaker_queue()
         self.__write_motor(message_type="off", message="turn off")
         self.__write_microphone(message_type="off", message="turn off")
         self.__write_speaker(message_type="off", message="Powered Off")
+        self.__write_notifier(message_type="off", message="Powered Off")
         logger.write(str(datetime.datetime.now()) + " - Brain: Powered Off")
         #time.sleep(5)
         #logger.write("turn off")
@@ -72,11 +74,17 @@ class Brain():
             self.__db.update_robot()
             return
 
-        if success:
+        if success == 1:
             if not wifi == self.__robot.connection or not battery == self.__robot.battery:
                 self.__robot.connection = wifi
                 self.__robot.battery = battery
                 self.__db.update_robot()
+        elif success == 0:
+            if not wifi == self.__robot.connection or not battery == self.__robot.battery:
+                self.__robot.connection = wifi
+                self.__robot.battery = 0
+                self.__db.update_robot()
+
         
 
     def __update_behaviors(self):
@@ -188,6 +196,9 @@ class Brain():
     
     def __write_speaker(self, message_type="speaker", message="no message"):
         self.__spkQueue.put(json.dumps({"type": message_type, "message": message}))
+    
+    def __write_notifier(self, message_type="notification", message="no message"):
+        self.__nmQueue.put(json.dumps({"type": message_type, "message": message}))
     
     def handle_behavior(self):
         if self.__state == "idle":
