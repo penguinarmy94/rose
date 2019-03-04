@@ -75,7 +75,7 @@ export default class SettingsScreen extends Component {
         let state = this.state;
         let prevLightState = state.light;
 
-        if(this.state.power == true) {
+        if(this.state.light == true) {
             current.light = false;
         }
         else {
