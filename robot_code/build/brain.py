@@ -15,6 +15,7 @@ class Brain():
     __idle = False
     __config = {}
     __motorBusy = False
+    __lightOn = False
 
     def __init__(self, database, robot, config):
         self.__mQueue = queues.brain_motor_queue
@@ -22,6 +23,7 @@ class Brain():
         self.__miQueue = queues.brain_microphone_queue
         self.__spkQueue = queues.brain_speaker_queue
         self.__camQueue = queues.brain_camera_queue
+        self.__sensorQueue = queues.brain_sensor_queue
         self.__behaviorRef = {"idle": "", "detect": ""}
         self.__idle_behavior = []
         self.__detect_behavior = []
@@ -61,8 +63,6 @@ class Brain():
         self.__write_speaker(message_type="off", message="Powered Off")
         self.__write_notifier(message_type="off", message="Powered Off")
         logger.write(str(datetime.datetime.now()) + " - Brain: Powered Off")
-        #time.sleep(5)
-        #logger.write("turn off")
 
     def report_status(self):
         success, wifi = sm.get_wifi_signal_strength()
@@ -159,6 +159,25 @@ class Brain():
                 logger.write(str(datetime.datetime.now()) + " - Camera to Brain: Brain Message Received -- " + message_packet["message"])
             else:
                 return
+        else:
+            return
+    
+    def read_sensors(self):
+        #Check that queue is not empty
+        if not self.__sensorQueue.empty():
+            #read first item in the queue
+            message_packet = json.loads(self.__camQueue.peek())
+
+            #Message incoming from camera
+            if message_packet["type"] == "brain":
+                message_packet = json.loads(self.__camQueue.get())
+                logger.write(str(datetime.datetime.now()) + " - Camera to Brain: Brain Message Received -- " + message_packet["message"])
+            else:
+                return
+        if not self.__lightOn is self.__robot.light:
+            self.__lightOn = self.__robot.light
+            message = "turn on" if self.__lightOn is True else "turn off"
+            message_packet = json.dumps({"type": "light", "message": self})
         else:
             return
 

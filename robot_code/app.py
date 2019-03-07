@@ -9,13 +9,19 @@ config_file.close()
 #path.insert(0, config["home_path"])
 path.insert(0, config["windows_home_path"])
 
-from build import brain, motor, robot, database, queues, logger, speaker, notification_manager
+from build import brain, motor, robot, database, queues, logger, speaker, notification_manager, light
 
 def runSpeakerThread():
     spkr = speaker.Speaker(queues.brain_speaker_queue)
     speaker_thread = Thread(target=functools.partial(spkr.run))
     speaker_thread.start()
     return speaker_thread
+
+def runLightThread():
+    li = light.Light(queues.brain_sensor_queue)
+    light_thread = Thread(target=functools.partial(li.run))
+    light_thread.start()
+    return light_thread
 
 def runMotorThread():
     mtr = motor.Motor(queues.brain_motor_queue)
@@ -74,12 +80,14 @@ def init():
             mtr_thread = runMotorThread()
             nm_thread = runNotificationManager(rob=rob,config=config,initialized=True)
             #spk_thread = runSpeakerThread()
+            #light_thread = runLightThread()
             log_thread = runLoggerThread()
 
             br_thread.join()
             mtr_thread.join()
             nm_thread.join()
             #spk_thread.join()
+            #light_thread.join()
             logger.write("turn off")
         except Exception as e:
             print(str(e))
