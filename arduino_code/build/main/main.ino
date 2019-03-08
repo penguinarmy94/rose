@@ -9,8 +9,8 @@ struct PIData {
   int distance;
   };
   
-Motor left(10, 9, 11);
-Motor right(8, 7, 6);
+Motor left(8, 7 , 6); //7, 8, 6
+Motor right(9, 10, 11); //10, 9, 11
 Microphone a(3);
 Microphone b(5);
 LaserSensor lasersensor;
@@ -42,7 +42,7 @@ laserSensor.setNumber(SENSORS);
 void loop()
 {
 readLaser();  
-if (!Serial1.available())
+if (!Serial.available())
 {
   if (count < 1000)
     {
@@ -69,7 +69,7 @@ else
         Serial.print(aMax);
         Serial.print(", ");
         Serial.println(bMax);
-        if (aMax > (bMax + b.getCalibrationValue()))
+        if (aMax > (bMax - b.getCalibrationValue()))
         {
           Right(left, right, 175);
           Serial.println("A was Louder");
@@ -86,7 +86,8 @@ else
       }
     else if (piCommand.direction == 'c')
     {
-      calibrateMicrophones(a, b);  
+      calibrateMicrophones(a, b);
+      Serial.print("k-");  
     }
     else if (piCommand.direction == 'f')
     {
@@ -96,6 +97,7 @@ else
         i++;
       }
       i = 0;
+      Serial1.print("k-");
     }
     else if (piCommand.direction == 'b')
     {
@@ -107,6 +109,7 @@ else
         i++;
       }
       i = 0;
+      Serial1.print("k-");
     }
     else if (piCommand.direction == 'l')
     {
@@ -118,6 +121,7 @@ else
         i++;
       }
       i = 0;
+      Serial1.print("k-");
     }
     else if (piCommand.direction == 'r')
     {
@@ -129,6 +133,7 @@ else
         i++;
       }
       i = 0;
+      Serial1.print("k-");
     }
 }
 delay(1);
@@ -177,7 +182,7 @@ int getDistance(char arr[])
 }
 void parsePackage(PIData &package)
 {
-  Serial1.readBytesUntil('-', fromPi, 10); 
+  Serial.readBytesUntil('-', fromPi, 10); 
   package.direction = fromPi[0];
   int dist = 0;
   int i = 1;
@@ -192,6 +197,7 @@ void parsePackage(PIData &package)
     {
       fromPi[j] = 0;  
     }
+  Serial.print("a-");  
 }
 
 void readLaser() {
@@ -206,7 +212,7 @@ void readLaser() {
       if (!waitSensor) {
         turning = 1;
         if (BLOCKED_FRONT & state) {
-          Backward(left, right, 200);
+          (laserSensor.getValue(LEFT_SENSOR) < laserSensor.getValue(RIGHT_SENSOR)) ? Right(left, right, 200) : Left(left, right, 200);
         } 
         else 
         {
@@ -234,12 +240,18 @@ void calibrateMicrophones(Microphone &a, Microphone &b)
 {
   int aCumulative = 0;
   int bCumulative = 0;
+  int aVal;
+  int bVal;
   int calibration;
   int i = 0;
-  while(i < 5000)
+  while(i < 50)
   {
-    aCumulative += a.testMic();
-    bCumulative += b.testMic();
+    aVal = a.record();
+    bVal = b.record();
+    aCumulative = (aCumulative > aVal) ? aCumulative : aVal;
+    bCumulative = (bCumulative > bVal) ? bCumulative : bVal;
+    i++;
   }
-  b.setCalibrationValue((bCumulative/5000) - (aCumulative/5000));
+  b.setCalibrationValue(bCumulative - aCumulative);
+  Serial.println(b.getCalibrationValue());
 }
