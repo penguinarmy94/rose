@@ -16,6 +16,7 @@ class Brain():
     __config = {}
     __motorBusy = False
     __lightOn = False
+    __numofsensors = 1
 
     def __init__(self, database, robot, config):
         self.__mQueue = queues.brain_motor_queue
@@ -62,6 +63,7 @@ class Brain():
         self.__write_microphone(message_type="off", message="turn off")
         self.__write_speaker(message_type="off", message="Powered Off")
         self.__write_notifier(message_type="off", message="Powered Off")
+        self.__write_sensor(message_type="off", message="Powered Off")
         logger.write(str(datetime.datetime.now()) + " - Brain: Powered Off")
 
     def report_status(self):
@@ -166,18 +168,18 @@ class Brain():
         #Check that queue is not empty
         if not self.__sensorQueue.empty():
             #read first item in the queue
-            message_packet = json.loads(self.__camQueue.peek())
+            message_packet = json.loads(self.__sensorQueue.peek())
 
             #Message incoming from camera
             if message_packet["type"] == "brain":
-                message_packet = json.loads(self.__camQueue.get())
+                message_packet = json.loads(self.__sensorQueue.get())
                 logger.write(str(datetime.datetime.now()) + " - Camera to Brain: Brain Message Received -- " + message_packet["message"])
             else:
                 return
         if not self.__lightOn is self.__robot.light:
             self.__lightOn = self.__robot.light
             message = "turn on" if self.__lightOn is True else "turn off"
-            message_packet = json.dumps({"type": "light", "message": self})
+            self.__write_sensor(message_type="light", message=message)
         else:
             return
 
@@ -218,6 +220,13 @@ class Brain():
     
     def __write_notifier(self, message_type="notification", message="no message"):
         self.__nmQueue.put(json.dumps({"type": message_type, "message": message}))
+    
+    def __write_sensor(self, message_type="light", message="no message"):
+        if message_type == "off":
+            for sensor in self.__numofsensors:
+                self.__sensorQueue.put(json.dumps({"type": message_type, "message": message}))
+        else:
+            self.__sensorQueue.put(json.dumps({"type": message_type, "message": message}))
     
     def handle_behavior(self):
         if self.__state == "idle":
