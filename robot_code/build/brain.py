@@ -32,6 +32,7 @@ class Brain():
         self.__robot = robot
         self.__state = "idle"
         self.__config = config
+        self.__lightOn = robot.light
 
         self.__update_behaviors()
 
@@ -176,9 +177,14 @@ class Brain():
                 logger.write(str(datetime.datetime.now()) + " - Camera to Brain: Brain Message Received -- " + message_packet["message"])
             else:
                 return
-        if not self.__lightOn is self.__robot.light:
+        if not self.__lightOn == self.__robot.light:
             self.__lightOn = self.__robot.light
-            message = "turn on" if self.__lightOn is True else "turn off"
+            if self.__lightOn is True:
+                message = "turn on"
+            elif self.__lightOn is False:
+                message = "turn off"
+            else:
+                return
             self.__write_sensor(message_type="light", message=message)
         else:
             return
