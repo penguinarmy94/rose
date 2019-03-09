@@ -32,7 +32,6 @@ class Brain():
         self.__robot = robot
         self.__state = "idle"
         self.__config = config
-        self.__lightOn = robot.light
 
         self.__update_behaviors()
 
@@ -43,6 +42,8 @@ class Brain():
     
     def begin(self):
         #Run for as long as queues are active
+        self.__lightOn = self.__robot.light
+        
         while self.__robot.power is True:
             try:
                 #Read Motor queue for new updates
@@ -178,6 +179,7 @@ class Brain():
             else:
                 return
         if not self.__lightOn == self.__robot.light:
+            print(str(self.__lightOn) + " " + self.__robot.light)
             self.__lightOn = self.__robot.light
             if self.__lightOn is True:
                 message = "turn on"
