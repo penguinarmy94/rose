@@ -14,11 +14,8 @@ class Light():
             raise TypeError("Queue or pin number are not initialized")
 
     def run(self):
-        self.__isOn = self.__robot.light
-
         gpio.setmode(gpio.BOARD)
         gpio.setup(self.__pin, gpio.OUT)
-        gpio.output(self.__pin, gpio.LOW)
 
         while True:
             if not self.__queue.empty():
@@ -55,10 +52,10 @@ class Light():
     
     def turnOn(self):
         self.__isOn = True
-        gpio.output(self.__pin, gpio.HIGH)
+        gpio.output(self.__pin, gpio.LOW)
         logger.write(str(datetime.datetime.now()) + " - Light: Turned On")
     
     def turnOff(self):
         self.__isOn = False
-        gpio.output(self.__pin, gpio.LOW)
+        gpio.output(self.__pin, gpio.HIGH)
         logger.write(str(datetime.datetime.now()) + " - Light: Turned Off")

@@ -80,7 +80,7 @@ def init():
             mtr_thread = runMotorThread()
             nm_thread = runNotificationManager(rob=rob,config=config,initialized=True)
             #spk_thread = runSpeakerThread()
-            light_thread = runLightThread()
+            light_thread = runLightThread(pin=11)
             log_thread = runLoggerThread()
 
             br_thread.join()
