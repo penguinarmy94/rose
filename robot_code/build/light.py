@@ -51,10 +51,12 @@ class Light():
     
     def turnOn(self):
         self.__isOn = True
+        gpio.setmode(gpio.BOARD)
         gpio.output(self.__pin, gpio.HIGH)
         logger.write(str(datetime.datetime.now()) + " - Light: Turned On")
     
     def turnOff(self):
         self.__isOn = False
+        gpio.setmode(gpio.BOARD)
         gpio.output(self.__pin, gpio.LOW)
         logger.write(str(datetime.datetime.now()) + " - Light: Turned Off")
