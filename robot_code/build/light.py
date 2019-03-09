@@ -10,7 +10,7 @@ class Light():
         if queue and pin:
             self.__pin = pin
             self.__queue = queue
-            gpio.setmode(gpio.BCM)
+            gpio.setmode(gpio.BOARD)
             gpio.setup(self.__pin, gpio.OUT)
         else:
             raise TypeError("Queue or pin number are not initialized")
@@ -25,6 +25,7 @@ class Light():
             else:
                 continue
         
+        gpio.cleanup()
         logger.write(str(datetime.datetime.now()) + " - Light: Powered Off")
     
     def __read_queue(self):
@@ -51,11 +52,9 @@ class Light():
     def turnOn(self):
         self.__isOn = True
         gpio.output(self.__pin, gpio.HIGH)
-        gpio.cleanup()
         logger.write(str(datetime.datetime.now()) + " - Light: Turned On")
     
     def turnOff(self):
         self.__isOn = False
         gpio.output(self.__pin, gpio.LOW)
-        gpio.cleanup()
         logger.write(str(datetime.datetime.now()) + " - Light: Turned Off")
