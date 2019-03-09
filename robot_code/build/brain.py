@@ -223,7 +223,7 @@ class Brain():
     
     def __write_sensor(self, message_type="light", message="no message"):
         if message_type == "off":
-            for sensor in self.__numofsensors:
+            for sensor in range(self.__numofsensors):
                 self.__sensorQueue.put(json.dumps({"type": message_type, "message": message}))
         else:
             self.__sensorQueue.put(json.dumps({"type": message_type, "message": message}))
