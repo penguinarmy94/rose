@@ -22,7 +22,7 @@ def _get_linux_wifi_signal_strength():
     if info:
         signal_divisor = info.group(0).split("/")
         signal = 100*(int(signal_divisor[0]) / int(signal_divisor[1]))
-        return (1, signal)
+        return (1, int(signal))
     else:                
         return (0, "none")
 

@@ -11,7 +11,7 @@ class Light():
             self.__pin = pin
             self.__queue = queue
             gpio.setmode(gpio.BCM)
-            gpio.setup(self.__pin, gpio.HIGH)
+            gpio.setup(self.__pin, gpio.OUT)
         else:
             raise TypeError("Queue or pin number are not initialized")
 
