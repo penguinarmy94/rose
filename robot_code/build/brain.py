@@ -43,12 +43,13 @@ class Brain():
     def begin(self):
         #Run for as long as queues are active
         self.__lightOn = self.__robot.light
-        
+
         while self.__robot.power is True:
             try:
                 #Read Motor queue for new updates
                 self.report_status()
                 self.read_motor()
+                self.read_sensors()
                 #Read Microphone queue for new updates
                 #self.read_microphone()
                 #read Camera queue for new updates
