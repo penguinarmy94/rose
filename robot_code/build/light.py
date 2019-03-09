@@ -41,7 +41,7 @@ class Light():
             else:
                 return
         elif message_packet["type"] == "off":
-            message_packet = json.loads(self.__bqueue.get())
+            message_packet = json.loads(self.__queue.get())
             logger.write(str(datetime.datetime.now()) + " - Brain to Light: Off Message Received -- " + message_packet["message"])
             return 2
     
