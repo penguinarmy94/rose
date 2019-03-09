@@ -1,4 +1,4 @@
-import serial, RPi.GPIO as gpio, json, datetime
+import json, datetime, RPi.GPIO as gpio
 from . import logger
 
 class Light():
@@ -13,7 +13,7 @@ class Light():
             gpio.setmode(gpio.BCM)
             gpio.setup(self.__pin, gpio.HIGH)
         else:
-            raise TypeError("Queue or pin # are not initialized")
+            raise TypeError("Queue or pin number are not initialized")
 
     def run(self):
         while True:

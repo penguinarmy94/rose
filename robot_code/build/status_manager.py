@@ -2,7 +2,7 @@ import subprocess, re, random, datetime
 
 current_date = datetime.datetime.now()
 battery_level = 100
-os = "windows"
+os = "linux"
 
 def get_wifi_signal_strength():
     global os
@@ -16,11 +16,11 @@ def get_wifi_signal_strength():
             return (-1, str(e))
 
 def _get_linux_wifi_signal_strength():
-    cmd_output = str(subprocess.check_output(['iwconfig', 'wlan0', '|', 'grep', '-i', '--color', 'signal']))
+    cmd_output = str(subprocess.check_output("iwconfig wlan0 | grep -i --color signal", shell=True))
     info = re.search('[0-9]+/[0-9]+', cmd_output)
 
     if info:
-        signal_divisor = info.split("/")
+        signal_divisor = info.group(0).split("/")
         signal = 100*(int(signal_divisor[0]) / int(signal_divisor[1]))
         return (1, signal)
     else:                
