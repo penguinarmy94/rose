@@ -14,8 +14,8 @@ class Motor():
     def __init__(self, motorQueue):
         self.__direction = ""
         self.__bqueue = motorQueue
-        self.__send_port = serial.Serial("/dev/serial0", 9600)
-        self.__receive_port = serial.Serial("/dev/serial1", 9600)
+        self.__port = serial.Serial("/dev/serial1", 9600, timeout=1)
+       # self.__receive_port = serial.Serial("/dev/serial1", 9600)
     
     def run(self):
         while True:
@@ -88,15 +88,20 @@ class Motor():
             return -1
     
     def __get_motor_response(self):
-        if self.__port.in_waiting > 0:
-            message = ""
+        #if self.__port.in_waiting > 0:
+        #    message = ""
 
-            while self.__port.in_waiting > 0:
-                message += self.__port.read(1).decode()
+        #    while self.__port.in_waiting > 0:
+        #        message += self.__port.read(1).decode()
             
-            return message
-        else:
-            return None
+        #    return message
+        #else:
+        #    return None
+        message = None
+
+        message = self.__port.read(10).decode()
+
+        return message
 
     def write_brain(self, message):
         logger.write(str(datetime.datetime.now()) + " - Motor to Brain: " + message)

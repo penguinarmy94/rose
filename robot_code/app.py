@@ -99,6 +99,7 @@ def init():
                     light_thread.join()
                     logger.write("turn off")
                     off = True
+                    print("Turned off!")
                 except Exception as e:
                     print(str(e))
 
