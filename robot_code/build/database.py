@@ -23,7 +23,7 @@ class Database():
 
         self.__db = firestore.client()
 
-        self.__robotRef = self.__db.collection(u"Robots").document(u"01A1Z100BY")
+        self.__robotRef = self.__db.collection(u"Robots").document(config["robotid"])
         self.__actionRef = self.__db.collection(u"Action")
 
     

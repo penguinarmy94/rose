@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { StyleSheet, View, Text, Switch, TouchableOpacity, Dimensions } from 'react-native';
+import { StyleSheet, View, Text, Switch, TouchableOpacity, Dimensions, Slider } from 'react-native';
 import { config } from '../assets/config/config';
 import { NavigationEvents } from 'react-navigation';
 
@@ -17,6 +17,7 @@ export default class SettingsScreen extends Component {
             session: config.session,
             power: config.robotObject.power,
             light: config.robotObject.light,
+            cameraAngle: config.robotObject.cameraAngle,
             display: "none"
         };
         this.props.navigation.setParams({headerTitle: config.headerTitle});
@@ -98,6 +99,26 @@ export default class SettingsScreen extends Component {
         
     }
 
+    changeCameraPosition = (value) => {
+        let current = config.robotObject;
+        let state = this.state;
+
+        state.display = "flex";
+        state.cameraAngle = value;
+        current.camera_angle = value;
+        this.setState(state);
+        
+        this.state.session.currentRobot().set(current).then(() => {
+            config.robotObject = current;
+            state.display = "none";
+            this.setState(state);
+        }).catch((error) => {
+            alert(error);
+        });
+        
+        
+    }
+
     createNewRobot = () => {
         this.props.screenProps.rootNav.navigate("AddRobot");
     }
@@ -131,6 +152,17 @@ export default class SettingsScreen extends Component {
                         value={this.state.light}
                         activeText="ON"
                         inActiveText="OFF" 
+                    />
+                </View>
+                <View style={[{flexDirection: "row"}]}>
+                    <Text style={styles.text}>Camera Position:</Text>
+                    <Slider
+                        style={{flex: 1, justifyContent: 'flex-end', margin: 30}}
+                        maximumValue={10}
+                        minimumValue={5}
+                        step={1}
+                        onSlidingComplete={this.changeCameraPosition} 
+                        value={this.state.cameraAngle}
                     />
                 </View>
                 <Text style={{display: this.state.display, color: "red"}}>Waiting to be applied</Text>

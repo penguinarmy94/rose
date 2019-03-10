@@ -9,7 +9,7 @@ config_file.close()
 path.insert(0, config["home_path"])
 #path.insert(0, config["windows_home_path"])
 
-from build import brain, motor, robot, database, queues, logger, speaker, notification_manager, light
+from build import brain, motor, robot, database, queues, logger, speaker, notification_manager, light #, camera
 
 def runSpeakerThread():
     spkr = speaker.Speaker(queues.brain_speaker_queue)
@@ -22,6 +22,13 @@ def runLightThread(pin=16):
     light_thread = Thread(target=functools.partial(li.run))
     light_thread.start()
     return light_thread
+
+def runCameraThread():
+    pass
+    #ca = camera.Camera(queues.brain_sensor_queue)
+    #cam_thread = Thread(target=functools.partial(ca.run))
+    #cam_thread.start()
+    #return ca_thread
 
 def runMotorThread():
     mtr = motor.Motor(queues.brain_motor_queue)
@@ -80,6 +87,7 @@ def init():
                     mtr_thread = runMotorThread()
                     nm_thread = runNotificationManager(rob=rob,config=config,initialized=True)
                     #spk_thread = runSpeakerThread()
+                    #ca_thread = runCameraThread()
                     light_thread = runLightThread(pin=11)
                     log_thread = runLoggerThread()
 
@@ -87,6 +95,7 @@ def init():
                     mtr_thread.join()
                     nm_thread.join()
                     #spk_thread.join()
+                    #ca_thread.join()
                     light_thread.join()
                     logger.write("turn off")
                     off = True

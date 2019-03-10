@@ -16,6 +16,7 @@ class Brain():
     __config = {}
     __motorBusy = False
     __lightOn = False
+    __camPosition = 5
     __numofsensors = 1
 
     def __init__(self, database, robot, config):
@@ -63,6 +64,7 @@ class Brain():
         self.__write_sensor(message_type="off", message="Powered Off")
         self.__write_motor(message_type="off", message="turn off")
         self.__write_microphone(message_type="off", message="turn off")
+        #self.__write_camera(message_type="off", message="turn off")
         self.__write_speaker(message_type="off", message="Powered Off")
         self.__write_notifier(message_type="off", message="Powered Off")
         logger.write(str(datetime.datetime.now()) + " - Brain: Powered Off")
@@ -152,7 +154,7 @@ class Brain():
 
     def read_camera(self):
         #Check that queue is not empty
-        if not self.__miQueue.empty():
+        if not self.__camQueue.empty():
             #read first item in the queue
             message_packet = json.loads(self.__camQueue.peek())
 
@@ -162,6 +164,9 @@ class Brain():
                 logger.write(str(datetime.datetime.now()) + " - Camera to Brain: Brain Message Received -- " + message_packet["message"])
             else:
                 return
+        if not self.__camPosition == self.__robot.camera_angle:
+                self.__camPosition = self.__robot.camera_angle
+                #self.__write_camera(message_type="position", message=self.__camPosition)
         else:
             return
     
@@ -219,6 +224,9 @@ class Brain():
 
     
     def __write_microphone(self, message_type="microphone", message="no message"):
+        self.__miQueue.put(json.dumps({"type": message_type, "message": message}))
+    
+    def __write_camera(self, message_type="camera", message="no message"):
         self.__miQueue.put(json.dumps({"type": message_type, "message": message}))
     
     def __write_speaker(self, message_type="speaker", message="no message"):

@@ -9,6 +9,7 @@ class Robot():
     num_of_videos = 0
     power = True
     light = False
+    camera_angle = 7
     videos = []
     charging = False
 
@@ -39,6 +40,8 @@ class Robot():
             self.power = map["power"]
         if not map["light"] == None:
             self.light = map["light"]
+        if not map["camera_angle"] == None:
+            self.camera_angle = map["camera_angle"]
         if not map["videos"] == None:
             self.videos = map["videos"]
 
@@ -53,6 +56,8 @@ class Robot():
             u'idle_behavior': self.idle_behavior,
             u'num_of_videos': self.num_of_videos,
             u'power': self.power,
+            u'light': self.light,
+            u'camera_angle': self.camera_angle,
             u'videos': self.videos
         }
 
