@@ -5,6 +5,7 @@ export default class NotificationManager {
 
     constructor(topic = "none") {
         this._topic = topic;
+        this._notificationReceived = true;
 
         firebase.messaging().getToken().then((token) => {
             if(token) {
@@ -17,7 +18,6 @@ export default class NotificationManager {
                         throw Error("Token is no longer available");
                     }
                 });
-                this.checkPermission();
             }
             else {
                 throw Error("No token available for this device");
@@ -25,7 +25,12 @@ export default class NotificationManager {
         })
     }
 
-    subscribeToRobot = (topic) => {
+    subscribeToRobot = () => {
+        this.checkPermission();
+        alert("subscribed");
+    }
+
+    setTopic = (topic) => {
         this._topic = topic;
     }
 
@@ -48,6 +53,9 @@ export default class NotificationManager {
                 firebase.messaging().requestPermission().then(() => {
                     this._authorized = true;
                     firebase.messaging().subscribeToTopic(this._topic);
+                    this._channel = new firebase.notifications.Android.Channel('messaging-channel', 'Test Channel', firebase.notifications.Android.Importance.Max)
+                        .setDescription('My apps notification channel');
+                    firebase.notifications().android.createChannel(this._channel);
                     this.checkNotifications();
                 })
                 .catch(error => {
@@ -61,16 +69,20 @@ export default class NotificationManager {
     checkNotifications = () => {
         this._displayListener = firebase.notifications().onNotificationDisplayed((notification) => {
             if(notification) { 
-                //firebase.notifications().removeDeliveredNotification(notification.notificationId);
+                this._notificationReceived = true;
             }
             else {
                 alert("error!");
             }
         });
         this._notificationListener = firebase.notifications().onNotification((notification) => {
-            notification.android.setChannelId("messaging-channel");
-            notification.android.setSmallIcon("rose_logo")
-            firebase.notifications().displayNotification(notification);
+            if (this._notificationReceived == true) {
+                this._notificationReceived = false;
+                alert("activated");
+                notification.android.setChannelId("messaging-channel");
+                notification.android.setSmallIcon("rose_logo")
+                firebase.notifications().displayNotification(notification);
+            }
         });
     }
 }

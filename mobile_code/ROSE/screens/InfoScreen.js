@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, TextInput, Image, Button} from 'react-native';
+import { Platform, StyleSheet, Text, View, TextInput, Image } from 'react-native';
+import { CheckBox } from 'react-native-elements';
 import firebase from 'react-native-firebase';
 import NotificationManager from '../controllers/NotificationManager';
 import Session from '../controllers/Session';
@@ -29,8 +30,11 @@ export default class InfoScreen extends Component {
       recordings: 0,
       connectionColor: "green",
       batteryColor: "green",
-      header: config.headerTitle
+      header: config.headerTitle,
+      notificationsOn: false
     };
+
+    this.notifier = new NotificationManager(this.state.id);
 
     if(config.session) {
       config.robotSnapshot();
@@ -56,7 +60,6 @@ export default class InfoScreen extends Component {
   componentWillUnmount = () => {
     this.isMounted = false;
     config.robotSnapshot();
-    //this.notifier.unsubscribeFromRobot();
   }
 
   updateRobot = () => {
@@ -74,10 +77,10 @@ export default class InfoScreen extends Component {
           num_of_videos: robot.data().num_of_videos,
         };
 
+        this.notifier.setTopic(robot.id);
         config.headerTitle = robot.data().name;
         config.robotObject = robot.data();
         this.props.navigation.setParams({headerTitle: config.headerTitle});
-        this.notifier = new NotificationManager(robot.id);
 
 
         idle.get().then((doc) => { 
@@ -110,9 +113,9 @@ export default class InfoScreen extends Component {
 
     current.id = robot.id;
     current.battery = robot.battery;
-    current.batteryColor = robot.battery > 40 ? "green" : "red";
+    current.batteryColor = robot.battery > 60 ? "green" : robot.battery >= 20 ? "#E1DD5E" : "red";
     current.connection = robot.connection;
-    current.connectionColor = robot.connection > 2 ? "green" : "red";
+    current.connectionColor = robot.connection > 60 ? "green" : robot.connection >= 20 ? "#E1DD5E" : "red";
     current.charging = robot.charging ? "yes" : "no";
     current.idle = robot.idle_behavior;
     current.detect = robot.detect_behavior; 
@@ -122,24 +125,52 @@ export default class InfoScreen extends Component {
     this.setState(current);
   }
 
+  updateNotifications = () => { 
+      if(this.state.notificationsOn) {
+        this.setState({notificationsOn: false});
+        this.notifier.unsubscribeFromRobot();
+      }
+      else {
+        this.setState({notificationsOn: true});
+        this.notifier.subscribeToRobot();
+      }
+  }
+
   render() {
     return(
       <View style={styles.container}>
-        <Text style={[]}>ID: {this.state.id}</Text>
-        <Text style={[{ color: this.state.batteryColor}]}>Battery Level: {this.state.battery}</Text>
-        <Text style={[{ color: this.state.connectionColor}]}>Wireless Connection Level: {this.state.connection}</Text>
-        <Text style={[]}>Charging: {this.state.charging}</Text>
-        <Text style={[]}>Idle Behavior: {this.state.idle}</Text>
-        <Text style={[]}>Detect Behavior: {this.state.detect}</Text>
-        <Text style={[]}>Number of Recordings: {this.state.recordings}</Text>
+        <Text style={[styles.text]}>ID: {this.state.id}</Text>
+        <View style={styles.row}>
+          <Text style={styles.text}>Battery Level: </Text>
+          <Text style={[{ color: this.state.batteryColor}, styles.text]}>{this.state.battery}%</Text>
+        </View>
+        <View style={styles.row}>
+          <Text style={styles.text}>Wireless Connection Level: </Text>
+          <Text style={[{ color: this.state.connectionColor}, styles.text]}>{this.state.connection}%</Text>
+        </View>
+        <Text style={[styles.text]}>Charging: {this.state.charging}</Text>
+        <Text style={[styles.text]}>Idle Behavior: {this.state.idle}</Text>
+        <Text style={[styles.text]}>Detect Behavior: {this.state.detect}</Text>
+        <Text style={[styles.text]}>Number of Recordings: {this.state.recordings}</Text>
+        <CheckBox 
+          title="Notifications" 
+          checked={this.state.notificationsOn} 
+          onPress={() => this.updateNotifications()} />
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
+    row: {
+      flexDirection: 'row'
+    },
+    text: {
+      fontSize: 20,
+    },
     container: {
       flex: 1,
+      flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: '#F5FCFF',
