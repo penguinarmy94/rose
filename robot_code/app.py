@@ -49,7 +49,7 @@ def runNotificationManager(rob, config, initialized = False):
 def init():
     rob = robot.Robot()
     rob.id = config["robotid"]
-
+    off = True
     db = database.Database(config) 
     initialized = db.initialize(rob)
 
@@ -66,33 +66,32 @@ def init():
             print("Waiting for robot initialization...")
             time.sleep(0.2)
 
-        if rob.battery == 0:
-            rob.power = False
-            db.update_robot()
-            return
-            
-        if rob.power is False:
-            rob.power = True
-            db.update_robot()
+        while True:
+            if rob.battery == 0:
+                rob.power = False
+                db.update_robot()
+                off = True
 
-        try:
-            br_thread = runBrainThread(db=db,rob=rob,config=config)
-            mtr_thread = runMotorThread()
-            nm_thread = runNotificationManager(rob=rob,config=config,initialized=True)
-            #spk_thread = runSpeakerThread()
-            light_thread = runLightThread(pin=11)
-            log_thread = runLoggerThread()
+            if rob.power is True and off == True:
+                off = False
+                print("Turned on!")
+                try:
+                    br_thread = runBrainThread(db=db,rob=rob,config=config)
+                    mtr_thread = runMotorThread()
+                    nm_thread = runNotificationManager(rob=rob,config=config,initialized=True)
+                    #spk_thread = runSpeakerThread()
+                    light_thread = runLightThread(pin=11)
+                    log_thread = runLoggerThread()
 
-            br_thread.join()
-            mtr_thread.join()
-            nm_thread.join()
-            #spk_thread.join()
-            light_thread.join()
-            logger.write("turn off")
-        except Exception as e:
-            print(str(e))
-    else:
-        return
+                    br_thread.join()
+                    mtr_thread.join()
+                    nm_thread.join()
+                    #spk_thread.join()
+                    light_thread.join()
+                    logger.write("turn off")
+                    off = True
+                except Exception as e:
+                    print(str(e))
 
 
 if __name__ == "__main__":
