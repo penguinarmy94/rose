@@ -1,7 +1,7 @@
 import json, sys, datetime
-#import serial
+import serial
 from . import queues
-from . import serial
+#from . import serial
 from . import logger
 
 class Motor():
@@ -14,7 +14,8 @@ class Motor():
     def __init__(self, motorQueue):
         self.__direction = ""
         self.__bqueue = motorQueue
-        self.__port = serial.Serial("/dev/ttyACM0", 9600)
+        self.__send_port = serial.Serial("/dev/serial0", 9600)
+        self.__receive_port = serial.Serial("/dev/serial1", 9600)
     
     def run(self):
         while True:
@@ -45,7 +46,7 @@ class Motor():
                 
 
     def move(self, direction):
-        directions = ["F", "B", "L", "R", "Y"]
+        directions = ["F", "B", "L", "R", "Y", "C"]
 
         try:
             if direction[0] in directions:
@@ -73,6 +74,11 @@ class Motor():
             message_packet = json.loads(self.__bqueue.get())
             self.move(message_packet["message"])
             logger.write(str(datetime.datetime.now()) + " - Brain to Motor: Microphone Message Received -- " + message_packet["message"])
+            return 1
+        if message_packet["type"] == "calibrate":
+            message_packet = json.loads(self.__bqueue.get())
+            self.move(message_packet["message"])
+            logger.write(str(datetime.datetime.now()) + " - Brain to Motor: Calibration Message Received -- " + message_packet["message"])
             return 1
         elif message_packet["type"] == "off":
             message_packet = json.loads(self.__bqueue.get())

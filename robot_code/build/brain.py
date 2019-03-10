@@ -43,6 +43,7 @@ class Brain():
     
     def begin(self):
         #Run for as long as queues are active
+        self.__write_motor(message_type="calibrate", message="C5-")
         while self.__robot.power is True:
             try:
                 #Read Motor queue for new updates
