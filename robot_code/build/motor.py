@@ -10,18 +10,24 @@ class Motor():
     __bqueue = None
     __timer = None
     __isWaiting = False
+    __rate = None
+    __timeout = None
+    __bytesToRead = None
 
     def __init__(self, motorQueue):
         self.__direction = ""
         self.__bqueue = motorQueue
-        self.__port = serial.Serial("/dev/serial1", 9600, timeout=1)
+        self.__port = "/dev/ttyS0"
+        self.__rate = 9600
+        self.__timeout = 1
+        self.__bytesToRead = 10
        # self.__receive_port = serial.Serial("/dev/serial1", 9600)
     
     def run(self):
         while True:
             if self.__isWaiting is True:
                 responseReceived = self.__get_motor_response()
-
+                print("waiting")
                 if not responseReceived is None:
                     self.__isWaiting = False
                     self.write_brain(responseReceived)
@@ -34,7 +40,9 @@ class Motor():
                     continue
 
             else:
+                print("not waiting")
                 if not self.__bqueue.empty():
+                    print("queue not empty")
                     if self.__check_queue() == 2:
                         break
                     else:
@@ -44,15 +52,14 @@ class Motor():
         
         logger.write(str(datetime.datetime.now()) + " - Motor: Powered Off")
                 
-
     def move(self, direction):
         directions = ["F", "B", "L", "R", "Y", "C"]
 
         try:
             if direction[0] in directions:
-                success = self.__port.write(direction.encode())
+                success = self.__write_serial(direction)
                 self.__isWaiting = True
-                return direction.encode()        
+                return success
             else:
                 return "Command Not Found"
         except Exception as e:
@@ -65,7 +72,7 @@ class Motor():
         if self.__isWaiting is False:
             if message_packet["type"] == "motor":
                 logger.write(str(datetime.datetime.now()) + " - Brain to Motor: Motor Message Received -- " + message_packet["message"])
-                self.__port.writePython("F12;B45;F35".encode())
+                #self.__port.writePython("F12;B45;F35".encode())
                 message_packet = json.loads(self.__bqueue.get())
                 self.move(message_packet["message"])
                 return 1
@@ -97,11 +104,28 @@ class Motor():
         #    return message
         #else:
         #    return None
-        message = None
+        return self.__read_serial()
 
-        message = self.__port.read(10).decode()
-
-        return message
+    def __write_serial(self, message):
+        try:
+            with serial.Serial(self.__port, self.__rate, timeout=self.__timeout) as port:
+                output = port.write(message.encode())
+                return output
+        except Exception as e:
+            print(str(e))
+    
+    def __read_serial(self):
+        try:
+            with serial.Serial(self.__port, self.__rate, timeout=self.__timeout) as port:
+                message = port.read(self.__bytesToRead).decode()
+                
+                if message == "":
+                    message = None
+                
+                return message
+        except Exception as e:
+            print(str(e))
+            return None
 
     def write_brain(self, message):
         logger.write(str(datetime.datetime.now()) + " - Motor to Brain: " + message)
