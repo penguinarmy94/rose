@@ -99,7 +99,7 @@ def init():
             print("Waiting for robot initialization...")
             time.sleep(0.2)
 
-        option = input('0 - Start in Mobile Mode\n1 - Start in Command Line Mode\n\nChoice: ')
+        option = input('0 - Start in Mobile Mode\n1 - Start in Single Use Mode\n2 - Start in Command Line Mode\n\nChoice: ')
         
         if option == "0":
             while True:
@@ -111,6 +111,34 @@ def init():
                 off = initialize_threads(db,rob,off)
         elif option == "1":
             initialize_threads(db,rob)
+        elif option == "2":
+            option = 0
+            while option != 2: 
+                option = input('0 - Send message to camera\n1 - Send message to speaker\n2 - exit\n\nChoice: ')
+
+                if option == 0:
+                    cam_thread = runCameraThread()
+                    logger = runLoggerThread()
+                    message = input('\nWhat message would you like to send? ')
+                    queues.brain_camera_queue.put(json.dumps({"type" : "camera", "message" : int(message)}))
+                    queues.brain_camera_queue.put(json.dumps({"type": "off", "message" : "turn off"}))
+                    cam_thread.join()
+                    queues.logger_queue.put("turn off")
+                    logger.join()
+                elif option == 1:
+                    spk_thread = runCameraThread()
+                    logger = runLoggerThread()
+                    message = input('\nWhat message would you like to send? ')
+                    queues.brain_speaker_queue.put(json.dumps({"type" : "camera", "message" : message}))
+                    queues.brain_speaker_queue.put(json.dumps({"type": "off", "message" : "turn off"}))
+                    spk_thread.join()
+                    queues.logger_queue.put("turn off")
+                    logger.join()
+                elif option == 2:
+                    break
+                else:
+                    print("Not a valid option")
+                    continue
         else:
             print("%s Not a valid option!"%option)
 
