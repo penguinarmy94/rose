@@ -432,7 +432,7 @@ bool VL53L0X::setMeasurementTimingBudget(uint32_t budget_us)
   uint16_t const PreRangeOverhead   = 660;
   uint16_t const FinalRangeOverhead = 550;
 
-  uint32_t const MinTimingBudget = 20000;
+  uint32_t const MinTimingBudget = 70000;
 
   if (budget_us < MinTimingBudget) { return false; }
 

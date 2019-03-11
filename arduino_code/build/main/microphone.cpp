@@ -8,13 +8,9 @@ Microphone::Microphone(int Input)
   kCalibrationValue = 0;
 }
 
-int Microphone::record()
+unsigned int Microphone::record()
 {
-	int rawAmplitude;
-	int trueAmplitude;
-	rawAmplitude = analogRead(kInputPin);
-	trueAmplitude = map(rawAmplitude, 184, 430, 0, 1023);
-	return trueAmplitude;
+	return analogRead(kInputPin);
 	
 }
 
@@ -34,11 +30,9 @@ void Microphone::clearBuffer()
 	kCounter = 0;
 }
 
-int Microphone::testMic()
+unsigned int Microphone::testMic()
 {
-  int rawAmplitude;
-  rawAmplitude = analogRead(kInputPin);
-  return map(rawAmplitude, 184, 430, 0, 1023);
+  return analogRead(kInputPin);
 }
 
 void Microphone::setCalibrationValue(int value)
@@ -46,12 +40,12 @@ void Microphone::setCalibrationValue(int value)
   kCalibrationValue = value;
 }
 
-int Microphone::getCalibrationValue()
+unsigned int Microphone::getCalibrationValue()
 {
   return kCalibrationValue;
 }
 
-int Microphone::getMax()
+unsigned int Microphone::getMax()
 {
 	int max = 0;
 	for (int i = 0; i < 10; i++)

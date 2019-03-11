@@ -9,9 +9,9 @@
 #define BLOCKED_LEFT B010
 
 #define FRONT_UP_SENSOR 3
-#define FRONT_SENSOR 2 //refers to index on pinXShut
+#define FRONT_SENSOR 0 //refers to index on pinXShut
 #define LEFT_SENSOR 1
-#define RIGHT_SENSOR 0
+#define RIGHT_SENSOR 2
 
 #define SENSORS 3
 #define START_ADDRESS 40
@@ -23,7 +23,7 @@ class LaserSensor {
     int slowValue;
     int freeValue;
     void init();
-    int pinXShut[SENSORS] = {2, 3, 4};
+    int pinXShut[SENSORS] = {3, 4, 2};
     VL53L0X sensor[SENSORS];
     
   public:

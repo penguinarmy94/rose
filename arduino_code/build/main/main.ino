@@ -23,6 +23,7 @@ int count;
 int state;
 PIData piCommand;
 int i = 0;
+int turn;
 
 LaserSensor laserSensor;
 int waitSensor = 0;
@@ -37,12 +38,13 @@ Wire.begin();
 a.clearBuffer();
 b.clearBuffer();
 laserSensor.setNumber(SENSORS);
+laserSensor.setHighAccuracy();
 }
 
 void loop()
 {
-readLaser();  
-if (!Serial.available())
+readLaser();
+if (!Serial1.available())
 {
   if (count < 1000)
     {
@@ -56,6 +58,8 @@ if (!Serial.available())
   {
     a.storeIntoBuffer(aMax);
     b.storeIntoBuffer(bMax);
+    aMax = 0;
+    bMax = 0;
     count = 0;  
   }
 }
@@ -66,28 +70,24 @@ else
       {
         aMax = a.getMax();
         bMax = b.getMax();
-        Serial.print(aMax);
-        Serial.print(", ");
-        Serial.println(bMax);
         if (aMax > (bMax - b.getCalibrationValue()))
         {
           Right(left, right, 175);
-          Serial.println("A was Louder");
         }
         else
         {
           Left(left, right, 175);
-          Serial.println("B was Louder");
         }        
         a.clearBuffer();
         b.clearBuffer();
         aMax = 0;
         bMax = 0; 
+        Serial1.print("k-");
       }
     else if (piCommand.direction == 'c')
     {
       calibrateMicrophones(a, b);
-      Serial.print("k-");  
+      Serial1.print("k-");  
     }
     else if (piCommand.direction == 'f')
     {
@@ -136,7 +136,7 @@ else
       Serial1.print("k-");
     }
 }
-delay(1);
+    delay(1000);
 }
 
 void Forward(Motor left, Motor right, int speed)
@@ -180,9 +180,10 @@ int getDistance(char arr[])
   }
   return distance;
 }
+
 void parsePackage(PIData &package)
 {
-  Serial.readBytesUntil('-', fromPi, 10); 
+  Serial1.readBytesUntil('-', fromPi, 10); 
   package.direction = fromPi[0];
   int dist = 0;
   int i = 1;
@@ -197,43 +198,66 @@ void parsePackage(PIData &package)
     {
       fromPi[j] = 0;  
     }
-  Serial.print("a-");  
 }
 
 void readLaser() {
+  Forward(left, right, 150);
   state = laserSensor.getState();
-  if (state > 0) {
-    if (!waitSensor  && !turning) {
-      waitSensor = 25;
-    } 
-    else if (waitSensor) {
-      waitSensor--;
-    }
-      if (!waitSensor) {
-        turning = 1;
-        if (BLOCKED_FRONT & state) {
-          (laserSensor.getValue(LEFT_SENSOR) < laserSensor.getValue(RIGHT_SENSOR)) ? Right(left, right, 200) : Left(left, right, 200);
-        } 
-        else 
-        {
-          (laserSensor.getValue(LEFT_SENSOR) < laserSensor.getValue(RIGHT_SENSOR)) ? Right(left, right, 200) : Left(left, right, 200);
-        }
+  if (state)
+  {
+    if (BLOCKED_FRONT & state)
+    {
+      turn = (laserSensor.getValue(LEFT_SENSOR) < laserSensor.getValue(RIGHT_SENSOR)) ? 1: 0; //1 for left, 0 for right
+      while (laserSensor.getState() & BLOCKED_FRONT)
+      {
+        (turn==0) ? Left(left, right, 155) : Right(left, right, 175);
+        delay(70);
       }
-   }
-    else {
-      waitSensor = 0;
-      turning = 0;
-      Forward(left, right, 175);
+    }
+    else if (BLOCKED_LEFT & state)
+    {
+      Left(left, right, 175);
+      delay(70);
+    }
+    else
+    {
+      Right(left, right, 175);
+      delay(70);
+    }
+    delay(70);
   }
- 
-  if (wait++ > 10) {
-    wait = 0;
-    if (waitSensor || turning) {
-      Halt(left, right);
-    } else {
-      Forward(left, right, 200);
-    }  
-  }
+//  if (state > 0) {
+//    if (!waitSensor  && !turning) {
+//      waitSensor = 25;
+//    } 
+//    else if (waitSensor) {
+//      waitSensor--;
+//    }
+//      if (!waitSensor) {
+//        turning = 1;
+//        if (BLOCKED_FRONT & state) {
+//          (laserSensor.getValue(LEFT_SENSOR) < laserSensor.getValue(RIGHT_SENSOR)) ? Right(left, right, 200) : Left(left, right, 200);
+//        } 
+//        else 
+//        {
+//          (laserSensor.getValue(LEFT_SENSOR) < laserSensor.getValue(RIGHT_SENSOR)) ? Right(left, right, 200) : Left(left, right, 200);
+//        }
+//      }
+//   }
+//    else {
+//      waitSensor = 0;
+//      turning = 0;
+//      Forward(left, right, 175);
+//  }
+// 
+//  if (wait++ > 10) {
+//    wait = 0;
+//    if (waitSensor || turning) {
+//      Halt(left, right);
+//    } else {
+//      Forward(left, right, 200);
+//    }  
+//  }
 }
 
 void calibrateMicrophones(Microphone &a, Microphone &b)
@@ -244,14 +268,14 @@ void calibrateMicrophones(Microphone &a, Microphone &b)
   int bVal;
   int calibration;
   int i = 0;
-  while(i < 50)
+  while(i < 5000)
   {
     aVal = a.record();
     bVal = b.record();
     aCumulative = (aCumulative > aVal) ? aCumulative : aVal;
     bCumulative = (bCumulative > bVal) ? bCumulative : bVal;
     i++;
+    delay(1);
   }
   b.setCalibrationValue(bCumulative - aCumulative);
-  Serial.println(b.getCalibrationValue());
 }

@@ -7,13 +7,13 @@ class Microphone
 {
   public:
     Microphone(int Input);
-    int record();
+    unsigned int record();
     void storeIntoBuffer(int soundValue);
     void clearBuffer();
     void setCalibrationValue(int value);
-    int testMic();
-    int getCalibrationValue();
-    int getMax();
+    unsigned int testMic();
+    unsigned int getCalibrationValue();
+    unsigned int getMax();
     
 
   private:
