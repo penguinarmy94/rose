@@ -53,6 +53,32 @@ def runNotificationManager(rob, config, initialized = False):
     nm_thread.start()
     return nm_thread
 
+def initialize_threads(db, rob, off = True):
+    if rob.power is True and off == True:
+        off = False
+        print("Turned on!")
+        try:
+            br_thread = runBrainThread(db=db,rob=rob,config=config)
+            #mtr_thread = runMotorThread()
+            nm_thread = runNotificationManager(rob=rob,config=config,initialized=True)
+            spk_thread = runSpeakerThread()
+            #ca_thread = runCameraThread()
+            light_thread = runLightThread(pin=11)
+            log_thread = runLoggerThread()
+
+            br_thread.join()
+            #mtr_thread.join()
+            nm_thread.join()
+            spk_thread.join()
+            #ca_thread.join()
+            light_thread.join()
+            logger.write("turn off")
+            off = True
+            print("Turned off!")
+            return off
+        except Exception as e:
+            print(str(e))
+
 def init():
     rob = robot.Robot()
     rob.id = config["robotid"]
@@ -73,36 +99,20 @@ def init():
             print("Waiting for robot initialization...")
             time.sleep(0.2)
 
-        while True:
-            if rob.battery == 0:
-                rob.power = False
-                db.update_robot()
-                off = True
-
-            if rob.power is True and off == True:
-                off = False
-                print("Turned on!")
-                try:
-                    br_thread = runBrainThread(db=db,rob=rob,config=config)
-                    mtr_thread = runMotorThread()
-                    nm_thread = runNotificationManager(rob=rob,config=config,initialized=True)
-                    #spk_thread = runSpeakerThread()
-                    #ca_thread = runCameraThread()
-                    light_thread = runLightThread(pin=11)
-                    log_thread = runLoggerThread()
-
-                    br_thread.join()
-                    mtr_thread.join()
-                    nm_thread.join()
-                    #spk_thread.join()
-                    #ca_thread.join()
-                    light_thread.join()
-                    logger.write("turn off")
+        option = input('0 - Start in Mobile Mode\n1 - Start in Command Line Mode\n\nChoice: ')
+        
+        if option == "0":
+            while True:
+                if rob.battery == 0:
+                    rob.power = False
+                    db.update_robot()
                     off = True
-                    print("Turned off!")
-                except Exception as e:
-                    print(str(e))
-
+                
+                off = initialize_threads(db,rob,off)
+        elif option == "1":
+            initialize_threads(db,rob)
+        else:
+            print("%s Not a valid option!"%option)
 
 if __name__ == "__main__":
     init()

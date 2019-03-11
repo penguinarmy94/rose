@@ -1,7 +1,6 @@
 import json, sys, datetime
 import serial
 from . import queues
-#from . import serial
 from . import logger
 
 class Motor():
@@ -95,15 +94,6 @@ class Motor():
             return -1
     
     def __get_motor_response(self):
-        #if self.__port.in_waiting > 0:
-        #    message = ""
-
-        #    while self.__port.in_waiting > 0:
-        #        message += self.__port.read(1).decode()
-            
-        #    return message
-        #else:
-        #    return None
         return self.__read_serial()
 
     def __write_serial(self, message):
