@@ -78,8 +78,6 @@ def initialize_threads(db, rob, off = True):
             return off
         except Exception as e:
             print(str(e))
-    else:
-        return off
 
 def init():
     rob = robot.Robot()
@@ -127,7 +125,7 @@ def init():
                     cam_thread.join()
                     queues.logger_queue.put("turn off")
                     logger.join()
-                elif option == "1":
+                elif option == 1:
                     spk_thread = runCameraThread()
                     logger = runLoggerThread()
                     message = input('\nWhat message would you like to send? ')
@@ -136,7 +134,7 @@ def init():
                     spk_thread.join()
                     queues.logger_queue.put("turn off")
                     logger.join()
-                elif option == "2":
+                elif option == 2:
                     break
                 else:
                     print("Not a valid option")

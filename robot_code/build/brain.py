@@ -44,6 +44,7 @@ class Brain():
     def begin(self):
         #Run for as long as queues are active
         self.__write_motor(message_type="calibrate", message="C5-")
+        self.__write_speaker(message_type="speaker", message="Powered on! I am ready to serve you master.")
         while self.__robot.power is True:
             try:
                 #Read Motor queue for new updates
@@ -61,11 +62,11 @@ class Brain():
                 logger.write(str(datetime.datetime.now()) + " - Brain Error: " + str(e))
                 break
         
-        self.__spkQueue.clear()
         self.__write_sensor(message_type="off", message="Powered Off")
         self.__write_motor(message_type="off", message="turn off")
         self.__write_microphone(message_type="off", message="turn off")
         #self.__write_camera(message_type="off", message="turn off")
+        self.__write_speaker(message_type="speaker", message="Damn. You. Humans.")
         self.__write_speaker(message_type="off", message="Powered Off")
         self.__write_notifier(message_type="off", message="Powered Off")
         logger.write(str(datetime.datetime.now()) + " - Brain: Powered Off")
@@ -130,7 +131,6 @@ class Brain():
             if message_packet["type"] == "brain":
                 message_packet = json.loads(self.__mQueue.get())
                 logger.write(str(datetime.datetime.now()) + " - Motor to Brain: Brain Message Received -- " + message_packet["message"])
-                self.__write_speaker(message_type="speaker", message="Hi sir. Would you like a lemonade?")
                 self.__motorBusy = False
             else:
                 return
@@ -187,8 +187,10 @@ class Brain():
             self.__lightOn = self.__robot.light
             if self.__lightOn is True:
                 message = "turn on"
+                self.__write_speaker(message_type="speaker", message="I can finally see")
             elif self.__lightOn is False:
                 message = "turn off"
+                self.__write_speaker(message_type="speaker", message="Oh no I can't see anymore")
             else:
                 return
             self.__write_sensor(message_type="light", message=message)
@@ -232,6 +234,7 @@ class Brain():
     
     def __write_speaker(self, message_type="speaker", message="no message"):
         self.__spkQueue.put(json.dumps({"type": message_type, "message": message}))
+        logger.write(str(datetime.datetime.now()) + " - Brain to Speaker: " + message)
     
     def __write_notifier(self, message_type="notification", message="no message"):
         self.__nmQueue.put(json.dumps({"type": message_type, "message": message}))
