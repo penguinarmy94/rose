@@ -128,10 +128,10 @@ def init():
                     queues.logger_queue.put("turn off")
                     logger.join()
                 elif option == "1":
-                    spk_thread = runCameraThread()
+                    spk_thread = runSpeakerThread()
                     logger = runLoggerThread()
                     message = input('\nWhat message would you like to send? ')
-                    queues.brain_speaker_queue.put(json.dumps({"type" : "camera", "message" : message}))
+                    queues.brain_speaker_queue.put(json.dumps({"type" : "speaker", "message" : message}))
                     queues.brain_speaker_queue.put(json.dumps({"type": "off", "message" : "turn off"}))
                     spk_thread.join()
                     queues.logger_queue.put("turn off")
