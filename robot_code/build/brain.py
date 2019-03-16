@@ -231,6 +231,7 @@ class Brain():
     
     def __write_camera(self, message_type="camera", message="no message"):
         self.__camQueue.put(json.dumps({"type": message_type, "message": message}))
+        logger.write(str(datetime.datetime.now()) + " - Brain to Camera: " + message)
     
     def __write_speaker(self, message_type="speaker", message="no message"):
         self.__spkQueue.put(json.dumps({"type": message_type, "message": message}))
