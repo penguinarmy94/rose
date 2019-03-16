@@ -61,7 +61,7 @@ def initialize_threads(db, rob, off = True):
             #mtr_thread = runMotorThread()
             nm_thread = runNotificationManager(rob=rob,config=config,initialized=True)
             spk_thread = runSpeakerThread()
-            ca_thread = runCameraThread(pin=12)
+            cam_thread = runCameraThread(pin=12)
             light_thread = runLightThread(pin=11)
             log_thread = runLoggerThread()
 
@@ -69,7 +69,7 @@ def initialize_threads(db, rob, off = True):
             #mtr_thread.join()
             nm_thread.join()
             spk_thread.join()
-            ca_thread.join()
+            cam_thread.join()
             light_thread.join()
             logger.write("turn off")
             off = True
