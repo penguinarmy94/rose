@@ -1,6 +1,6 @@
 from . import logger
 from threading import Thread
-import json, datetime, time, pyttsx3, functools
+import json, datetime, time, pyttsx3, functools, RPi.GPIO as gpio
 
 class Camera():
     __pin = None
