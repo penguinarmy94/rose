@@ -13,6 +13,8 @@ class Camera():
             logger.write(str(datetime.datetime.now()) + " - Camera initialized")
             self.__pin = pin
             self.__queue = queue
+            pwm_servo = GPIO.PWM(SERVO, 50)
+            pwm_servo.start(duty_cycle)
             #self.__player = pyttsx3.init()
             #self.__player.setProperty("rate", 120)
         else:
@@ -43,7 +45,7 @@ class Camera():
         if message_packet["type"] == "position":
             message_packet = json.loads(self.__queue.get())
             logger.write(str(datetime.datetime.now()) + " - Brain to Camera: Camera Message Received -- " + message_packet["message"])
-            #self.say(message_packet["message"])
+            pwm_servo.ChangeDutyCycle(float(message_packet["message"])
             return 1
         elif message_packet["type"] == "off":
             message_packet = json.loads(self.__queue.get())
