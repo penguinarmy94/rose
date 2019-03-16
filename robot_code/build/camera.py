@@ -22,7 +22,6 @@ class Camera():
         gpio.setmode(gpio.BOARD)
         gpio.setup(self.__pin, gpio.OUT)
 
-        logger.write(str(datetime.datetime.now()) + ".Camera.run")
         while True:
             if not self.__queue.empty():
                 result = self.read_queue()
@@ -34,7 +33,6 @@ class Camera():
                     print("good_camera")
                     continue
             else:
-                logger.write(str(datetime.datetime.now()) + " - Camera.QueueEmpty" )
                 continue
         
         logger.write(str(datetime.datetime.now()) + " - Camera: Powered off")
@@ -45,7 +43,7 @@ class Camera():
         if message_packet["type"] == "position":
             message_packet = json.loads(self.__queue.get())
             logger.write(str(datetime.datetime.now()) + " - Brain to Camera: Camera Message Received -- " + message_packet["message"])
-            self.say(message_packet["message"])
+            #self.say(message_packet["message"])
             return 1
         elif message_packet["type"] == "off":
             message_packet = json.loads(self.__queue.get())
