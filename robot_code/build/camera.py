@@ -14,7 +14,7 @@ class Camera():
             gpio.setmode(gpio.BOARD)
             gpio.setup(pin, gpio.OUT)
             self.__servo = gpio.PWM(pin, 50)
-            self.__servo.start(7)
+            #self.__servo.start(7)
             self.__queue = queue
             
         else:
@@ -31,6 +31,7 @@ class Camera():
                     print("good_camera")
                     continue
             else:
+                seld.__servo.stop()
                 continue
         
         logger.write(str(datetime.datetime.now()) + " - Camera: Powered off")
@@ -41,8 +42,8 @@ class Camera():
         if message_packet["type"] == "position":
             message_packet = json.loads(self.__queue.get())
             logger.write(str(datetime.datetime.now()) + " - Brain to Camera: Camera Message Received -- " + message_packet["message"])
-            
-            self.__servo.ChangeDutyCycle(float(message_packet["message"]))
+            self.__servo.start(message_packet["message"])
+            #self.__servo.ChangeDutyCycle(float(message_packet["message"]))
             return 1
         elif message_packet["type"] == "off":
             message_packet = json.loads(self.__queue.get())
