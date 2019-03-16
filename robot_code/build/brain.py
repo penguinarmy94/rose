@@ -167,7 +167,7 @@ class Brain():
                 return
         if not self.__camPosition == self.__robot.camera_angle:
                 self.__camPosition = self.__robot.camera_angle
-                self.__write_camera(message_type="position", message=self.__camPosition)
+                self.__write_camera(message_type="position", message="self.__camPosition")
         else:
             return
     
