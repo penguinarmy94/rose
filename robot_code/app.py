@@ -69,7 +69,7 @@ def initialize_threads(db, rob, off = True):
             #mtr_thread.join()
             nm_thread.join()
             spk_thread.join()
-            #cam_thread.join()
+            cam_thread.join()
             light_thread.join()
             logger.write("turn off")
             off = True
@@ -118,12 +118,12 @@ def init():
                 option = input('0 - Send message to camera\n1 - Send message to speaker\n2 - exit\n\nChoice: ')
 
                 if option == "0":
-                    #cam_thread = runCameraThread()
+                    cam_thread = runCameraThread()
                     logger = runLoggerThread()
                     message = input('\nWhat message would you like to send? ')
                     queues.brain_camera_queue.put(json.dumps({"type" : "camera", "message" : int(message)}))
                     queues.brain_camera_queue.put(json.dumps({"type": "off", "message" : "turn off"}))
-                    #cam_thread.join()
+                    cam_thread.join()
                     queues.logger_queue.put("turn off")
                     logger.join()
                 elif option == "1":
