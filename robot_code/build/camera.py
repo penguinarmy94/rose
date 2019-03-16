@@ -31,7 +31,7 @@ class Camera():
                     print("good_camera")
                     continue
             else:
-                seld.__servo.stop()
+                self.__servo.stop()
                 continue
         
         logger.write(str(datetime.datetime.now()) + " - Camera: Powered off")
