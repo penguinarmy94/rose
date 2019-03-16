@@ -32,6 +32,7 @@ class Camera():
 
         while True:
             if not self.__queue.empty():
+                print(self.read_queue()
                 result = self.read_queue()
                 logger.write(str(datetime.datetime.now()) + " - Camera message: " + result )
                 if result == 2:
