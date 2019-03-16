@@ -5,14 +5,14 @@ import json, datetime, time, pyttsx3, functools
 class Camera():
     __pin = None
     __isOn = False
-    __caQueue = None
+    __queue = None
     __player = None
 
     def __init__(self, queue = None, pin = None):
         if queue and pin:
             self.__pin = pin
             self.__queue = queue
-            self.__player = pyttsx3.init()
+            #self.__player = pyttsx3.init()
             #self.__player.setProperty("rate", 120)
         else:
             raise TypeError("Camera: Queue or pin number are not initialized")
