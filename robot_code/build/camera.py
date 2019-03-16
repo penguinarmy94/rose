@@ -23,6 +23,7 @@ class Camera():
         gpio.setup(self.__pin, gpio.OUT)
 
         while True:
+            logger.write(str(datetime.datetime.now()) + ".Camera.run")
             if not self.__queue.empty():
                 result = self.read_queue()
                 logger.write(str(datetime.datetime.now()) + " - Camera message: " + result )
@@ -33,6 +34,7 @@ class Camera():
                     print("good_camera")
                     continue
             else:
+                logger.write(str(datetime.datetime.now()) + " - Camera.QueueEmpty" )
                 continue
         
         logger.write(str(datetime.datetime.now()) + " - Camera: Powered off")
