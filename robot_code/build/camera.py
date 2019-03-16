@@ -4,7 +4,7 @@ import json, datetime, time, pyttsx3, functools, RPi.GPIO as gpio
 
 class Camera():
     __isOn = False
-    __queue = None\
+    __queue = None
     __servo = None
 
     def __init__(self, queue = None, pin = None):
