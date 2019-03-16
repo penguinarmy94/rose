@@ -24,6 +24,7 @@ def runLightThread(pin=16):
     return light_thread
 
 def runCameraThread():
+    pass
     ca = camera.Camera(queues.brain_camera_queue, pin)
     cam_thread = Thread(target=functools.partial(ca.run))
     cam_thread.start()
@@ -118,12 +119,12 @@ def init():
                 option = input('0 - Send message to camera\n1 - Send message to speaker\n2 - exit\n\nChoice: ')
 
                 if option == "0":
-                    cam_thread = runCameraThread()
+                    #cam_thread = runCameraThread()
                     logger = runLoggerThread()
                     message = input('\nWhat message would you like to send? ')
                     queues.brain_camera_queue.put(json.dumps({"type" : "camera", "message" : int(message)}))
                     queues.brain_camera_queue.put(json.dumps({"type": "off", "message" : "turn off"}))
-                    cam_thread.join()
+                    #cam_thread.join()
                     queues.logger_queue.put("turn off")
                     logger.join()
                 elif option == "1":
