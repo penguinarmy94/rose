@@ -17,8 +17,8 @@ class Camera():
             
             self.__pin = pin
             self.__queue = queue
-            self.__pwm = gpio.PWM(pin, 50)
-            self.__pwm.start(10)
+            #self.__pwm = gpio.PWM(pin, 50)
+            #self.__pwm.start(10)
             #pwm_servo = GPIO.PWM(SERVO, 50)
             #pwm_servo.start(duty_cycle)
             #self.__player = pyttsx3.init()
