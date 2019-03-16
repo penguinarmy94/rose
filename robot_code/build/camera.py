@@ -4,8 +4,7 @@ import json, datetime, time, pyttsx3, functools, RPi.GPIO as gpio
 
 class Camera():
     __isOn = False
-    __queue = None
-    __player = None
+    __queue = None\
     __servo = None
 
     def __init__(self, queue = None, pin = None):
@@ -22,9 +21,6 @@ class Camera():
             raise TypeError("Camera: Queue or pin number are not initialized")
 
     def run(self):
-        gpio.setmode(gpio.BOARD)
-        gpio.setup(self.__pin, gpio.OUT)
-
         while True:
             if not self.__queue.empty():
                 result = self.read_queue()
