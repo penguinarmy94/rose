@@ -12,13 +12,13 @@ class Camera():
     def __init__(self, queue = None, pin = None):
         if queue and pin:
             logger.write(str(datetime.datetime.now()) + " - Camera initialized")
-            #gpio.setmode(gpio.BOARD)
-            #gpio.setup(pin, gpio.OUT)
+            gpio.setmode(gpio.BOARD)
+            gpio.setup(pin, gpio.OUT)
             
             self.__pin = pin
             self.__queue = queue
-            #self.__pwm = gpio.PWM(pin, 50)
-            #self.__pwm.start(10)
+            self.__pwm = gpio.PWM(pin, 50)
+            self.__pwm.start(10)
             #pwm_servo = GPIO.PWM(SERVO, 50)
             #pwm_servo.start(duty_cycle)
             #self.__player = pyttsx3.init()
@@ -32,7 +32,6 @@ class Camera():
 
         while True:
             if not self.__queue.empty():
-                print(self.read_queue())
                 result = self.read_queue()
                 if result == 2:
                     print("something_camera")
