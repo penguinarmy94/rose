@@ -24,7 +24,7 @@ def runLightThread(pin=16):
     return light_thread
 
 def runCameraThread():
-    ca = camera.Camera(queues.brain_sensor_queue)
+    ca = camera.Camera(queues.brain_sensor_queue, pin)
     cam_thread = Thread(target=functools.partial(ca.run))
     cam_thread.start()
     return ca_thread
@@ -61,7 +61,7 @@ def initialize_threads(db, rob, off = True):
             #mtr_thread = runMotorThread()
             nm_thread = runNotificationManager(rob=rob,config=config,initialized=True)
             spk_thread = runSpeakerThread()
-            ca_thread = runCameraThread()
+            ca_thread = runCameraThread(pin=12)
             light_thread = runLightThread(pin=11)
             log_thread = runLoggerThread()
 
