@@ -13,8 +13,10 @@ class Camera():
             gpio.setwarnings(False)
             gpio.setmode(gpio.BOARD)
             gpio.setup(pin, gpio.OUT)
-            self.__servo = gpio.PWM(pin, 35)
+            self.__servo = gpio.PWM(pin, 100)
             self.__servo.start(7)
+            timer.sleep(25)
+            self.__servo = pin(pin, 0)
             self.__queue = queue
             
         else:
