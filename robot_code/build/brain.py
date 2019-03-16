@@ -65,7 +65,7 @@ class Brain():
         self.__write_sensor(message_type="off", message="Powered Off")
         self.__write_motor(message_type="off", message="turn off")
         self.__write_microphone(message_type="off", message="turn off")
-        #self.__write_camera(message_type="off", message="turn off")
+        self.__write_camera(message_type="off", message="turn off")
         self.__write_speaker(message_type="speaker", message="Damn. You. Humans.")
         self.__write_speaker(message_type="off", message="Powered Off")
         self.__write_notifier(message_type="off", message="Powered Off")
