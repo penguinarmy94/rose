@@ -3,11 +3,11 @@ from threading import Thread
 import json, datetime, time, pyttsx3, functools, RPi.GPIO as gpio
 
 class Camera():
-    __pin = None
+    #__pin = None
     __isOn = False
     __queue = None
     __player = None
-    __pwm = None
+    __servo = None
 
     def __init__(self, queue = None, pin = None):
         if queue and pin:
