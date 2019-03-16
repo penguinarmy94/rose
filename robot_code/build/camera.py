@@ -10,6 +10,7 @@ class Camera():
 
     def __init__(self, queue = None, pin = None):
         if queue and pin:
+            logger.write(str(datetime.datetime.now()) + " - Camera initialized")
             self.__pin = pin
             self.__queue = queue
             #self.__player = pyttsx3.init()
