@@ -41,7 +41,7 @@ class Camera():
 
         if message_packet["type"] == "camera":
             message_packet = json.loads(self.__queue.get())
-            logger.write(str(datetime.datetime.now()) + " - Brain to Camera: Camer Message Received -- " + message_packet["message"])
+            logger.write(str(datetime.datetime.now()) + " - Brain to Camera: Camera Message Received -- " + message_packet["message"])
             self.say(message_packet["message"])
             return 1
         elif message_packet["type"] == "off":
