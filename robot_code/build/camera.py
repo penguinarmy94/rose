@@ -11,7 +11,7 @@ class Camera():
     def __init__(self, queue = None, pin = None):
         if queue and pin:
             logger.write(str(datetime.datetime.now()) + " - Camera initialized")
-            gpio.setwarnings(false)
+            gpio.setwarnings(False)
             gpio.setmode(gpio.BOARD)
             gpio.setup(pin, gpio.OUT)
             self.__servo = gpio.PWM(pin, 50)
