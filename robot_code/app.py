@@ -9,7 +9,7 @@ config_file.close()
 path.insert(0, config["home_path"])
 #path.insert(0, config["windows_home_path"])
 
-from build import brain, motor, robot, database, queues, logger, speaker, notification_manager, light #, camera
+from build import brain, motor, robot, database, queues, logger, speaker, notification_manager, light, camera
 
 def runSpeakerThread():
     spkr = speaker.Speaker(queues.brain_speaker_queue)
