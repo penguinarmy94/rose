@@ -22,8 +22,8 @@ class Camera():
         gpio.setmode(gpio.BOARD)
         gpio.setup(self.__pin, gpio.OUT)
 
+        logger.write(str(datetime.datetime.now()) + ".Camera.run")
         while True:
-            logger.write(str(datetime.datetime.now()) + ".Camera.run")
             if not self.__queue.empty():
                 result = self.read_queue()
                 logger.write(str(datetime.datetime.now()) + " - Camera message: " + result )
