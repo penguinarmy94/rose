@@ -27,10 +27,10 @@ class Camera():
                 result = self.read_queue()
                 logger.write(str(datetime.datetime.now()) + " - Camera message: " + result )
                 if result == 2:
-                    print("something")
+                    print("something_camera")
                     break
                 else:
-                    print("good")
+                    print("good_camera")
                     continue
             else:
                 continue
