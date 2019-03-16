@@ -54,7 +54,7 @@ class Brain():
                 #Read Microphone queue for new updates
                 #self.read_microphone()
                 #read Camera queue for new updates
-                #self.read_camera()
+                self.read_camera()
                 #handle Behavior
                 self.__update_behaviors()
                 self.handle_behavior()
@@ -230,7 +230,8 @@ class Brain():
         self.__miQueue.put(json.dumps({"type": message_type, "message": message}))
     
     def __write_camera(self, message_type="camera", message="no message"):
-        self.__miQueue.put(json.dumps({"type": message_type, "message": message}))
+        self.__camQueue.put(json.dumps({"type": message_type, "message": message}))
+        logger.write(str(datetime.datetime.now()) + " - Brain to Camera: " + message)
     
     def __write_speaker(self, message_type="speaker", message="no message"):
         self.__spkQueue.put(json.dumps({"type": message_type, "message": message}))
