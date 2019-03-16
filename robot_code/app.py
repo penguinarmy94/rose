@@ -23,7 +23,7 @@ def runLightThread(pin=16):
     light_thread.start()
     return light_thread
 
-def runCameraThread():
+def runCameraThread(pin=12):
     ca = camera.Camera(queues.brain_camera_queue, pin)
     cam_thread = Thread(target=functools.partial(ca.run))
     cam_thread.start()
