@@ -12,12 +12,12 @@ class Camera():
     def __init__(self, queue = None, pin = None):
         if queue and pin:
             logger.write(str(datetime.datetime.now()) + " - Camera initialized")
-            #gpio.setmode(gpio.BOARD)
-            #gpio.setup(pin, gpio.OUT)
-            #self.__servo = gpio.PWM(pin, 50)
-            #self.__servo.start(7)
+            gpio.setmode(gpio.BOARD)
+            gpio.setup(pin, gpio.OUT)
+            self.__servo = gpio.PWM(pin, 50)
+            self.__servo.start(7)
             #self.__pin = pin
-            #self.__queue = queue
+            self.__queue = queue
             #self.__pwm = gpio.PWM(pin, 50)
             #self.__pwm.start(10)
             #pwm_servo = GPIO.PWM(SERVO, 50)
@@ -28,8 +28,8 @@ class Camera():
             raise TypeError("Camera: Queue or pin number are not initialized")
 
     def run(self):
-        gpio.setmode(gpio.BOARD)
-        gpio.setup(self.__pin, gpio.OUT)
+        //gpio.setmode(gpio.BOARD)
+        //gpio.setup(self.__pin, gpio.OUT)
 
         while True:
             if not self.__queue.empty():
@@ -53,7 +53,7 @@ class Camera():
             logger.write(str(datetime.datetime.now()) + " - Brain to Camera: Camera Message Received -- " + message_packet["message"])
             #servo = gpio.PWM(self.__pin, 50)
             #servo.start(float(message_packet["message"]))
-            #self.__servo.ChangeDutyCycle(float(message_packet["message"]))
+            self.__servo.ChangeDutyCycle(float(message_packet["message"]))
             return 1
         elif message_packet["type"] == "off":
             message_packet = json.loads(self.__queue.get())
