@@ -24,7 +24,11 @@ export default class SettingsScreen extends Component {
 
         this.robotSnapshot = config.session.currentRobot().onSnapshot((robot) => {
             if(robot.exists) {
-                this.setState({"power": robot.data().power, "light": robot.data().light});
+                this.setState({
+                    "power": robot.data().power, 
+                    "light": robot.data().light,
+                    "cameraAngle": robot.data().camera_angle
+                });
             }
         });
     }
