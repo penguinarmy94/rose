@@ -13,7 +13,7 @@ class Camera():
         if queue and pin:
             logger.write(str(datetime.datetime.now()) + " - Camera initialized")
             gpio.setmode(gpio.BOARD)
-            gpio.setup(pin, 50)
+            gpio.setup(pin, gpio.OUT)
             
             self.__pin = pin
             self.__queue = queue
@@ -61,7 +61,7 @@ class Camera():
             return -1
 
     def say(self, message=""):
-        self.__player.say(message)
-        self.__player.runAndWait()
+        #self.__player.say(message)
+        #self.__player.runAndWait()
 
         logger.write(str(datetime.datetime.now()) + " - Camera: " + message)
