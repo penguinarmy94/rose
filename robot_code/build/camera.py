@@ -40,7 +40,7 @@ class Camera():
     def read_queue(self):
         message_packet = json.loads(self.__queue.get())
 
-        if message_packet["type"] == "camera":
+        if message_packet["type"] == "position":
             message_packet = json.loads(self.__queue.get())
             logger.write(str(datetime.datetime.now()) + " - Brain to Camera: Camera Message Received -- " + message_packet["message"])
             self.say(message_packet["message"])
