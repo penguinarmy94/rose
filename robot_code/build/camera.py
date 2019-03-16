@@ -28,8 +28,8 @@ class Camera():
             raise TypeError("Camera: Queue or pin number are not initialized")
 
     def run(self):
-        //gpio.setmode(gpio.BOARD)
-        //gpio.setup(self.__pin, gpio.OUT)
+        #gpio.setmode(gpio.BOARD)
+        #gpio.setup(self.__pin, gpio.OUT)
 
         while True:
             if not self.__queue.empty():
