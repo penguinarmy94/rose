@@ -48,7 +48,7 @@ class Camera():
             logger.write(str(datetime.datetime.now()) + " - Brain to Camera: Camera Message Received -- " + message_packet["message"])
             servo = gpio.PWM(self.__pin, 50)
             servo.start(float(message_packet["message"]))
-            servo.stop()
+            
             #self.__servo.start(float(message_packet["message"]))
             #self.__servo.ChangeDutyCycle(float(message_packet["message"]))
             return 1
