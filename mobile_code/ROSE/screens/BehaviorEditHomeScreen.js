@@ -3,11 +3,12 @@ import { View, Text, StyleSheet, Picker, Alert } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { config } from "../assets/config/config";
 import { NavigationActions, StackActions } from 'react-navigation';
+import User from '../controllers/User';
 
 export default class BehaviorEditHomeScreen extends Component {
     static navigationOptions = ({navigation}) => {
         return{
-            headerLeft: <Icon type="material-community" name="arrow-left" onPress={() => {navigation.getParam("rootNav", "null").navigate("SettingsHome")} } />
+            headerLeft: <Icon style={{marginLeft: 15}} type="material-community" name="arrow-left" onPress={() => {navigation.getParam("rootNav", "null").navigate("SettingsHome")} } />
         };
     };
 
@@ -37,27 +38,7 @@ export default class BehaviorEditHomeScreen extends Component {
             elementValue.get().then((behavior) => {
                 if(behavior.exists) {
                     behaviorList.push(behavior.data());
-                    if(behavior.data().name == "default") {
-                        behaviorComponents.push(
-                            <View key={index} style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                                <Text style={[{flex: 0}, styles.spacing]}>{behavior.data().name}</Text>
-                            </View>
-                        );
-                    }
-                    else {
-                        behaviorComponents.push(
-                            <View key={index} style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                                <Text style={[{flex: 0}, styles.spacing]}>{behavior.data().name}</Text>
-                                <Icon 
-                                    type="material-community" 
-                                    name="minus-circle" 
-                                    color="red" 
-                                    onPress={() => this.deleteBehavior(behavior.data(), behavior)}
-                                />
-                            </View>
-                        );
-                    }
-
+                    behaviorComponents = this._addComponent(index, behavior, behaviorComponents);
                     behaviorPickerItems.push({name: behavior.data().name, element: index, ref: behavior});
 
                     this.setState({
@@ -68,22 +49,7 @@ export default class BehaviorEditHomeScreen extends Component {
                 }
 
                 if(this.state.behaviorList.length == this.state.behaviors.length) {
-                    let pickers = this.state.defaultPickers;
-
-                    pickers.push({
-                        key: "1",
-                        text: "Idle Behavior: ",
-                        selected: this.state.idle,
-                        changeFunction: this.changeIdleBehavior
-                    });
-                    pickers.push({
-                        key: "2",
-                        text: "Detect Behavior: ",
-                        selected: this.state.detect,
-                        changeFunction: this.changeDetectBehavior
-                    });
-
-                    this.setState({defaultPickers: pickers});
+                    this._addPickers();
                 }
 
             }).catch((error) => {
@@ -91,6 +57,60 @@ export default class BehaviorEditHomeScreen extends Component {
             });
         });
 
+        this.userSnapshot = config.session.getUser().getUserRef().onSnapshot((user) => {
+            if(user.exists) {
+               config.session.setUser(new User(user));
+            }
+        });
+
+    }
+
+    _addComponent = (index, behavior, behaviorComponents) => {
+        if(behavior.data().name == "default") {
+            behaviorComponents.push(
+                <View key={index} style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+                    <Text style={[{flex: 0}, styles.spacing]}>{behavior.data().name}</Text>
+                </View>
+            );
+        }
+        else {
+            behaviorComponents.push(
+                <View key={index} style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                    <Icon 
+                        type="material-community" 
+                        name="minus-circle" 
+                        color="red" 
+                        onPress={() => this.deleteBehavior(behavior.data(), behavior)}
+                    />
+                    <Text style={[{flex: 0}, styles.spacing]}>{behavior.data().name}</Text>
+                </View>
+            );
+        }
+
+        return behaviorComponents;
+    }
+
+    _addPickers = () => {
+        let pickers = this.state.defaultPickers;
+
+        pickers.push({
+            key: "1",
+            text: "Idle Behavior: ",
+            selected: this.state.idle,
+            changeFunction: this.changeIdleBehavior
+        });
+        pickers.push({
+            key: "2",
+            text: "Detect Behavior: ",
+            selected: this.state.detect,
+            changeFunction: this.changeDetectBehavior
+        });
+
+        this.setState({defaultPickers: pickers});
+    }
+
+    componentWillUnmount = () => {
+        this.userSnapshot();
     }
 
     deleteBehavior = (key, behaviorRef) => {

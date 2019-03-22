@@ -8,22 +8,23 @@
 
 import React, {Component} from 'react';
 import {createStackNavigator, createAppContainer} from 'react-navigation';
-import VideoScreen from '../screens/VideoScreen';
+import ImageScreen from '../screens/ImageScreen';
 import { config } from "../assets/config/config";
 
 
-const videoNav = createStackNavigator(
+const imageNav = createStackNavigator(
     {
-        VideoHome: { screen: VideoScreen },
+        ImageHome: { screen: ImageScreen },
     }, 
     {
-        initialRouteName: "VideoHome",
+        initialRouteName: "ImageHome",
+        headerMode: "screen"
     }
 );
 
-const VideoContainer =  createAppContainer(videoNav);
+const ImageContainer =  createAppContainer(imageNav);
 
-export default class VideoStack extends Component {
+export default class ImageStack extends Component {
     static navigationOptions = ({navigation}) => ({
         tabBarOnPress: ({navigation, defaultHandler}) => {
             navigation.setParams({headerTitle: config.headerTitle});
@@ -32,6 +33,6 @@ export default class VideoStack extends Component {
     });
 
     render() {
-        return <VideoContainer screenProps={{rootNav: this.props.screenProps.rootNav, data: this.props.screenProps.data}} />
+        return <ImageContainer screenProps={{ parentNav: this.props.navigation, rootNav: this.props.screenProps.rootNav, data: this.props.screenProps.data}} />
     }
 }
