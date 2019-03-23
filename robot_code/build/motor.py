@@ -16,13 +16,14 @@ class Motor():
     def __init__(self, motorQueue):
         self.__direction = ""
         self.__bqueue = motorQueue
-        self.__port = "/dev/ttyS0"
+        self.__port = "/dev/ttyAMA0"
         self.__rate = 9600
         self.__timeout = 1
         self.__bytesToRead = 10
        # self.__receive_port = serial.Serial("/dev/serial1", 9600)
     
     def run(self):
+        self.__receive_port = serial.Serial(self.__port, self.__rate, timeout=self.__timeout)
         while True:
             if self.__isWaiting is True:
                 responseReceived = self.__get_motor_response()
@@ -98,21 +99,26 @@ class Motor():
 
     def __write_serial(self, message):
         try:
-            with serial.Serial(self.__port, self.__rate, timeout=self.__timeout) as port:
-                output = port.write(message.encode())
-                return output
+            output = self.__receive_port.write(message.encode())
+            return output
         except Exception as e:
             print(str(e))
     
     def __read_serial(self):
         try:
-            with serial.Serial(self.__port, self.__rate, timeout=self.__timeout) as port:
-                message = port.read(self.__bytesToRead).decode()
+            start = datetime.datetime.now()
+            end = start
+            message = ""
+            
+            while end.second < start.second + 5:
+                message += self.__receive_port.read().decode()
+                print(message)
+                end = datetime.datetime.now()
                 
-                if message == "":
-                    message = None
-                
-                return message
+            if message == "":
+                message = None
+                 
+            return message
         except Exception as e:
             print(str(e))
             return None
