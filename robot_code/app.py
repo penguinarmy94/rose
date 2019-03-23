@@ -58,7 +58,7 @@ def initialize_threads(db, rob, off = True):
         print("Turned on!")
         try:
             br_thread = runBrainThread(db=db,rob=rob,config=config)
-            #mtr_thread = runMotorThread()
+            mtr_thread = runMotorThread()
             nm_thread = runNotificationManager(rob=rob,config=config,initialized=True)
 
             spk_thread = runSpeakerThread()
@@ -67,7 +67,7 @@ def initialize_threads(db, rob, off = True):
             log_thread = runLoggerThread()
 
             br_thread.join()
-            #mtr_thread.join()
+            mtr_thread.join()
             nm_thread.join()
             spk_thread.join()
             ca_thread.join()
