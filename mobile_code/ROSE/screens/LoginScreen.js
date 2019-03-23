@@ -5,7 +5,7 @@
  */
 
 import React, {Component} from 'react';
-import {StyleSheet, Text, View, Image, Button} from 'react-native';
+import {StyleSheet, Text, View, Image, Button, TouchableOpacity} from 'react-native';
 import {FormInput} from 'react-native-elements';
 import firebase from 'react-native-firebase';
 import Session from '../controllers/Session';
@@ -17,7 +17,7 @@ const title = "R.O.S.E";
 export default class LoginScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = { username: "", password: "" };
+    this.state = { username: "", password: ""};
     this.errorCodes = config.errorCodes;
 
     this.usernameChange = (text) => {
@@ -90,21 +90,33 @@ export default class LoginScreen extends Component {
 
   render() {
     return(
-      <View style={styles.container}>
-        <Image source={logo} />
-        <Text style={styles.welcome}>{title}</Text>
-        <FormInput placeholder="username" 
-            ref={input => this.usernameField = input}
-            onChangeText={this.usernameChange} 
-            value={this.state.username} />
-        <FormInput placeholder="password"
-            ref={input => this.passwordField = input} 
-            secureTextEntry={true} 
-            onChangeText={this.passwordChange} 
-            value={this.state.password} />
-        <Button title="Login" onPress={this.authenticate} />
-        <Button title="Debug Login" onPress={this.debugLogin} />
-        <Button title="Register" onPress={this.register} />
+      <View style={[styles.container, styles.rose_background]}>
+        <View style={styles.login_container}>
+          <View style={{marginTop: 5}}>
+            <Image source={logo} />
+          </View>
+          <Text style={styles.title}>{title}</Text>
+          <FormInput placeholder="username" 
+              ref={input => this.usernameField = input}
+              onChangeText={this.usernameChange} 
+              value={this.state.username} 
+              containerStyle={{width: 300, borderBottomWidth: 1}}/>
+          <FormInput placeholder="password"
+              ref={input => this.passwordField = input} 
+              secureTextEntry={true} 
+              onChangeText={this.passwordChange} 
+              value={this.state.password} 
+              containerStyle={{width: 300, borderBottomWidth: 1}}/>
+          <View style={{width: 300, margin: 15}} >
+            <Button title="Login" color="pink" onPress={this.authenticate} style={{margin: 20}}/>
+          </View>
+          <View style={{flexDirection: "row", justifyContent: "space-between", width: 200, margin: 15}}>
+            <TouchableOpacity onPress={this.debugLogin} underlayColor={"white"}>
+              <Text style={[styles.hyperlink]}>Debug Login</Text>
+            </TouchableOpacity>
+            <View><Text onPress={this.register} style={styles.hyperlink}>Register</Text></View>
+          </View>
+        </View>
       </View>
     );
   }
@@ -117,10 +129,29 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       backgroundColor: '#F5FCFF',
     },
-    welcome: {
-      fontSize: 20,
+    login_container: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: "white",
+      borderWidth: 1,
+      borderRadius: 50,
+      paddingLeft: 10,
+      paddingRight: 10
+    },
+    rose_background: {
+      backgroundColor: "#BDE7B0"
+    },
+    hyperlink: { 
+      fontWeight: "bold",
+      borderBottomWidth: 1,
+      color: "blue",
+      borderBottomColor: "blue"
+    },
+    title: {
+      fontSize: 25,
       textAlign: 'center',
       margin: 10,
+      marginBottom: 25
     },
     instructions: {
       textAlign: 'center',

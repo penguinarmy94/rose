@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, Picker, StyleSheet, ScrollView, Alert, Button } from 'react-native';
-import { Icon, FormInput } from 'react-native-elements';
+import { Icon, FormLabel, FormInput } from 'react-native-elements';
 import { config } from '../assets/config/config';
 import uuid from 'react-native-uuid';
 import { NavigationActions, StackActions } from 'react-navigation';
@@ -15,6 +15,7 @@ export default class BehaviorAddScreen extends Component {
 
         this.values = [];
         this.behaviorNameRef = "";
+        this.types = config.types;
 
         this.state = {
             values: [],
@@ -23,7 +24,7 @@ export default class BehaviorAddScreen extends Component {
             actions: [],
             actionBlocks: [],
             actionSelection: {},
-            behavior: {name: "", actions: []}
+            behavior: {name: "", description: "", actions: []}
         };
 
         config.session.getActionList().get().then((selection) => {
@@ -49,7 +50,11 @@ export default class BehaviorAddScreen extends Component {
         let size = state.actionBlocks.length;
         let key = uuid.v1();
 
-        state.actionSelection[key] = {action: this.state.actions[0].data.name, value: ""};
+        state.actionSelection[key] = {
+            action: this.state.actions[0].data.name,
+            desc: this.state.actions[0].data.description,
+            type: this.types[this.state.actions[0].data.type], 
+            value: ""};
 
         this.values.push("");
 
@@ -57,9 +62,16 @@ export default class BehaviorAddScreen extends Component {
             key: key,
             changeFunction: (value) => {
                 let actionList = this.state.actionSelection;
+                let actions = this.state.actions
 
                 if(actionList[key].action != value) {
                     actionList[key].action = value;
+                    for(let index = 0; index < actions.length; index ++) {
+                        if(actions[index].data.name == value) {
+                            actionList[key].desc = actions[index].data.description;
+                            actionList[key].type = this.types[actions[index].data.type];
+                        }
+                    }
                     this.setState({actionSelection: actionList});
                 }
             }
@@ -72,7 +84,7 @@ export default class BehaviorAddScreen extends Component {
         return(
             <View key={key} style={styles.block}>
                 <View key={key} style={[styles.dropdown, {borderBottomWidth: 0.5, borderColor: "black"}]}>
-                    <Text style={styles.spacing}>Action: </Text>
+                    <FormLabel style={styles.spacing}>Action: </FormLabel>
                     <Picker
                         selectedValue={this.state.actionSelection[key].action}
                         mode="dropdown"
@@ -86,19 +98,32 @@ export default class BehaviorAddScreen extends Component {
                         }
                     </Picker>
                 </View>
-                <View style={styles.dropdown}>
-                    <Text style={styles.spacing}>Value: </Text>
+                <View style={styles.valueParam}>
+                    <FormLabel style={{}}>Value: </FormLabel>
                     <FormInput placeholder="0"
-                        ref={input => this.values[index] = input}
+                        ref={input => this.values[key] = input}
                         onChangeText={(text) => {
-                                let state = this.state;
-                                state.actionSelection[key].value = text;
-                                this.setState(state);
+                                try {
+                                    if (/^[0-9]{0,3}$/.test(text) === false) {
+                                        throw new TypeError("Value is not a number " + text);
+                                    }
+                                    let state = this.state;
+                                    state.actionSelection[key].value = text;
+                                    this.setState(state);
+                                }
+                                catch(e) {
+                                    this.values[key].clearText();
+                                }
                         }
                         }
+                        keyboardType="numeric"
                         value={this.state.actionSelection[key].value}
-                        style={{width: 200, height: 50, justifyContent: "flex-end"}} 
+                        inputStyle={{width: 40, textAlign: 'center', borderBottomColor: 'black', borderBottomWidth: 1}} 
                     />
+                    <FormLabel style={{}}>{this.state.actionSelection[key].type}</FormLabel>
+                </View>
+                <View style={styles.dropdown}>
+                    <Text style={styles.spacing}>Description:  {this.state.actionSelection[key].desc}</Text>
                 </View>
                 <View style={styles.spacing}>
                     <Icon 
@@ -221,19 +246,35 @@ export default class BehaviorAddScreen extends Component {
     render() {
         return(
             <ScrollView style={styles.container}>
-                <View style={[styles.dropdown, styles.block, styles.spacing, styles.padding]}>
-                    <Text>Name: </Text>
-                    <FormInput placeholder=""
-                        ref={input => this.behaviorNameRef = input}
-                        onChangeText={(text) => {
-                                let state = this.state;
-                                state.behavior.name = text;
-                                this.setState(state);
-                        }
-                        }
-                        value={this.state.behavior.name}
-                        style={{width: 200, height: 50, justifyContent: "flex-end"}} 
-                    />
+                <View style={[styles.block, styles.spacing]}>
+                    <View style={[styles.dropdown, styles.padding]}>
+                        <FormLabel>Name: </FormLabel>
+                        <FormInput placeholder=""
+                            ref={input => this.behaviorNameRef = input}
+                            onChangeText={(text) => {
+                                    let state = this.state;
+                                    state.behavior.name = text;
+                                    this.setState(state);
+                            }
+                            }
+                            value={this.state.behavior.name}
+                            inputStyle={styles.formInput} 
+                        />
+                    </View>
+                    <View style={[styles.dropdown, styles.padding]}>
+                        <FormLabel>Description: </FormLabel>
+                        <FormInput placeholder=""
+                            ref={input => this.behaviorNameRef = input}
+                            onChangeText={(text) => {
+                                    let state = this.state;
+                                    state.behavior.description = text;
+                                    this.setState(state);
+                            }
+                            }
+                            value={this.state.behavior.description}
+                            inputStyle={styles.formInput} 
+                        />
+                    </View>
                 </View>
                 <View>
                     {this.state.actionBlocks.map((value, index) => {
@@ -266,9 +307,12 @@ const styles = StyleSheet.create({
     spacing: {
         margin: 15
     },
+    row: {
+        flexDirection: 'row'
+    },
     padding: {
         padding: 15
-    },  
+    },
     delete: {
         flex: 1,
         justifyContent: 'flex-end',
@@ -279,7 +323,7 @@ const styles = StyleSheet.create({
     },
     valueParam: {
         flexDirection: "row",
-        justifyContent: "space-between"
+        justifyContent: "flex-start"
     },
     block: {
         borderWidth: 1,
@@ -289,5 +333,11 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         flexDirection: "row",
         margin: 15
+    },
+    formInput: {
+        width: 200, 
+        justifyContent: 'space-between',
+        borderBottomColor: 'black', 
+        borderBottomWidth: 1
     }
 });

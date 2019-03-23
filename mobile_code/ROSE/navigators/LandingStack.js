@@ -9,7 +9,7 @@
 import React, {Component} from 'react';
 import {createBottomTabNavigator, createAppContainer} from 'react-navigation';
 import InfoStack from '../navigators/InfoStack';
-import VideoStack from '../navigators/VideoStack';
+import ImageStack from '../navigators/ImageStack';
 import SettingsStack from '../navigators/SettingsStack';
 import LogoffScreen from '../screens/LogoffScreen';
 
@@ -17,7 +17,7 @@ import LogoffScreen from '../screens/LogoffScreen';
 const landingNav = createBottomTabNavigator(
     {
         Info: InfoStack,
-        Videos: VideoStack,
+        Images: ImageStack,
         Settings: SettingsStack,
         Logoff: LogoffScreen,
     }, 

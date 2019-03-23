@@ -9,36 +9,35 @@ config_file.close()
 path.insert(0, config["home_path"])
 #path.insert(0, config["windows_home_path"])
 
-from build import brain, motor, robot, database, queues, logger, speaker, notification_manager, light #, camera
+from build import brain, motor, robot, database, queues, logger, speaker, notification_manager, light, camera
 
 def runSpeakerThread():
-    spkr = speaker.Speaker(queues.brain_speaker_queue)
-    speaker_thread = Thread(target=functools.partial(spkr.run))
+    speaker_object = speaker.Speaker(queues.brain_speaker_queue)
+    speaker_thread = Thread(target=functools.partial(speaker_object.run))
     speaker_thread.start()
     return speaker_thread
 
 def runLightThread(pin=16):
-    li = light.Light(queues.brain_sensor_queue, pin)
-    light_thread = Thread(target=functools.partial(li.run))
+    light_object = light.Light(queues.brain_sensor_queue, pin)
+    light_thread = Thread(target=functools.partial(light_object.run))
     light_thread.start()
     return light_thread
 
-def runCameraThread():
-    pass
-    #ca = camera.Camera(queues.brain_sensor_queue)
-    #cam_thread = Thread(target=functools.partial(ca.run))
-    #cam_thread.start()
-    #return ca_thread
+def runCameraThread(pin=12):
+    camera_object = camera.Camera(queues.brain_camera_queue, pin)
+    camera_thread = Thread(target=functools.partial(camera_object.run))
+    camera_thread.start()
+    return camera_thread
 
 def runMotorThread():
-    mtr = motor.Motor(queues.brain_motor_queue)
-    motor_thread = Thread(target=functools.partial(mtr.run))
+    motor_object = motor.Motor(queues.brain_motor_queue)
+    motor_thread = Thread(target=functools.partial(motor_object.run))
     motor_thread.start()
     return motor_thread
 
 def runBrainThread(db, rob, config):
-    br = brain.Brain(db, rob, config)
-    brain_thread = Thread(target=functools.partial(br.begin))
+    brain_object = brain.Brain(db, rob, config)
+    brain_thread = Thread(target=functools.partial(brain_object.begin))
     brain_thread.start()
     return brain_thread
 
@@ -48,10 +47,10 @@ def runLoggerThread():
     return logger_thread
 
 def runNotificationManager(rob, config, initialized = False):
-    nm = notification_manager.NotificationManager(queues.brain_notifier_queue, config, initialized, rob)
-    nm_thread = Thread(target=functools.partial(nm.run))
-    nm_thread.start()
-    return nm_thread
+    notifier_object = notification_manager.NotificationManager(queues.brain_notifier_queue, config, initialized, rob)
+    notifier_thread = Thread(target=functools.partial(notifier_object.run))
+    notifier_thread.start()
+    return notifier_thread
 
 def initialize_threads(db, rob, off = True):
     if rob.power is True and off == True:
@@ -62,7 +61,7 @@ def initialize_threads(db, rob, off = True):
             mtr_thread = runMotorThread()
             nm_thread = runNotificationManager(rob=rob,config=config,initialized=True)
             #spk_thread = runSpeakerThread()
-            #ca_thread = runCameraThread()
+            #ca_thread = runCameraThread(pin=12)
             #light_thread = runLightThread(pin=11)
             log_thread = runLoggerThread()
 

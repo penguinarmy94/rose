@@ -54,7 +54,7 @@ class Brain():
                 #Read Microphone queue for new updates
                 #self.read_microphone()
                 #read Camera queue for new updates
-                #self.read_camera()
+                self.read_camera()
                 #handle Behavior
                 self.__update_behaviors()
                 self.handle_behavior()
@@ -65,7 +65,7 @@ class Brain():
         self.__write_sensor(message_type="off", message="Powered Off")
         self.__write_motor(message_type="off", message="turn off")
         self.__write_microphone(message_type="off", message="turn off")
-        #self.__write_camera(message_type="off", message="turn off")
+        self.__write_camera(message_type="off", message="turn off")
         self.__write_speaker(message_type="speaker", message="Damn. You. Humans.")
         self.__write_speaker(message_type="off", message="Powered Off")
         self.__write_notifier(message_type="off", message="Powered Off")
@@ -167,7 +167,7 @@ class Brain():
                 return
         if not self.__camPosition == self.__robot.camera_angle:
                 self.__camPosition = self.__robot.camera_angle
-                #self.__write_camera(message_type="position", message=self.__camPosition)
+                self.__write_camera(message_type="position", message=str(self.__camPosition))
         else:
             return
     
@@ -230,7 +230,8 @@ class Brain():
         self.__miQueue.put(json.dumps({"type": message_type, "message": message}))
     
     def __write_camera(self, message_type="camera", message="no message"):
-        self.__miQueue.put(json.dumps({"type": message_type, "message": message}))
+        self.__camQueue.put(json.dumps({"type": message_type, "message": message}))
+        logger.write(str(datetime.datetime.now()) + " - Brain to Camera: " + message)
     
     def __write_speaker(self, message_type="speaker", message="no message"):
         self.__spkQueue.put(json.dumps({"type": message_type, "message": message}))

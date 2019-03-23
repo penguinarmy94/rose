@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import { StyleSheet, View, Text, Switch, TouchableOpacity, Dimensions, Slider } from 'react-native';
+import { StyleSheet, View, Text, Switch, TouchableOpacity, Dimensions } from 'react-native';
+import { Slider } from 'react-native-elements';
 import { config } from '../assets/config/config';
 import { NavigationEvents } from 'react-navigation';
 
@@ -12,19 +13,26 @@ export default class SettingsScreen extends Component {
 
     constructor(props) {
         super(props);
+
         this.state = { 
             headerTitle: config.headerTitle, 
             session: config.session,
             power: config.robotObject.power,
             light: config.robotObject.light,
             cameraAngle: config.robotObject.cameraAngle,
-            display: "none"
+            display: "none",
+            minValue: 5,
+            maxValue: 10
         };
         this.props.navigation.setParams({headerTitle: config.headerTitle});
 
         this.robotSnapshot = config.session.currentRobot().onSnapshot((robot) => {
             if(robot.exists) {
-                this.setState({"power": robot.data().power, "light": robot.data().light});
+                this.setState({
+                    "power": robot.data().power, 
+                    "light": robot.data().light,
+                    "cameraAngle": robot.data().camera_angle
+                });
             }
         });
     }
@@ -137,7 +145,7 @@ export default class SettingsScreen extends Component {
                 <View style={[{flexDirection: "row"}]}>
                     <Text style={styles.text}>Power:</Text>
                     <Switch
-                        style={{flex: 1, justifyContent: 'flex-end', margin: 30}}
+                        style={{flex: 1, justifyContent: 'flex-end', marginRight: 30}}
                         onValueChange={this.changePower} 
                         value={this.state.power}
                         activeText="ON"
@@ -147,23 +155,29 @@ export default class SettingsScreen extends Component {
                 <View style={[{flexDirection: "row"}]}>
                     <Text style={styles.text}>Light:</Text>
                     <Switch
-                        style={{flex: 1, justifyContent: 'flex-end', margin: 30}}
+                        style={{flex: 1, justifyContent: 'flex-end', marginRight: 30}}
                         onValueChange={this.changeLight} 
                         value={this.state.light}
                         activeText="ON"
                         inActiveText="OFF" 
                     />
                 </View>
-                <View style={[{flexDirection: "row"}]}>
+                <View style={[{flexDirection: "row", alignItems: 'center'}]}>
                     <Text style={styles.text}>Camera Position:</Text>
-                    <Slider
-                        style={{flex: 1, justifyContent: 'flex-end', margin: 30}}
-                        maximumValue={10}
-                        minimumValue={5}
-                        step={1}
-                        onSlidingComplete={this.changeCameraPosition} 
-                        value={this.state.cameraAngle}
-                    />
+                    <View style={{flex: 1, alignItems: "center", flexDirection: "row", justifyContent: 'flex-end', marginRight: 30}}>
+                        <Text style={{marginRight: 10}}>{this.state.minValue}</Text>
+                        <Slider
+                            style={{width: 120}}
+                            thumbStyle={styles.thumb}
+                            trackStyle={styles.track}
+                            maximumValue={this.state.maxValue}
+                            minimumValue={this.state.minValue}
+                            step={1}
+                            onSlidingComplete={this.changeCameraPosition} 
+                            value={this.state.cameraAngle}
+                        />
+                        <Text style={{marginLeft: 10}}>{this.state.maxValue}</Text>
+                    </View>
                 </View>
                 <Text style={{display: this.state.display, color: "red"}}>Waiting to be applied</Text>
                 <TouchableOpacity style={styles.bar} onPress={this.createNewRobot}>
@@ -203,4 +217,10 @@ const styles = StyleSheet.create({
       color: '#333333',
       marginBottom: 5,
     },
+    thumb: {
+        backgroundColor: "green",
+    },
+    track: {
+        height: 5
+    }
   });
