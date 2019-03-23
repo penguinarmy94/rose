@@ -10,9 +10,6 @@ class Camera():
     def __init__(self, queue = None, pin = None):
         if queue and pin:
             logger.write(str(datetime.datetime.now()) + " - Camera initialized")
-            gpio.setwarnings(False)
-            gpio.setmode(gpio.BOARD)
-            gpio.setup(pin, gpio.OUT)
             self.__servo = gpio.PWM(pin, 100)
             self.__servo.start(7)
             self.__servo = pin(pin, 0)
@@ -22,6 +19,10 @@ class Camera():
             raise TypeError("Camera: Queue or pin number are not initialized")
 
     def run(self):
+        gpio.setwarnings(False)
+        gpio.setmode(gpio.BOARD)
+        gpio.setup(pin, gpio.OUT)
+        
         while True:
             if not self.__queue.empty():
                 result = self.read_queue()
