@@ -3,6 +3,7 @@ from threading import Thread
 import json, datetime, time, pyttsx3, functools, RPi.GPIO as gpio
 
 class Camera():
+    __pin = None
     __isOn = False
     __queue = None
     __servo = None
