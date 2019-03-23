@@ -19,7 +19,7 @@ class Camera():
     def run(self):
         gpio.setwarnings(False)
         gpio.setmode(gpio.BOARD)
-        gpio.setup(pin, gpio.OUT)
+        gpio.setup(__pin, gpio.OUT)
         self.__servo = gpio.PWM(__pin, 100)
         self.__servo.start(7)
 
