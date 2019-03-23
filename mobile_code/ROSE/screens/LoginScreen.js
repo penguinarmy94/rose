@@ -92,7 +92,7 @@ export default class LoginScreen extends Component {
     return(
       <View style={[styles.container, styles.rose_background]}>
         <View style={styles.login_container}>
-          <View style={{marginTop: 5}}>
+          <View style={styles.logo_container}>
             <Image source={logo} />
           </View>
           <Text style={styles.title}>{title}</Text>
@@ -100,22 +100,25 @@ export default class LoginScreen extends Component {
               ref={input => this.usernameField = input}
               onChangeText={this.usernameChange} 
               value={this.state.username} 
-              containerStyle={{width: 300, borderBottomWidth: 1}}/>
+              containerStyle={styles.text_input}/>
           <FormInput placeholder="password"
               ref={input => this.passwordField = input} 
               secureTextEntry={true} 
               onChangeText={this.passwordChange} 
               value={this.state.password} 
-              containerStyle={{width: 300, borderBottomWidth: 1}}/>
-          <View style={{width: 300, margin: 15}} >
-            <Button title="Login" color="pink" onPress={this.authenticate} style={{margin: 20}}/>
-          </View>
-          <View style={{flexDirection: "row", justifyContent: "space-between", width: 200, margin: 15}}>
-            <TouchableOpacity onPress={this.debugLogin} underlayColor={"white"}>
-              <Text style={[styles.hyperlink]}>Debug Login</Text>
-            </TouchableOpacity>
-            <View><Text onPress={this.register} style={styles.hyperlink}>Register</Text></View>
-          </View>
+              containerStyle={styles.text_input}/>
+          <TouchableOpacity onPress={this.authenticate} style={styles.login_button}>
+            <Text style={[styles.login_text]}>Login</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this.register} style={{marginTop: 15, width: 300}}>
+            <Text style={[styles.hyperlink]}>Register ></Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => alert("not yet")} style={{marginTop: 5, width: 300}}>
+            <Text style={[styles.hyperlink]}>Recover Password ></Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this.debugLogin} style={{marginTop: 5, marginBottom: 15, width: 300}}>
+            <Text style={[styles.hyperlink]}>Debug ></Text>
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -129,6 +132,9 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       backgroundColor: '#F5FCFF',
     },
+    logo_container: {
+      marginTop: 15
+    },
     login_container: {
       justifyContent: 'center',
       alignItems: 'center',
@@ -138,17 +144,32 @@ const styles = StyleSheet.create({
       paddingLeft: 10,
       paddingRight: 10
     },
+    login_button: {
+      width: 300, 
+      backgroundColor: "#64a2b7", 
+      alignItems: "center", 
+      marginTop: 15
+    },
+    login_text: {
+      color: "white", 
+      margin: 10, 
+      fontWeight: "bold"
+    },
     rose_background: {
-      backgroundColor: "#BDE7B0"
+      backgroundColor: "#000000"
+    },
+    text_input: {
+      width: 300, 
+      borderBottomWidth: 1
     },
     hyperlink: { 
-      fontWeight: "bold",
-      borderBottomWidth: 1,
-      color: "blue",
-      borderBottomColor: "blue"
+      color: "black",
+      borderBottomColor: "black",
+      textAlign: "right"
     },
     title: {
       fontSize: 25,
+      fontWeight: "bold",
       textAlign: 'center',
       margin: 10,
       marginBottom: 25

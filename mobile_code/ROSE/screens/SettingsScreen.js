@@ -21,8 +21,9 @@ export default class SettingsScreen extends Component {
             light: config.robotObject.light,
             cameraAngle: config.robotObject.cameraAngle,
             display: "none",
-            minValue: 5,
-            maxValue: 10
+            minValue: 0,
+            maxValue: 6,
+            step: 0.5
         };
         this.props.navigation.setParams({headerTitle: config.headerTitle});
 
@@ -172,7 +173,7 @@ export default class SettingsScreen extends Component {
                             trackStyle={styles.track}
                             maximumValue={this.state.maxValue}
                             minimumValue={this.state.minValue}
-                            step={1}
+                            step={this.state.step}
                             onSlidingComplete={this.changeCameraPosition} 
                             value={this.state.cameraAngle}
                         />
