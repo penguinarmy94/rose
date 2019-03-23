@@ -211,7 +211,7 @@ class Brain():
         if action_name in mapper["motor"]:
 
             if action_name == "Move Towards Sound":
-                self.__write_motor(message_type="motor", message="Y" + value + "-")
+                self.__write_motor(message_type="motor", message="L" + value + "-")
             else:
                 self.__write_motor(message_type="motor", message="F" + value + "-")
         else:

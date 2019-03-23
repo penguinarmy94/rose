@@ -1,5 +1,5 @@
 import json, sys, datetime
-import serial
+from serial import Serial
 from . import queues
 from . import logger
 
@@ -23,7 +23,7 @@ class Motor():
        # self.__receive_port = serial.Serial("/dev/serial1", 9600)
     
     def run(self):
-        self.__receive_port = serial.Serial(self.__port, self.__rate, timeout=self.__timeout)
+        self.__receive_port = Serial(self.__port, self.__rate, timeout=self.__timeout)
         while True:
             if self.__isWaiting is True:
                 responseReceived = self.__get_motor_response()

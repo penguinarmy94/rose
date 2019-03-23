@@ -60,6 +60,7 @@ def initialize_threads(db, rob, off = True):
             br_thread = runBrainThread(db=db,rob=rob,config=config)
             mtr_thread = runMotorThread()
             nm_thread = runNotificationManager(rob=rob,config=config,initialized=True)
+
             spk_thread = runSpeakerThread()
             ca_thread = runCameraThread(pin=12)
             light_thread = runLightThread(pin=11)
