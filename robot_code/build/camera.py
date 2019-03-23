@@ -10,9 +10,7 @@ class Camera():
     def __init__(self, queue = None, pin = None):
         if queue and pin:
             logger.write(str(datetime.datetime.now()) + " - Camera initialized")
-            self.__servo = gpio.PWM(pin, 100)
-            self.__servo.start(7)
-            self.__servo = pin(pin, 0)
+            self.__pin = pin
             self.__queue = queue
             
         else:
@@ -22,7 +20,9 @@ class Camera():
         gpio.setwarnings(False)
         gpio.setmode(gpio.BOARD)
         gpio.setup(pin, gpio.OUT)
-        
+        self.__servo = gpio.PWM(__pin, 100)
+        self.__servo.start(7)
+
         while True:
             if not self.__queue.empty():
                 result = self.read_queue()
