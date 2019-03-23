@@ -6,7 +6,8 @@
 
 
 //#define FRONTPRIORITY
-#define TURNBASED
+//#define TURNBASED
+#define STOPPED
   
 Motor left(8, 7 , 6); //7, 8, 6
 Motor right(9, 10, 11); //10, 9, 11
@@ -66,6 +67,7 @@ else
 {
   parsePackage(piCommand);
   commandFromPi(piCommand, a, b, left, right);
+  
 }
     delay(1);
 }
@@ -82,8 +84,8 @@ void readLaser() {
       turn = (laserSensor.getValue(LEFT_SENSOR) < laserSensor.getValue(RIGHT_SENSOR)) ? 1: 0; //1 for left, 0 for right
       while (laserSensor.getState() & BLOCKED_FRONT)
       {
-        (turn) ? Left(left, right, 155) : Right(left, right, 175);
-        delay(1);
+        (turn) ? Right(left, right, 175) : Left(left, right, 175);
+        delay(100);
       }
     }
     else if (BLOCKED_LEFT & state)
@@ -94,8 +96,37 @@ void readLaser() {
     {
       Right(left, right, 175);
     }
-    delay(70);
   }
+  delay(100);
+  #endif
+
+  #ifdef STOPPED
+  if (state)
+  {
+    Halt(left, right);
+    delay(930);
+    int leftblock = laserSensor.getValue(LEFT_SENSOR);
+    delay(70);
+    int rightblock = laserSensor.getValue(RIGHT_SENSOR);
+    if (leftblock < rightblock) {
+      Right(left, right, 175);
+      while(state & (BLOCKED_FRONT | BLOCKED_LEFT)){
+        state = laserSensor.getState();
+        delay(70);
+      }
+      Halt(left, right);
+    }
+    else
+    {
+      Left(left, right, 175);
+      while(state & (BLOCKED_FRONT |BLOCKED_RIGHT)){
+        state = laserSensor.getState();
+        delay(70);
+      }
+      Halt(left, right);     
+    }   
+  }
+  delay(70);
   #endif
   
   #ifdef TURNBASED
@@ -112,8 +143,8 @@ void readLaser() {
         while(prev < next)
         {
           prev = laserSensor.getValue(LEFT_SENSOR);
-          Right(left, right, 150);
-          delay(70);
+          Left(left, right, 200);
+          delay(100);
           next = laserSensor.getValue(LEFT_SENSOR);
         }
       }
@@ -124,21 +155,21 @@ void readLaser() {
         while(prev < next)
         {
           prev = laserSensor.getValue(RIGHT_SENSOR);
-          Left(left, right, 150);
-          delay(70);
+          Right(left, right, 200);
+          delay(100);
           next = laserSensor.getValue(RIGHT_SENSOR);
         }      
     }
   }
     else if (BLOCKED_LEFT & state)
     {
-      Left(left, right, 175);
-      delay(70);
+      Right(left, right, 200);
+      delay(100);
     }
     else
     {
-      Right(left, right, 175);
-      delay(70);
+      Left(left, right, 225);
+      delay(100);
     }
 }
 #endif

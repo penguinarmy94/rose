@@ -84,17 +84,18 @@ void parsePackage(PIData &package)
 
 void commandFromPi(PIData &package, Microphone &a, Microphone &b, Motor left, Motor right)
 {
+  package.distance *= 1000;
   switch(package.direction)
   {
-    case 'y': warningDetected(a, b, left, right);
-    case 'c': calibrateMicrophones(a, b);
-    case 'f': commandForward(package, left, right);
-    case 'b': commandBackward(package, left, right);
-    case 'r': commandRight(package, left, right);
-    case 'l': commandLeft(package, left, right);
+    case 'Y': warningDetected(a, b, left, right);
+    case 'C': calibrateMicrophones(a, b);
+    case 'F': commandForward(package, left, right);
+    case 'B': commandBackward(package, left, right);
+    case 'R': commandRight(package, left, right);
+    case 'L': commandLeft(package, left, right);
     default: memset(&package, 0, sizeof(package));
   }
-  Serial1.print("k-");
+  Serial1.print("K");
   memset(&package, 0, sizeof(package));
 }
 
@@ -110,11 +111,13 @@ void warningDetected(Microphone &a, Microphone &b, Motor left, Motor right)
 void commandForward(PIData package, Motor left, Motor right)
 {
   int i = 0;
+  Forward(left, right, 150);
   while (i < package.distance)
     {
       //readLaser();
       i++;
     }  
+  Halt(left, right);  
 }
 
 void commandBackward(PIData package, Motor left, Motor right)
@@ -126,6 +129,7 @@ void commandBackward(PIData package, Motor left, Motor right)
       //readLaser();
       i++;
     }  
+  Halt(left, right);  
 }
 
 void commandRight(PIData package, Motor left, Motor right)
@@ -136,7 +140,8 @@ void commandRight(PIData package, Motor left, Motor right)
     {
       //readLaser();
       i++;
-    }  
+    } 
+  Halt(left, right);   
 }
 
 void commandLeft(PIData package, Motor left, Motor right)
@@ -148,6 +153,7 @@ void commandLeft(PIData package, Motor left, Motor right)
       //readLaser();
       i++;
     }  
+  Halt(left, right);  
 }
 
 /*
