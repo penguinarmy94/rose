@@ -18,6 +18,7 @@ class Brain():
     __lightOn = False
     __camPosition = 5
     __numofsensors = 1
+    __updated = False
 
     def __init__(self, database, robot, config):
         self.__mQueue = queues.brain_motor_queue
@@ -87,9 +88,8 @@ class Brain():
                 self.__robot.battery = battery
                 self.__db.update_robot()
         elif success == 0:
-            if not wifi == self.__robot.connection or not battery == self.__robot.battery:
-                self.__robot.connection = wifi
-                self.__robot.battery = 0
+            if not battery == self.__robot.battery:
+                self.__robot.battery = battery
                 self.__db.update_robot()
 
         
@@ -107,6 +107,7 @@ class Brain():
                 self.__idle_behavior.append(actionDict["prefix"] + str(val))
 
             logger.write(str(datetime.datetime.now()) + " - Brain: Idle Behavior Updated")
+            self.__updated = False
         
         if not self.__behaviorRef["detect"] == self.__robot.detect_behavior:
             self.__behaviorRef["detect"] = self.__robot.detect_behavior
@@ -119,6 +120,7 @@ class Brain():
                 self.__detect_behavior.append(actionDict["prefix"] + str(val))
             
             logger.write(str(datetime.datetime.now()) + " - Brain: Detect Behavior Update")
+            self.__updated = False
 
     def read_motor(self):
         #Check that queue is not empty
@@ -165,9 +167,12 @@ class Brain():
                 logger.write(str(datetime.datetime.now()) + " - Camera to Brain: Brain Message Received -- " + message_packet["message"])
             else:
                 return
+        if self.__robot.manualPicture is True:
+            self.__write_camera(message_type="manual", message="Take Picture Now")
+            self.__db.update_picture_sensor_status()
         if not self.__camPosition == self.__robot.camera_angle:
-                self.__camPosition = self.__robot.camera_angle
-                self.__write_camera(message_type="position", message=str(self.__camPosition))
+            self.__camPosition = self.__robot.camera_angle
+            self.__write_camera(message_type="position", message=str(self.__camPosition))
         else:
             return
     
@@ -193,6 +198,7 @@ class Brain():
                 self.__write_speaker(message_type="speaker", message="Oh no I can't see anymore")
             else:
                 return
+                
             self.__write_sensor(message_type="light", message=message)
         else:
             return
@@ -204,6 +210,9 @@ class Brain():
             if action[0] == mapped_action["prefix"]:
                 self.__send_message(mapped_action["name"], action[1:])
                 break
+        
+        if not self.__updated:
+            self.__updated = True
     
     def __send_message(self, action_name, value):
         mapper = self.__config["functions"]
@@ -214,6 +223,9 @@ class Brain():
                 self.__write_motor(message_type="motor", message="L" + value + "-")
             else:
                 self.__write_motor(message_type="motor", message="F" + value + "-")
+        elif action_name in mapper["camera"]:
+            if action_name == "Record" and not self.__updated:
+                self.__write_motor(message_type="automatic", message=str(value))
         else:
             return
         

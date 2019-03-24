@@ -12,6 +12,7 @@ class Robot():
     camera_angle = 7
     videos = []
     charging = False
+    manualPicture = False
 
     def isInitialized(self):
         if self.detect_behavior == None or self.idle_behavior == None:
@@ -42,6 +43,8 @@ class Robot():
             self.light = map["light"]
         if not map["camera_angle"] == None:
             self.camera_angle = map["camera_angle"]
+        if not map["manual_picture"] == None:
+            self.manualPicture = map["manual_picture"]
         if not map["videos"] == None:
             self.videos = map["videos"]
 

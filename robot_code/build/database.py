@@ -71,6 +71,46 @@ class Database():
             
             return self.__actions
 
+    def update_connection(self):
+        if not self.__robot == None:
+            self.__robotRef.update({
+                u'connection': self.__robot.connection
+            })
+        else:
+            print("Robot has not been set yet")
+    
+    def update_charging(self):
+        if not self.__robot == None:
+            self.__robotRef.update({
+                u'charging': self.__robot.charging
+            })
+        else:
+            print("Robot has not been set yet")
+    
+    def update_battery(self):
+        if not self.__robot == None:
+            self.__robotRef.update({
+                u'battery': self.__robot.charging
+            })
+        else:
+            print("Robot has not been set yet")
+    
+    def update_videos(self):
+        if not self.__robot == None:
+            self.__robotRef.update({
+                u'videos': self.__robot.videos,
+                u'num_of_videos': self.__robot.num_of_videos
+            })
+        else:
+            print("Robot has not been set yet")
+    
+    def update_picture_sensor_status(self):
+        if not self.__robot == None:
+            self.__robotRef.update({
+                u'manual_picture': self.__robot.manual_picture
+            })
+        else:
+            print("Robot has not been set yet")
 
     def update_robot(self):
         if not self.__robot == None:
