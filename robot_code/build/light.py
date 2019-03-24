@@ -16,6 +16,7 @@ class Light():
     def run(self):
         gpio.setmode(gpio.BOARD)
         gpio.setup(self.__pin, gpio.OUT)
+        self.turnOff()
 
         while True:
             if not self.__queue.empty():
