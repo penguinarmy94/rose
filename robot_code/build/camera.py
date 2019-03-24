@@ -9,7 +9,7 @@ class Camera():
     __queue = None
     __servo = None
 
-    def __init__(self, queue = None, pin = None, pos = 5):
+    def __init__(self, queue = None, pin = None, pos = 7):
         if queue and pin:
             logger.write(str(datetime.datetime.now()) + " - Camera initialized")
             self.__pin = pin
@@ -48,7 +48,7 @@ class Camera():
             message_packet = json.loads(self.__queue.get())
             logger.write(str(datetime.datetime.now()) + " - Brain to Camera: Camera Message Received -- " + message_packet["message"])
             #self.__servo.start(float(message_packet["message"]))
-            self.__servo.ChangeDutyCycle(float(self.__pos + message_packet["message"]))
+            self.__servo.ChangeDutyCycle(self.__pos + float(message_packet["message"]))
             return 1
         elif message_packet["type"] == "off":
             message_packet = json.loads(self.__queue.get())
