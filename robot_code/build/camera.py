@@ -1,6 +1,8 @@
 from . import logger
 from threading import Thread
-import json, datetime, time, pyttsx3, functools, RPi.GPIO as gpio
+from time import sleep
+from picamera import PiCamera
+import json, datetime. pyttsx3, functools, RPi.GPIO as gpio
 
 class Camera():
     __pos = None
@@ -8,6 +10,8 @@ class Camera():
     __isOn = False
     __queue = None
     __servo = None
+    __camera = None
+    __interval = None
 
     def __init__(self, queue = None, pin = None, pos = 7):
         if queue and pin:
@@ -15,6 +19,7 @@ class Camera():
             self.__pin = pin
             self.__pos = pos
             self.__queue = queue
+            self.__interval = 0
             
         else:
             raise TypeError("Camera: Queue or pin number are not initialized")
@@ -25,6 +30,8 @@ class Camera():
         gpio.setup(self.__pin, gpio.OUT)
         self.__servo = gpio.PWM(self.__pin, 50)
         self.__servo.start(self.__pos)
+        self.__camera = PiCamera()
+        self.__camera.start_preview()
         
         while True:
             if not self.__queue.empty():
@@ -36,9 +43,10 @@ class Camera():
                     print("good_camera")
                     continue
             else:
-                self.__servo.stop()
+
                 continue
         
+        self.__camera.stop_preview()
         gpio.cleanup()
         logger.write(str(datetime.datetime.now()) + " - Camera: Powered off")
     
@@ -46,6 +54,7 @@ class Camera():
         message_packet = json.loads(self.__queue.get())
 
         if message_packet["type"] == "position":
+            self.__servo.start(self.__pos)
             pos = self.__pos + 3 * float(message_packet["message"])
            
             direction = 0.5
@@ -54,13 +63,29 @@ class Camera():
 
             message_packet = json.loads(self.__queue.get())
             logger.write(str(datetime.datetime.now()) + " - Brain to Camera: Camera Message Received -- " + message_packet["message"] + " -- Moving from = " + str(self.__pos) + " to " + str(pos))
-            #self.__servo.start(float(message_packet["message"]))
+       
+       
             while (self.__pos != pos):
                 print("Now at " + str(self.__pos) + " and going " + str(direction) + ". Target: " + str(pos))
                 self.__servo.ChangeDutyCycle(self.__pos)
                 self.__pos += direction
 
+            self.__servo.stop()
             return 1
+        elif message_packet["type"] == "manual":
+            logger.write(str(datetime.datetime.now()) + ".CameraThread.Capture Image [Manual].Enter"
+
+            camera.capture('/home/pi/picamera/image{timestamp}.jpg')
+            
+            logger.write(str(datetime.datetime.now()) + ".CameraThread.Capture Image [Manual].Exit"
+
+        elif message_packet["type"] == "automatic":
+            logger.write(str(datetime.datetime.now()) + ".CameraThread.SetAutomatic[" + message_packet["message"] + "].Enter"
+
+            self.__interval = int(message_packet["message"])
+
+            logger.write(str(datetime.datetime.now()) + ".CameraThread.SetAutomatic.Exit"
+
         elif message_packet["type"] == "off":
             message_packet = json.loads(self.__queue.get())
             logger.write(str(datetime.datetime.now()) + " - Brain to Camera: Off Message Received -- " + message_packet["message"])
