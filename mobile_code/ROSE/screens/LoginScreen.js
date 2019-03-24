@@ -5,7 +5,7 @@
  */
 
 import React, {Component} from 'react';
-import {StyleSheet, Text, View, Image, Button, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, View, ScrollView, Image, Button, TouchableOpacity} from 'react-native';
 import {FormInput} from 'react-native-elements';
 import firebase from 'react-native-firebase';
 import Session from '../controllers/Session';
@@ -13,6 +13,7 @@ import {config} from '../assets/config/config';
 
 const logo = require("../assets/images/logo.png");
 const title = "R.O.S.E";
+const flexState = 1;
 
 export default class LoginScreen extends Component {
   constructor(props) {
@@ -90,7 +91,7 @@ export default class LoginScreen extends Component {
 
   render() {
     return(
-      <View style={[styles.container, styles.rose_background]}>
+      <ScrollView contentContainerStyle={[styles.container, styles.rose_background]}>
         <View style={styles.login_container}>
           <View style={styles.logo_container}>
             <Image source={logo} />
@@ -120,17 +121,16 @@ export default class LoginScreen extends Component {
             <Text style={[styles.hyperlink]}>Debug ></Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </ScrollView>
     );
   }
 }
 
 const styles = StyleSheet.create({
     container: {
-      flex: 1,
+      flex: flexState,
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: '#F5FCFF',
     },
     logo_container: {
       marginTop: 15
