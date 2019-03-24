@@ -49,14 +49,14 @@ class Camera():
             pos = self.__pos + 3 * float(message_packet["message"])
            
             direction = 0.5
-            if pos < __pos: 
+            if pos < self.__pos: 
                 direction = -direction
 
             message_packet = json.loads(self.__queue.get())
-            logger.write(str(datetime.datetime.now()) + " - Brain to Camera: Camera Message Received -- " + message_packet["message"] + " -- Moving from = " + str(last_pos) + " to " + str(pos))
+            logger.write(str(datetime.datetime.now()) + " - Brain to Camera: Camera Message Received -- " + message_packet["message"] + " -- Moving from = " + str(self.__pos) + " to " + str(pos))
             #self.__servo.start(float(message_packet["message"]))
             while (self.__pos != pos):
-                print("Now at " + str(__pos) + " and going " + str(direction) + ". Target: " + str(pos))
+                print("Now at " + str(self.__pos) + " and going " + str(direction) + ". Target: " + str(pos))
                 self.__servo.ChangeDutyCycle(self.__pos)
                 self.__pos += direction
 
