@@ -27,12 +27,20 @@ def _get_linux_wifi_signal_strength():
         return (0, "none")
 
 def _get_windows_wifi_signal_strength():
-    cmd_output = str(subprocess.check_output(['netsh', 'wlan', 'show', 'interfaces']))
-    info = re.search('[0-9]+%', cmd_output)
+    global current_date
 
-    if info:
-        signal = int(info.group(0)[:-1])
-        return (1, signal)
+    if current_date.hour == datetime.datetime.now().hour:
+        if current_date.minute + 5 <= datetime.datetime.now().minute:
+            cmd_output = str(subprocess.check_output(['netsh', 'wlan', 'show', 'interfaces']))
+            info = re.search('[0-9]+%', cmd_output)
+
+            if info:
+                signal = int(info.group(0)[:-1])
+                return (1, signal)
+            else:
+                return (0, "none")
+        else:
+            return (0, "none")
     else:
         return (0, "none")
 
