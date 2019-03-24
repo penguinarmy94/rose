@@ -49,7 +49,7 @@ class Camera():
             message_packet = json.loads(self.__queue.get())
             logger.write(str(datetime.datetime.now()) + " - Brain to Camera: Camera Message Received -- " + message_packet["message"] + " -- New pos = " + str(pos))
             #self.__servo.start(float(message_packet["message"]))
-            self.__servo.ChangeDutyCycle()
+            self.__servo.ChangeDutyCycle(pos)
             return 1
         elif message_packet["type"] == "off":
             message_packet = json.loads(self.__queue.get())
