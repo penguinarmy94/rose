@@ -23,9 +23,9 @@ class Camera():
         gpio.setwarnings(False)
         gpio.setmode(gpio.BOARD)
         gpio.setup(self.__pin, gpio.OUT)
-        self.__servo = gpio.PWM(self.__pin, 50)
-        self.__servo.start(self.__pos)
-
+        servo = gpio.PWM(self.__pin, 50)
+        servo.start(self.__pos)
+        last_pos = self.__pos
         while True:
             if not self.__queue.empty():
                 result = self.read_queue()
@@ -39,6 +39,7 @@ class Camera():
                 self.__servo.stop()
                 continue
         
+        gpio.cleanup()
         logger.write(str(datetime.datetime.now()) + " - Camera: Powered off")
     
     def read_queue(self):
@@ -46,10 +47,18 @@ class Camera():
 
         if message_packet["type"] == "position":
             pos = self.__pos + float(message_packet["message"])
+           
+            direction = 1;
+            if (pos < last_pos) direction = -1
+
             message_packet = json.loads(self.__queue.get())
-            logger.write(str(datetime.datetime.now()) + " - Brain to Camera: Camera Message Received -- " + message_packet["message"] + " -- New pos = " + str(pos))
+            logger.write(str(datetime.datetime.now()) + " - Brain to Camera: Camera Message Received -- " + message_packet["message"] + " -- Moving from = " + str(last_pos) + " to " + str(pos))
             #self.__servo.start(float(message_packet["message"]))
-            self.__servo.ChangeDutyCycle(pos)
+            while (last_pos != pos):
+                print("Now at " + str(last_pos) " and going " + str(direction) + ". Target: " + str(pos))
+                self.__servo.ChangeDutyCycle(last_pos)
+                last_pos += direction
+
             return 1
         elif message_packet["type"] == "off":
             message_packet = json.loads(self.__queue.get())
