@@ -6,7 +6,7 @@
     "home_path": "/home/pi/Desktop/Projects/rose/robot_code",
     "functions": {
         "motor": ["Roaming"],
-        "microphone": ["Record"],
+        "camera": ["Record"],
         "notification": ["Alert"]
     }
 }

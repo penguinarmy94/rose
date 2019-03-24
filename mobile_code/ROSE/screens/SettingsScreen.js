@@ -19,6 +19,7 @@ export default class SettingsScreen extends Component {
             session: config.session,
             power: config.robotObject.power,
             light: config.robotObject.light,
+            picture: config.robotObject.manual_picture,
             cameraAngle: config.robotObject.cameraAngle,
             display: "none",
             minValue: 0,
@@ -32,6 +33,7 @@ export default class SettingsScreen extends Component {
                 this.setState({
                     "power": robot.data().power, 
                     "light": robot.data().light,
+                    "picture": robot.data().manual_picture,
                     "cameraAngle": robot.data().camera_angle
                 });
             }
@@ -108,6 +110,34 @@ export default class SettingsScreen extends Component {
         
     }
 
+    changeManualPictureStatus = (value) => {
+        let current = config.robotObject;
+        let state = this.state;
+        let prevPictureState = state.picture;
+
+        if(this.state.picture == true) {
+            current.manual_picture = false;
+        }
+        else {
+            current.manual_picture = true;
+        }
+
+        state.display = "flex";
+        state.picture = current.manual_picture;
+        this.setState(state);
+        
+        this.state.session.currentRobot().set(current).then(() => {
+            config.robotObject = current;
+            state.display = "none";
+            this.setState(state);
+        }).catch((error) => {
+            alert(error);
+            state.picture = prevPictureState;
+        });
+        
+        
+    }
+
     changeCameraPosition = (value) => {
         let current = config.robotObject;
         let state = this.state;
@@ -163,10 +193,20 @@ export default class SettingsScreen extends Component {
                         inActiveText="OFF" 
                     />
                 </View>
+                <View style={[{flexDirection: "row"}]}>
+                    <Text style={styles.text}>Take Picture:</Text>
+                    <Switch
+                        style={{flex: 1, justifyContent: 'flex-end', marginRight: 30}}
+                        onValueChange={this.changeManualPictureStatus} 
+                        value={this.state.picture}
+                        disabled={this.state.picture ? true : false}
+                        activeText="ON"
+                        inActiveText="OFF" 
+                    />
+                </View>
                 <View style={[{flexDirection: "row", alignItems: 'center'}]}>
                     <Text style={styles.text}>Camera Position:</Text>
                     <View style={{flex: 1, alignItems: "center", flexDirection: "row", justifyContent: 'flex-end', marginRight: 30}}>
-                        <Text style={{marginRight: 10}}>{this.state.minValue}</Text>
                         <Slider
                             style={{width: 120}}
                             thumbStyle={styles.thumb}
@@ -177,7 +217,6 @@ export default class SettingsScreen extends Component {
                             onSlidingComplete={this.changeCameraPosition} 
                             value={this.state.cameraAngle}
                         />
-                        <Text style={{marginLeft: 10}}>{this.state.maxValue}</Text>
                     </View>
                 </View>
                 <Text style={{display: this.state.display, color: "red"}}>Waiting to be applied</Text>

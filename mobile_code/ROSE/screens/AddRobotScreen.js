@@ -33,7 +33,8 @@ export default class AddRobotScreen extends Component {
                 num_of_videos: 0,
                 power: true,
                 light: false,
-                camera_angle: 7,
+                camera_angle: 3,
+                manual_picture: false,
                 userid: user.getUserId(),
                 videos: []
             }
