@@ -55,7 +55,7 @@ class Camera():
             message_packet = json.loads(self.__queue.get())
             logger.write(str(datetime.datetime.now()) + " - Brain to Camera: Camera Message Received -- " + message_packet["message"] + " -- Moving from = " + str(last_pos) + " to " + str(pos))
             #self.__servo.start(float(message_packet["message"]))
-            while (__ != pos):
+            while (__pos != pos):
                 print("Now at " + str(__pos) + " and going " + str(direction) + ". Target: " + str(pos))
                 self.__servo.ChangeDutyCycle(__pos)
                 __pos += direction
