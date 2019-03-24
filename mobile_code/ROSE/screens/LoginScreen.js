@@ -18,22 +18,34 @@ const flexState = 1;
 export default class LoginScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = { username: "", password: ""};
+
+    this.state = { 
+      username: "", 
+      password: ""
+    };
+
     this.errorCodes = config.errorCodes;
 
+    /*
+     * Username input handler. Changes the input of the username field
+     * as it is being changed.
+     */
     this.usernameChange = (text) => {
         let currentState = this.state;
         currentState.username = text;
         this.setState(currentState);
     }
 
+    /*
+    * Password input handler. Changes the input of the password field
+    * as it is being changed.
+    */
     this.passwordChange = (text) => {
         let currentState = this.state;
         currentState.password = text;
         this.setState(currentState);
     }
 
-    this.register = this.register.bind(this);
   }
 
   authenticate = () => {
@@ -51,19 +63,16 @@ export default class LoginScreen extends Component {
         let code = error.code;
 
         if(code == this.errorCodes[3]) {
-            //alert("Password is incorrect");
+            this.usernameField.shake();
             this.passwordField.shake();
         }
         else if(code == this.errorCodes[0]) {
-            this.usernameField.shake();
-            //alert("Username is incorrect");
+            alert("Username is incorrect");
         }
         else if(code == this.errorCodes[1]) {
             alert("You have been disabled. Please try again later");
         }
         else if(code == this.errorCodes[2]) {
-            this.usernameField.shake();
-            this.passwordField.shake();
             alert("No user found with this email");
         }
         else {
@@ -80,13 +89,21 @@ export default class LoginScreen extends Component {
     
   }
 
-  register() {
+  register = () => {
     this.props.navigation.navigate("Register", {errorCodes: this.errorCodes});
   }
 
   debugLogin = () => {
     let session = new Session(config.debugId);
     this.props.screenProps.rootNav.navigate("Home", {sessionVar: session})
+  }
+
+  passwordRecovery = () => {
+
+  }
+
+  about = () => {
+
   }
 
   render() {
