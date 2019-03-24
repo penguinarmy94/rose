@@ -25,7 +25,7 @@ class Camera():
         gpio.setup(self.__pin, gpio.OUT)
         servo = gpio.PWM(self.__pin, 50)
         servo.start(self.__pos)
-        last_pos = self.__pos
+        
         while True:
             if not self.__queue.empty():
                 result = self.read_queue()
@@ -46,19 +46,19 @@ class Camera():
         message_packet = json.loads(self.__queue.get())
 
         if message_packet["type"] == "position":
-            pos = self.__pos + float(message_packet["message"])
+            pos = self.__pos + 3 * float(message_packet["message"])
            
-            direction = 1;
-            if pos < last_pos: 
-                direction = -1
+            direction = 0.5
+            if pos < __pos: 
+                direction = -direction;
 
             message_packet = json.loads(self.__queue.get())
             logger.write(str(datetime.datetime.now()) + " - Brain to Camera: Camera Message Received -- " + message_packet["message"] + " -- Moving from = " + str(last_pos) + " to " + str(pos))
             #self.__servo.start(float(message_packet["message"]))
-            while (last_pos != pos):
-                print("Now at " + str(last_pos) + " and going " + str(direction) + ". Target: " + str(pos))
-                self.__servo.ChangeDutyCycle(last_pos)
-                last_pos += direction
+            while (__ != pos):
+                print("Now at " + str(__pos) + " and going " + str(direction) + ". Target: " + str(pos))
+                self.__servo.ChangeDutyCycle(__pos)
+                __pos += direction
 
             return 1
         elif message_packet["type"] == "off":
