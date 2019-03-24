@@ -50,7 +50,7 @@ class Camera():
            
             direction = 0.5
             if pos < __pos: 
-                direction = -direction;
+                direction = -direction
 
             message_packet = json.loads(self.__queue.get())
             logger.write(str(datetime.datetime.now()) + " - Brain to Camera: Camera Message Received -- " + message_packet["message"] + " -- Moving from = " + str(last_pos) + " to " + str(pos))
