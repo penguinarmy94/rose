@@ -8,5 +8,6 @@
         "motor": ["Roaming"],
         "camera": ["Record"],
         "notification": ["Alert"]
-    }
+    },
+    "bucket": "rose-9876.appspot.com"
 }
