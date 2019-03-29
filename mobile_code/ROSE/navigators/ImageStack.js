@@ -7,6 +7,7 @@
  */
 
 import React, {Component} from 'react';
+import { Icon } from 'react-native-elements';
 import {createStackNavigator, createAppContainer} from 'react-navigation';
 import ImageScreen from '../screens/ImageScreen';
 import { config } from "../assets/config/config";
@@ -29,6 +30,9 @@ export default class ImageStack extends Component {
         tabBarOnPress: ({navigation, defaultHandler}) => {
             navigation.setParams({headerTitle: config.headerTitle});
             defaultHandler();
+        },
+        tabBarIcon: ({tintColor}) => {
+            return(<Icon color={tintColor} type="material-community" name="image-filter" />);
         }
     });
 

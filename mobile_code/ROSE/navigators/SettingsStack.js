@@ -7,6 +7,7 @@
  */
 
 import React, {Component} from 'react';
+import { Icon } from 'react-native-elements';
 import {createSwitchNavigator, createAppContainer} from 'react-navigation';
 import SettingsHomeStack from '../navigators/SettingsHomeStack';
 import AddRobotStack from '../navigators/AddRobotStack';
@@ -35,6 +36,9 @@ export default class SettingsStack extends Component {
         tabBarOnPress: ({navigation, defaultHandler}) => {
             navigation.setParams({headerTitle: config.headerTitle});
             defaultHandler();
+        },
+        tabBarIcon: ({tintColor}) => {
+            return(<Icon color={tintColor} type="material-community" name="settings-outline" />);
         }
     });
 

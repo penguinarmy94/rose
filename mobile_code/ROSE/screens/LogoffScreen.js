@@ -1,10 +1,19 @@
 import React, {Component} from 'react';
 import {StyleSheet, Text, View, Image, Button} from 'react-native';
+import { Icon } from 'react-native-elements';
 import firebase from 'react-native-firebase';
 
 let logout_message = "Are you sure you want to logout?";
 
 export default class LogoffScreen extends Component {
+  static navigationOptions = ({navigation}) => {
+    return({
+      tabBarIcon: ({focused, tintColor}) => {
+        return(<Icon color={tintColor} type="material-community" name="logout" />);
+      }
+    });
+   }
+
   constructor(props) {
     super(props);
   }

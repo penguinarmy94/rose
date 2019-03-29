@@ -23,8 +23,14 @@ const landingNav = createBottomTabNavigator(
     }, 
     {
         tabBarOptions: {
-            activeTintColor: 'blue',
-            inactiveTintColor: 'gray',
+            activeTintColor: '#64a2b7',
+            labelStyle: {
+              fontSize: 10
+            },
+            inactiveTintColor: 'black',
+            style: {
+              backgroundColor: "white"
+            }
         },
         initialRouteName: "Info",
         backBehavior: "none",
