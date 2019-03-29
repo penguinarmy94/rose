@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { Platform, StyleSheet, Text, View, TextInput, Image } from 'react-native';
-import { CheckBox } from 'react-native-elements';
+import { CheckBox, colors } from 'react-native-elements';
 import firebase from 'react-native-firebase';
 import NotificationManager from '../controllers/NotificationManager';
 import Session from '../controllers/Session';
@@ -12,9 +12,14 @@ let isMounted = false;
 export default class InfoScreen extends Component {
 
   static navigationOptions = ({navigation}) => {
-    return({
-      title: navigation.getParam("headerTitle", "No Robot Selected")
-    });
+   return({
+     title: navigation.getParam("headerTitle", "No Robot Selected"),
+     headerTintColor: "black",
+     headerStyle: {
+        backgroundColor: "white",
+        color: "white"
+     }
+   });
   }
 
   constructor(props) {
@@ -138,24 +143,45 @@ export default class InfoScreen extends Component {
 
   render() {
     return(
-      <View style={styles.container}>
-        <Text style={[styles.text]}>ID: {this.state.id}</Text>
-        <View style={styles.row}>
-          <Text style={styles.text}>Battery Level: </Text>
-          <Text style={[{ color: this.state.batteryColor}, styles.text]}>{this.state.battery}%</Text>
+      <View style={[styles.container, styles.rose_background]}>
+        <View style={{backgroundColor: "black", width: 350, height: 480, justifyContent: "center", padding: 20, borderRadius: 50, borderWidth: 1, borderColor: "white"}}>
+          <View style={[styles.row]}>
+            <Text style={[styles.text, styles.label]}>ID: </Text>
+            <Text style={[styles.text, styles.label]}>{this.state.id}</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={[styles.text, styles.label]}>Battery: </Text>
+            <Text style={[{ color: this.state.batteryColor}, styles.text]}>{this.state.battery}%</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={[styles.text, styles.label]}>Wi-Fi: </Text>
+            <Text style={[{ color: this.state.connectionColor}, styles.text]}>{this.state.connection}%</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={[styles.text, styles.label]}>Charging: </Text>
+            <Text style={[styles.text, styles.label]}>{this.state.charging}</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={[styles.text, styles.label]}>Idle: </Text>
+            <Text style={[styles.text, styles.label]}>{this.state.idle}</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={[styles.text, styles.label]}>Detect: </Text>
+            <Text style={[styles.text, styles.label]}>{this.state.detect}</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={[styles.text, styles.label]}>Recordings:</Text> 
+            <Text style={[styles.text, styles.label]}>{this.state.recordings}</Text>
+          </View>
+          <View style={[styles.row, {justifyContent: "center"}]}>
+            <CheckBox 
+              title="Notifications" 
+              checked={this.state.notificationsOn} 
+              onPress={() => this.updateNotifications()} 
+              containerStyle={{backgroundColor: "black", borderWidth: 0}}
+              textStyle={[styles.label]}/>
+          </View>
         </View>
-        <View style={styles.row}>
-          <Text style={styles.text}>Wireless Connection Level: </Text>
-          <Text style={[{ color: this.state.connectionColor}, styles.text]}>{this.state.connection}%</Text>
-        </View>
-        <Text style={[styles.text]}>Charging: {this.state.charging}</Text>
-        <Text style={[styles.text]}>Idle Behavior: {this.state.idle}</Text>
-        <Text style={[styles.text]}>Detect Behavior: {this.state.detect}</Text>
-        <Text style={[styles.text]}>Number of Recordings: {this.state.recordings}</Text>
-        <CheckBox 
-          title="Notifications" 
-          checked={this.state.notificationsOn} 
-          onPress={() => this.updateNotifications()} />
       </View>
     );
   }
@@ -163,17 +189,25 @@ export default class InfoScreen extends Component {
 
 const styles = StyleSheet.create({
     row: {
-      flexDirection: 'row'
+      flexDirection: 'row',
+      justifyContent: "space-between",
+      marginTop: 15,
+      marginLeft: 10,
+      marginRight: 10
     },
     text: {
       fontSize: 20,
     },
+    label: {
+      color: "white"
+    },
+    rose_background: {
+      backgroundColor: "#64a2b7"
+    },
     container: {
       flex: 1,
-      flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: '#F5FCFF',
     },
     welcome: {
       fontSize: 20,
