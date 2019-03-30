@@ -2,16 +2,16 @@ from . import logger
 from threading import Thread
 from time import sleep
 from picamera import PiCamera
-import json, datetime. pyttsx3, functools, RPi.GPIO as gpio
+import json, datetime, pyttsx3, functools, RPi.GPIO as gpio
 
 class Camera():
     __pos = None
     __pin = None
-    __isOn = False
     __queue = None
     __servo = None
     __camera = None
     __interval = None
+    __last_capture = None
 
     def __init__(self, queue = None, pin = None, pos = 7):
         if queue and pin:
@@ -43,8 +43,17 @@ class Camera():
                     print("good_camera")
                     continue
             else:
+                if self.__interval > 0:
+                    now = datetime.datetime.now()
+                    minutes_passed = (now - self.__last_capture).total_seconds()/60
+                    if minutes_passed >= interval:
+                        self.__last_capture = now    
+                        logger.write(str(datetime.datetime.now()) + ".CameraThread.CaptureOnIntervasl.Enter")
 
-                continue
+                        #self.__camera.capture('/home/pi/picamera/image{timestamp}.jpg')
+            
+                        logger.write(str(datetime.datetime.now()) + ".CameraThread.CaptureOnInterval.Exit")
+                        continue
         
         self.__camera.stop_preview()
         gpio.cleanup()
@@ -73,18 +82,19 @@ class Camera():
             self.__servo.stop()
             return 1
         elif message_packet["type"] == "manual":
-            logger.write(str(datetime.datetime.now()) + ".CameraThread.Capture Image [Manual].Enter"
+            logger.write(str(datetime.datetime.now()) + ".CameraThread.setManual.Enter")
 
-            camera.capture('/home/pi/picamera/image{timestamp}.jpg')
+            #self.__camera.capture('/home/pi/picamera/image{timestamp}.jpg')
             
-            logger.write(str(datetime.datetime.now()) + ".CameraThread.Capture Image [Manual].Exit"
+            logger.write(str(datetime.datetime.now()) + ".CameraThread.setManual.Exit")
 
         elif message_packet["type"] == "automatic":
-            logger.write(str(datetime.datetime.now()) + ".CameraThread.SetAutomatic[" + message_packet["message"] + "].Enter"
+            logger.write(str(datetime.datetime.now()) + ".CameraThread.setAutomatic[" + message_packet["message"] + "].Enter")
 
             self.__interval = int(message_packet["message"])
+            self.__last_capture = datetime.datetime.now()
 
-            logger.write(str(datetime.datetime.now()) + ".CameraThread.SetAutomatic.Exit"
+            logger.write(str(datetime.datetime.now()) + ".CameraThread.setAutomatic.Exit")
 
         elif message_packet["type"] == "off":
             message_packet = json.loads(self.__queue.get())
@@ -93,8 +103,5 @@ class Camera():
         else:
             return -1
 
-    def say(self, message=""):
-        #self.__player.say(message)
-        #self.__player.runAndWait()
-
+    def move_camera(self, message=""):
         logger.write(str(datetime.datetime.now()) + " - Camera: " + message)
