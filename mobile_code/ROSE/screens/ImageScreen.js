@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, TouchableOpacity, ScrollView, View, Image, Modal} from 'react-native';
+import { Icon } from 'react-native-elements';
 import { config } from "../assets/config/config";
 import firebase from 'react-native-firebase';
 import Loader from "../helpers/Loader";
@@ -32,12 +33,22 @@ export default class ImageScreen extends Component {
       if(robot.exists) {
         let images = this.state.images;
 
-        if(images.length > 0 && images.length != robot.data().videos) {
-          this.setState({images: []});
+        if(images.length > 0 && images.length != robot.data().videos.length && robot.data().videos.length > 0) {
+          this.setState({images: [], body: <Loader text="Loading new Images" />});
           this._loadImages(0, robot.data().videos.length, robot.data().videos);
         }
-        else {
+        else if(images.length == 0 && robot.data().videos.length > 0) {
           this._loadImages(0, robot.data().videos.length, robot.data().videos);
+        }
+        else if(robot.data().videos.length == 0) {
+          this.setState({
+            body: <View style={{flex:1, alignItems: "center", justifyContent: "center"}}>
+                    <Text>No Images</Text>
+                  </View>
+          });
+        }
+        else {
+          //nothing
         }
       }
     });
@@ -70,11 +81,11 @@ export default class ImageScreen extends Component {
             <View style={{flex:1}}>
               <Image source={{uri: url}} style={{width: 120, height: 80, margin: 15}} />
             </View>
-            <Text style={{flex:1, flexWrap: "wrap", marginRight: 15}}>{imageText}</Text>
+            <Text style={{flex:1, flexWrap: "wrap", marginRight: 15, fontWeight: "bold"}}>{imageText.split(".")[0]}</Text>
           </TouchableOpacity>
         );
         this.setState({ 
-          body: <ScrollView>{this.state.images}</ScrollView>, 
+          body: <ScrollView style={[{backgroundColor: "#64a2b7"}]}>{this.state.images}</ScrollView>, 
           images: images
         });
       }).catch((error) => {
@@ -97,7 +108,10 @@ export default class ImageScreen extends Component {
           onRequestClose={() => {
               this._openImage(url);
           }}>
-          <View style={styles.container}>
+          <View style={{flexDirection: "row", margin: 15, alignItems: "flex-end", justifyContent: "flex-end"}}>
+            <Icon size={30} type="material-community" name="close-circle-outline" onPress={() => this._openImage(url)}/>
+          </View>
+          <View style={[styles.container]}>
             <Image 
               source={{uri: url}} 
               resizeMode="stretch"
@@ -108,7 +122,7 @@ export default class ImageScreen extends Component {
       viewing = true;
     }
     else {
-      body = <ScrollView>{this.state.images}</ScrollView>;
+      body = <ScrollView style={[{backgroundColor: "#64a2b7"}]}>{this.state.images}</ScrollView>;
       viewing = false;
     }
 
@@ -131,7 +145,7 @@ const styles = StyleSheet.create({
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: '#F5FCFF',
+      backgroundColor: 'white'
     },
     welcome: {
       fontSize: 20,
@@ -148,7 +162,8 @@ const styles = StyleSheet.create({
       flexDirection: "row", 
       borderColor: "black",
       alignItems: "center",
-      borderWidth: 2, 
-      borderTopWidth: 0
+      borderWidth: 2,
+      borderRadius: 20,
+      backgroundColor: "white"
     }
   });

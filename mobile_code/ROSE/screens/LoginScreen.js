@@ -10,6 +10,7 @@ import {FormInput} from 'react-native-elements';
 import firebase from 'react-native-firebase';
 import Session from '../controllers/Session';
 import {config} from '../assets/config/config';
+import User from '../controllers/User';
 
 const logo = require("../assets/images/logo.png");
 const title = "R.O.S.E";
@@ -83,7 +84,22 @@ export default class LoginScreen extends Component {
     firebase.auth().onAuthStateChanged((user) => {
         if(user) {
             let session = new Session(user.uid);
-            this.props.screenProps.rootNav.navigate("Home", {sessionVar: session});
+            config.robotSnapshot = () => {}
+
+            session.createUser().then((user) => {
+              if(user.exists) {
+                config.session.setUser(new User(user));
+                config.session.currentRobot().onSnapshot((robot) => {
+                  if(robot.exists) {
+                    config.robotObject = robot.data(); 
+                    config.session = session
+                    this.props.screenProps.rootNav.navigate("Home", {sessionVar: session});           
+                  }
+                });
+              }
+            }).catch((error) => {
+              alert(error);
+            });
         }
     });
     
@@ -95,7 +111,22 @@ export default class LoginScreen extends Component {
 
   debugLogin = () => {
     let session = new Session(config.debugId);
-    this.props.screenProps.rootNav.navigate("Home", {sessionVar: session})
+    config.robotSnapshot = () => {}
+
+    session.createUser().then((user) => {
+      if(user.exists) {
+        session.setUser(new User(user));
+        session.currentRobot().onSnapshot((robot) => {
+          if(robot.exists) {
+            config.robotObject = robot.data(); 
+            config.session = session;
+            this.props.screenProps.rootNav.navigate("Home", {sessionVar: session});           
+          }
+        });
+      }
+    }).catch((error) => {
+      alert(error);
+    });
   }
 
   passwordRecovery = () => {

@@ -33,7 +33,8 @@ export default class ImageStack extends Component {
         },
         tabBarIcon: ({tintColor}) => {
             return(<Icon color={tintColor} type="material-community" name="image-filter" />);
-        }
+        },
+        swipeEnabled: false
     });
 
     render() {

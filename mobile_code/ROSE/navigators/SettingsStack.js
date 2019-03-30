@@ -39,7 +39,8 @@ export default class SettingsStack extends Component {
         },
         tabBarIcon: ({tintColor}) => {
             return(<Icon color={tintColor} type="material-community" name="settings-outline" />);
-        }
+        },
+        swipeEnabled: false
     });
 
   render() {

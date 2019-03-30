@@ -107,7 +107,7 @@ class Database():
     def update_picture_sensor_status(self):
         if not self.__robot == None:
             self.__robotRef.update({
-                u'manual_picture': self.__robot.manual_picture
+                u'manual_picture': self.__robot.manualPicture
             })
         else:
             print("Robot has not been set yet")

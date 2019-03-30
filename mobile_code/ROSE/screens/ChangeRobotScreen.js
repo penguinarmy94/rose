@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import { View, ScrollView, Text, StyleSheet, Alert, Button} from 'react-native';
 import { Icon } from 'react-native-elements';
 import { config } from "../assets/config/config";
-import { StackActions, NavigationActions } from 'react-navigation';
-import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
+import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
 
 export default class ChangeRobotScreen extends Component {
     static navigationOptions = {
@@ -47,20 +46,20 @@ export default class ChangeRobotScreen extends Component {
     renderBlock = (key, robots, selected, changeFunction) => {
         if(this.state.index > -1) {
             return(
-                <ScrollView key={key} style={{margin: 20}}>
+                <View key={key} style={{margin: 20}}>
                     <RadioForm
                         formHorizontal={false}
                         animation={true}
                         onPress={changeFunction}
                         initial={this.state.index}
                         radio_props={robots}
-                        buttonColor={"green"}
+                        buttonColor={"#64a2b7"}
                         labelColor={"#000"}
-                        selectedButtonColor={"green"}
+                        selectedButtonColor={"#64a2b7"}
                         selectedLabelColor={"#000"}
                         buttonSize={15}
                     />
-                </ScrollView>
+                </View>
             );
         }
         else {
@@ -83,11 +82,13 @@ export default class ChangeRobotScreen extends Component {
     render() {
         return(
             <View style={styles.container}>
-                {
-                    this.renderBlock(0, this.state.robots, this.state.selected, (value, index) => {
-                        this.setState({selected: value});
-                    })
-                }
+                <ScrollView>
+                    {
+                        this.renderBlock(0, this.state.robots, this.state.selected, (value, index) => {
+                            this.setState({selected: value});
+                        })
+                    }
+                </ScrollView>
                 <View style={styles.buttonContainer}>
                     <Button title="Confim" onPress={this.confirm} />
                     <Button title="Cancel" onPress={this.cancel} />
@@ -99,7 +100,10 @@ export default class ChangeRobotScreen extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        marginTop: 20
+        flex: 1,
+        margin: 15,
+        flexDirection: "column",
+        justifyContent: "space-between"
     },
     buttonContainer: {
         flexDirection: 'row',

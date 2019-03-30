@@ -10,14 +10,10 @@ export default class LoadingScreen extends Component {
     }
 
     componentDidMount() {
-        setTimeout(() => {
-            this.props.navigation.navigate("Home");
-        }, 3000);
+        this.props.navigation.navigate("Home");
     }
 
     render() {
-        return(
-            <Loader text="Waiting for new robot to load" />
-        );
+       return(<View></View>);
     }
 }

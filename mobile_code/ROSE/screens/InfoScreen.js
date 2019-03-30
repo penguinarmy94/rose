@@ -3,7 +3,7 @@ import { Platform, StyleSheet, Text, View, TextInput, Image } from 'react-native
 import { CheckBox, colors } from 'react-native-elements';
 import firebase from 'react-native-firebase';
 import NotificationManager from '../controllers/NotificationManager';
-import Session from '../controllers/Session';
+import Loader from '../helpers/Loader';
 import User from '../controllers/User';
 import { config } from '../assets/config/config';
 
@@ -36,29 +36,20 @@ export default class InfoScreen extends Component {
       connectionColor: "green",
       batteryColor: "green",
       header: config.headerTitle,
-      notificationsOn: false
+      notificationsOn: false,
+      loaded: 0
     };
 
     this.notifier = new NotificationManager(this.state.id);
 
     if(config.session) {
+      isMounted = true;
       config.robotSnapshot();
       this.updateRobot();
     }
     else {
-        config.session = this.props.screenProps.data;
-        alert("Welcome back!");
-
         isMounted = true;
-
-        config.session.createUser().then((user) => {
-          if(user.exists) {
-            config.session.setUser(new User(user));
-            this.updateRobot();
-          }
-        }).catch((error) => {
-          alert(error);
-        });
+        this.updateRobot();
     }
   }
 
@@ -126,6 +117,7 @@ export default class InfoScreen extends Component {
     current.detect = robot.detect_behavior; 
     current.recordings = robot.num_of_videos;
     current.header = config.headerTitle;
+    current.loaded += 1;
 
     this.setState(current);
   }
@@ -142,48 +134,53 @@ export default class InfoScreen extends Component {
   }
 
   render() {
-    return(
-      <View style={[styles.container, styles.rose_background]}>
-        <View style={{backgroundColor: "black", width: 350, height: 480, justifyContent: "center", padding: 20, borderRadius: 50, borderWidth: 1, borderColor: "white"}}>
-          <View style={[styles.row]}>
-            <Text style={[styles.text, styles.label]}>ID: </Text>
-            <Text style={[styles.text, styles.label]}>{this.state.id}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={[styles.text, styles.label]}>Battery: </Text>
-            <Text style={[{ color: this.state.batteryColor}, styles.text]}>{this.state.battery}%</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={[styles.text, styles.label]}>Wi-Fi: </Text>
-            <Text style={[{ color: this.state.connectionColor}, styles.text]}>{this.state.connection}%</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={[styles.text, styles.label]}>Charging: </Text>
-            <Text style={[styles.text, styles.label]}>{this.state.charging}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={[styles.text, styles.label]}>Idle: </Text>
-            <Text style={[styles.text, styles.label]}>{this.state.idle}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={[styles.text, styles.label]}>Detect: </Text>
-            <Text style={[styles.text, styles.label]}>{this.state.detect}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={[styles.text, styles.label]}>Recordings:</Text> 
-            <Text style={[styles.text, styles.label]}>{this.state.recordings}</Text>
-          </View>
-          <View style={[styles.row, {justifyContent: "center"}]}>
-            <CheckBox 
-              title="Notifications" 
-              checked={this.state.notificationsOn} 
-              onPress={() => this.updateNotifications()} 
-              containerStyle={{backgroundColor: "black", borderWidth: 0}}
-              textStyle={[styles.label]}/>
+    if(this.state.loaded >= 2) {
+      return(
+        <View style={[styles.container, styles.rose_background]}>
+          <View style={{backgroundColor: "white", width: 350, height: 480, justifyContent: "center", padding: 20, borderRadius: 50, borderWidth: 1, borderColor: "black"}}>
+            <View style={[styles.row]}>
+              <Text style={[styles.text, styles.label]}>ID: </Text>
+              <Text style={[styles.text, styles.value]}>{this.state.id}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={[styles.text, styles.label]}>Battery: </Text>
+              <Text style={[{ color: this.state.batteryColor}, styles.text]}>{this.state.battery}%</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={[styles.text, styles.label]}>Wi-Fi: </Text>
+              <Text style={[{ color: this.state.connectionColor}, styles.text]}>{this.state.connection}%</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={[styles.text, styles.label]}>Charging: </Text>
+              <Text style={[styles.text, styles.value]}>{this.state.charging}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={[styles.text, styles.label]}>Idle: </Text>
+              <Text style={[styles.text, styles.value]}>{this.state.idle}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={[styles.text, styles.label]}>Detect: </Text>
+              <Text style={[styles.text, styles.value]}>{this.state.detect}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={[styles.text, styles.label]}>Recordings:</Text> 
+              <Text style={[styles.text, styles.value]}>{this.state.recordings}</Text>
+            </View>
+            <View style={[styles.row, {justifyContent: "center"}]}>
+              <CheckBox 
+                title="Notifications" 
+                checked={this.state.notificationsOn} 
+                onPress={() => this.updateNotifications()} 
+                containerStyle={{backgroundColor: "white", borderWidth: 0}}
+                textStyle={[styles.value, styles.text]}/>
+            </View>
           </View>
         </View>
-      </View>
-    );
+      );
+    }
+    else {
+      return(<Loader text="Loading your robot" />);
+    }
   }
 }
 
@@ -199,7 +196,13 @@ const styles = StyleSheet.create({
       fontSize: 20,
     },
     label: {
-      color: "white"
+      color: "black",
+      fontWeight: "bold",
+      borderBottomWidth: 1,
+      borderBottomColor: "black"
+    },
+    value: {
+      color: "black"
     },
     rose_background: {
       backgroundColor: "#64a2b7"

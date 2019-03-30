@@ -7,14 +7,14 @@
  */
 
 import React, {Component} from 'react';
-import {createBottomTabNavigator, createAppContainer} from 'react-navigation';
+import {createMaterialTopTabNavigator, createAppContainer} from 'react-navigation';
 import InfoStack from '../navigators/InfoStack';
 import ImageStack from '../navigators/ImageStack';
 import SettingsStack from '../navigators/SettingsStack';
 import LogoffScreen from '../screens/LogoffScreen';
 
 
-const landingNav = createBottomTabNavigator(
+const landingNav = createMaterialTopTabNavigator(
     {
         Info: InfoStack,
         Images: ImageStack,
@@ -30,10 +30,18 @@ const landingNav = createBottomTabNavigator(
             inactiveTintColor: 'black',
             style: {
               backgroundColor: "white"
-            }
+            },
+            indicatorStyle: {
+              backgroundColor: "#64a2b7"
+            },
+            showIcon: true
         },
+        lazy: true,
         initialRouteName: "Info",
-        backBehavior: "none",
+        tabBarPosition: "bottom",
+        swipeEnabled: false,
+        animationEnabled: false,
+        order: ["Info", "Images", "Settings", "Logoff"]
     }
 );
 

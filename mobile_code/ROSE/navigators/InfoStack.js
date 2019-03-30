@@ -18,19 +18,23 @@ const infoNav = createStackNavigator(
     }, 
     {
         initialRouteName: "InfoHome",
+        headerMode: "screen"
     }
 );
 
 const InfoContainer =  createAppContainer(infoNav);
 
 export default class InfoStack extends Component {
-  static navigationOptions = ({navigation}) => {
-    return({
-      tabBarIcon: ({tintColor}) => {
+  static navigationOptions = ({nav}) => ({
+    tabBarOnPress: ({navigation, defaultHandler}) => {
+
+      defaultHandler();
+    },
+    tabBarIcon: ({tintColor}) => {
         return(<Icon color={tintColor} type="material-community" name="information-outline" />);
-    }
-    });
-   }
+    },
+    swipeEnabled: false
+   });
 
   render() {
     return <InfoContainer screenProps={{rootNav: this.props.screenProps.rootNav, data: this.props.screenProps.data}} />
