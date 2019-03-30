@@ -82,11 +82,11 @@ class Camera():
             self.__servo.stop()
             return 1
         elif message_packet["type"] == "manual":
-            logger.write(str(datetime.datetime.now()) + ".CameraThread.Capture Image [Manual].Enter"
+            #logger.write(str(datetime.datetime.now()) + ".CameraThread.Capture Image [Manual].Enter"
 
             #self.__camera.capture('/home/pi/picamera/image{timestamp}.jpg')
             
-            logger.write(str(datetime.datetime.now()) + ".CameraThread.Capture Image [Manual].Exit"
+            #logger.write(str(datetime.datetime.now()) + ".CameraThread.Capture Image [Manual].Exit"
 
         elif message_packet["type"] == "automatic":
             logger.write(str(datetime.datetime.now()) + ".CameraThread.SetAutomatic[" + message_packet["message"] + "].Enter"
