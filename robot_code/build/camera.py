@@ -2,7 +2,7 @@ from . import logger
 from threading import Thread
 from time import sleep
 from picamera import PiCamera
-import json, datetime. pyttsx3, functools, RPi.GPIO as gpio
+import json, datetime, pyttsx3, functools, RPi.GPIO as gpio
 
 class Camera():
     __pos = None
