@@ -45,14 +45,14 @@ class Camera():
             else:
                 if interval > 0:
                     now = datetime.datetime.now()
-                    minutes_passed = (now - self.__last_capture).tota_seconds()/60
+                    minutes_passed = (now - self.__last_capture).total_seconds()/60
                     if minutes_passed >= interval:
                         self.__last_capture = now    
-                        #logger.write(str(datetime.datetime.now()) + ".CameraThread.Capture Image [Manual].Enter"
+                        logger.write(str(datetime.datetime.now()) + ".CameraThread.CaptureOnIntervasl.Enter")
 
                         #self.__camera.capture('/home/pi/picamera/image{timestamp}.jpg')
             
-                        #logger.write(str(datetime.datetime.now()) + ".CameraThread.Capture Image [Manual].Exit"
+                        logger.write(str(datetime.datetime.now()) + ".CameraThread.CaptureOnInterval.Exit")
                         continue
         
         self.__camera.stop_preview()
@@ -82,19 +82,19 @@ class Camera():
             self.__servo.stop()
             return 1
         elif message_packet["type"] == "manual":
-            logger.write(str(datetime.datetime.now()) + ".CameraThread.Manual.Enter"
+            logger.write(str(datetime.datetime.now()) + ".CameraThread.setManual.Enter")
 
             #self.__camera.capture('/home/pi/picamera/image{timestamp}.jpg')
             
-            logger.write(str(datetime.datetime.now()) + ".CameraThread.Manual.Exit"
+            logger.write(str(datetime.datetime.now()) + ".CameraThread.setManual.Exit")
 
         elif message_packet["type"] == "automatic":
-            logger.write(str(datetime.datetime.now()) + ".CameraThread.SetAutomatic.Enter"
+            logger.write(str(datetime.datetime.now()) + ".CameraThread.setAutomatic[" + message_packet["message"] + "].Enter")
 
             self.__interval = int(message_packet["message"])
             self.__last_capture = datetime.datetime.now()
 
-            logger.write(str(datetime.datetime.now()) + ".CameraThread.SetAutomatic.Exit"
+            logger.write(str(datetime.datetime.now()) + ".CameraThread.setAutomatic.Exit")
 
         elif message_packet["type"] == "off":
             message_packet = json.loads(self.__queue.get())
