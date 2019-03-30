@@ -7,11 +7,11 @@ import json, datetime. pyttsx3, functools, RPi.GPIO as gpio
 class Camera():
     __pos = None
     __pin = None
-    __isOn = False
     __queue = None
     __servo = None
     __camera = None
     __interval = None
+    __last_capture = None
 
     def __init__(self, queue = None, pin = None, pos = 7):
         if queue and pin:
@@ -43,8 +43,17 @@ class Camera():
                     print("good_camera")
                     continue
             else:
+                if interval > 0:
+                    now = datetime.datetime.now()
+                    minutes_passed = (now - self.__last_capture).tota_seconds()/60
+                    if minutes_passed >= interval:
+                        self.__last_capture = now    
+                        logger.write(str(datetime.datetime.now()) + ".CameraThread.Capture Image [Manual].Enter"
 
-                continue
+                        camera.capture('/home/pi/picamera/image{timestamp}.jpg')
+            
+                        logger.write(str(datetime.datetime.now()) + ".CameraThread.Capture Image [Manual].Exit"
+                        continue
         
         self.__camera.stop_preview()
         gpio.cleanup()
@@ -83,6 +92,7 @@ class Camera():
             logger.write(str(datetime.datetime.now()) + ".CameraThread.SetAutomatic[" + message_packet["message"] + "].Enter"
 
             self.__interval = int(message_packet["message"])
+            self.__last_capture = datetime.datetime.now()
 
             logger.write(str(datetime.datetime.now()) + ".CameraThread.SetAutomatic.Exit"
 
