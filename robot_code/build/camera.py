@@ -65,15 +65,15 @@ class Camera():
         if message_packet["type"] == "position":
             
             message_packet = json.loads(self.__queue.get())
-            logger.write(str(datetime.datetime.now()) + " - Brain to Camera: Camera Message Received -- " + message_packet["message"] + " -- Moving from = " + str(self.__pos) + " to " + str(pos))
-       
             pos = self.__pos + 3 * float(message_packet["message"])
+            logger.write(str(datetime.datetime.now()) + " - Brain to Camera: Camera Message Received -- " + message_packet["message"] + " -- Moving to " + str(pos))
+           
             self.__servo.start(self.__pos)
             
             #self.__servo.ChangeDutyCycle(self.__pos)
             self.__servo.stop()
             return 1
-            
+
         elif message_packet["type"] == "manual":
             logger.write(str(datetime.datetime.now()) + ".CameraThread.setManual.Enter")
 
