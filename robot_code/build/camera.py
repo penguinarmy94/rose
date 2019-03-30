@@ -48,11 +48,11 @@ class Camera():
                     minutes_passed = (now - self.__last_capture).tota_seconds()/60
                     if minutes_passed >= interval:
                         self.__last_capture = now    
-                        logger.write(str(datetime.datetime.now()) + ".CameraThread.Capture Image [Manual].Enter"
+                        #logger.write(str(datetime.datetime.now()) + ".CameraThread.Capture Image [Manual].Enter"
 
                         #self.__camera.capture('/home/pi/picamera/image{timestamp}.jpg')
             
-                        logger.write(str(datetime.datetime.now()) + ".CameraThread.Capture Image [Manual].Exit"
+                        #logger.write(str(datetime.datetime.now()) + ".CameraThread.Capture Image [Manual].Exit"
                         continue
         
         self.__camera.stop_preview()
