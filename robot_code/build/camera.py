@@ -43,7 +43,7 @@ class Camera():
                     print("good_camera")
                     continue
             else:
-                if interval > 0:
+                if self.__interval > 0:
                     now = datetime.datetime.now()
                     minutes_passed = (now - self.__last_capture).total_seconds()/60
                     if minutes_passed >= interval:
@@ -103,8 +103,5 @@ class Camera():
         else:
             return -1
 
-    def say(self, message=""):
-        #self.__player.say(message)
-        #self.__player.runAndWait()
-
+    def move_camera(self, message=""):
         logger.write(str(datetime.datetime.now()) + " - Camera: " + message)
