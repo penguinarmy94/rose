@@ -1,5 +1,9 @@
 from google.cloud import storage
-import json, os, datetime
+from . import logger
+import json, datetime
+from os import listdir
+from os.path import isfile, join
+onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
 
 class ImageUplader():
     __config = None
@@ -7,6 +11,7 @@ class ImageUplader():
     __root = "Images"
     __client = None
     __bucket = None
+    __queue = None
 
     def __init__(self, queue = None, config = None, robot = None, token = None):
         try:
@@ -21,6 +26,7 @@ class ImageUplader():
 
             self.__config = config
             self.__robot = robot
+            self.__queue = queue
         except Exception as e:
             print(str(e))
 
@@ -33,10 +39,35 @@ class ImageUplader():
     
     def run(self):
         while True:
-            pass
+            if not self.__queue.empty():
+                if self.__read_queue() == 2:
+                    break
+                else:
+                    continue
+            else:
+                continue
+        
+        logger.write(str(datetime.datetime.now()) + " - Uploader Powered Off")
 
+            
+    
     def read_queue(self):
-        pass
+        message_packet = json.loads(self.__queue.peek())
+
+        if message_packet["type"] == "off":
+            message_packet = json.loads(self.__queue.get())
+            logger.write(str(datetime.datetime.now()) + " - Brain to Uploader: Off Message Received -- " + message_packet["message"])
+            return 2
+        else:
+            return 1
+
+
+    def read_directory(self):
+        for file in listdir(self.__config[""]):
+            tempFile = join(self.__config[""], file)
+            if isfile(tempFile):
+                self.upload(tempFile)
+
 
     def upload(self, file_path):
         try:

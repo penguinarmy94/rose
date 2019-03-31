@@ -34,8 +34,9 @@ class ProcessQueue():
 
 brain_motor_queue = PeekableQueue()
 brain_microphone_queue = PeekableQueue()
-logger_queue = PeekableQueue()#q() #PeekableQueue()
+logger_queue = PeekableQueue()
 brain_camera_queue = PeekableQueue()
-brain_speaker_queue = PeekableQueue() #q() #PeekableQueue()
+brain_speaker_queue = PeekableQueue()
 brain_notifier_queue = PeekableQueue()
 brain_sensor_queue = PeekableQueue()
+brain_uploader_queue = PeekableQueue()

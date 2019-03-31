@@ -7,6 +7,7 @@ class Brain():
     __nmQueue = None
     __miQueue = None
     __spkQueue = None
+    __uploaderQueue = None
     __robot = None
     __db = None
     __camQueue = None
@@ -27,6 +28,7 @@ class Brain():
         self.__spkQueue = queues.brain_speaker_queue
         self.__camQueue = queues.brain_camera_queue
         self.__sensorQueue = queues.brain_sensor_queue
+        self.__uploaderQueue = queues.brain_uploader_queue
         self.__behaviorRef = {"idle": "", "detect": ""}
         self.__idle_behavior = []
         self.__detect_behavior = []
