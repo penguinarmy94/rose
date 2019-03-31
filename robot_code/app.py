@@ -62,7 +62,7 @@ def initialize_threads(db, rob, off = True):
             nm_thread = runNotificationManager(rob=rob,config=config,initialized=True)
 
             spk_thread = runSpeakerThread()
-            ca_thread = runCameraThread(pin=12, pos = 7, capture_path = config["config_path"])
+            ca_thread = runCameraThread(pin=12, pos = 7, capture_path = config["capture_path"])
             light_thread = runLightThread(pin=11)
             log_thread = runLoggerThread()
 
