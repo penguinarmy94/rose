@@ -50,7 +50,7 @@ class Camera():
                         self.__last_capture = now    
                         logger.write(str(datetime.datetime.now()) + ".CameraThread.CaptureOnIntervasl.Enter")
 
-                        self.__camera.capture('/home/pi/picamera/image{timestamp}.jpg')
+                        self.__camera.capture('/home/pi/picamera/image_%s.jpg')
             
                         logger.write(str(datetime.datetime.now()) + ".CameraThread.CaptureOnInterval.Exit")
                         continue
@@ -97,3 +97,8 @@ class Camera():
 
     def move_camera(self, message=""):
         logger.write(str(datetime.datetime.now()) + " - Camera: " + message)
+
+    def capture_image(self):
+        #date = datetime.datetime.now().strftime("%Y_%m_%d_%Y_%H_%M_%S")
+        self.__camera.capture('/home/pi/picamera/image{timestamp}.jpg')
+        self.__camera.capture("/home/pi/picamera/image{timestamp}.jpg")
