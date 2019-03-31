@@ -195,6 +195,7 @@ class Brain():
                     return
             if self.__robot.manualPicture is True:
                 self.__write_camera(message_type="manual", message="Take Picture Now")
+                self.__robot.manualPicture = False
                 self.__db.update_picture_sensor_status()
             if not self.__camPosition == self.__robot.camera_angle:
                 self.__camPosition = self.__robot.camera_angle
