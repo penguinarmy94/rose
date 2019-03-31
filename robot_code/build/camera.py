@@ -76,8 +76,9 @@ class Camera():
         elif message_packet["type"] == "manual":
             logger.write(str(datetime.datetime.now()) + ".CameraThread.setManual.Enter")
 
-            self.__camera.capture('/home/pi/picamera/image{timestamp}.jpg')
-            
+            #self.__camera.capture('/home/pi/picamera/image{timestamp}.jpg')
+            self.capture_image(self)
+
             logger.write(str(datetime.datetime.now()) + ".CameraThread.setManual.Exit")
 
         elif message_packet["type"] == "automatic":
@@ -99,6 +100,6 @@ class Camera():
         logger.write(str(datetime.datetime.now()) + " - Camera: " + message)
 
     def capture_image(self):
-        #date = datetime.datetime.now().strftime("%Y_%m_%d_%Y_%H_%M_%S")
-        self.__camera.capture('/home/pi/picamera/image{timestamp}.jpg')
-        self.__camera.capture("/home/pi/picamera/image{timestamp}.jpg")
+        date = datetime.datetime.now().strftime("%Y_%m_%d_%Y_%H_%M_%S")
+        self.__camera.capture('/home/pi/picamera/image_' + date + .jpg')
+        logger.write(str(datetime.datetime.now()) + " - Camera: " + date)
