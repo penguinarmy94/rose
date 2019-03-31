@@ -50,7 +50,7 @@ class Camera():
                         self.__last_capture = now    
                         logger.write(str(datetime.datetime.now()) + ".CameraThread.CaptureOnIntervasl.Enter")
 
-                        #self.__camera.capture('/home/pi/picamera/image{timestamp}.jpg')
+                        self.__camera.capture('/home/pi/picamera/image{timestamp}.jpg')
             
                         logger.write(str(datetime.datetime.now()) + ".CameraThread.CaptureOnInterval.Exit")
                         continue
@@ -76,7 +76,7 @@ class Camera():
         elif message_packet["type"] == "manual":
             logger.write(str(datetime.datetime.now()) + ".CameraThread.setManual.Enter")
 
-            #self.__camera.capture('/home/pi/picamera/image{timestamp}.jpg')
+            self.__camera.capture('/home/pi/picamera/image{timestamp}.jpg')
             
             logger.write(str(datetime.datetime.now()) + ".CameraThread.setManual.Exit")
 
