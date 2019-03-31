@@ -30,37 +30,39 @@ int waitSensor = 0;
 int turning = 0;
 int wait = 0;
 
+const unsigned long sampleWindow = 50;
+unsigned long micTime;
+unsigned long debugTime;
+
 void setup() 
 {
 Serial.begin(9600); //Unusued in project. Mainly for debugging purposes.
-Serial1.begin(9600);
+//Serial1.begin(9600);
 Wire.begin();
 a.clearBuffer();
 b.clearBuffer();
-laserSensor.setNumber(SENSORS);
-laserSensor.setHighAccuracy();
+//laserSensor.setNumber(1);
+//laserSensor.setHighAccuracy();
+debugTime = millis();
 }
 
 void loop()
 {
-readLaser();
-if (!Serial1.available())
+//readLaser();
+if (!Serial.available())
 {
-  if (count < 1000)
-    {
-      aSample = a.record();
-      bSample = b.record();
-      aMax = (aSample > aMax) ? aSample : aMax;
-      bMax = (bSample > bMax) ? bSample : bMax;
-      count ++;
-    }   
-  else
+  micTime = millis();
+  while(millis() - micTime < sampleWindow)
   {
-    a.storeIntoBuffer(aMax);
-    b.storeIntoBuffer(bMax);
-    aMax = 0;
-    bMax = 0;
-    count = 0;  
+    record(a, b);
+  }
+  storeAmplitude(a, b);
+  if(millis() - debugTime > 500)
+  {
+    Serial.println(a.getMax());
+    Serial.println(b.getMax());
+    Serial.println();
+    debugTime = millis();
   }
 }
 else
@@ -69,7 +71,6 @@ else
   commandFromPi(piCommand, a, b, left, right);
   
 }
-    delay(1);
 }
 
 
@@ -109,7 +110,7 @@ void readLaser() {
     delay(70);
     int rightblock = laserSensor.getValue(RIGHT_SENSOR);
     if (leftblock < rightblock) {
-      Right(left, right, 175);
+      Right(left, right, 225);
       while(state & (BLOCKED_FRONT | BLOCKED_LEFT)){
         state = laserSensor.getState();
         delay(70);
@@ -118,8 +119,8 @@ void readLaser() {
     }
     else
     {
-      Left(left, right, 175);
-      while(state & (BLOCKED_FRONT |BLOCKED_RIGHT)){
+      Left(left, right, 225);
+      while(state & (BLOCKED_FRONT | BLOCKED_RIGHT)){
         state = laserSensor.getState();
         delay(70);
       }

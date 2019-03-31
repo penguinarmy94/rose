@@ -1,5 +1,7 @@
 #include "helper.h"
 
+extern unsigned long micTime;
+
 void Forward(Motor left, Motor right, int speed)
 {
   left.forward(speed);
@@ -50,7 +52,7 @@ void calibrateMicrophones(Microphone &a, Microphone &b)
     i++;
     delay(1);
   }
-  b.setCalibrationValue(bCumulative - aCumulative);
+  b.storeCalibrationValue(bCumulative - aCumulative);
 }
 
 int getDistance(char arr[])
@@ -68,7 +70,7 @@ int getDistance(char arr[])
 void parsePackage(PIData &package)
 {
   extern char fromPi[10];
-  Serial1.readBytesUntil('-', fromPi, 10); 
+  Serial.readBytesUntil('-', fromPi, 10); 
   package.direction = fromPi[0];
   int dist = 0;
   int i = 1;
@@ -95,7 +97,7 @@ void commandFromPi(PIData &package, Microphone &a, Microphone &b, Motor left, Mo
     case 'L': commandLeft(package, left, right);
     default: memset(&package, 0, sizeof(package));
   }
-  Serial1.print("K");
+  Serial.print("K");
   memset(&package, 0, sizeof(package));
 }
 
@@ -155,6 +157,19 @@ void commandLeft(PIData package, Motor left, Motor right)
     }  
   Halt(left, right);  
 }
+
+void record(Microphone &a, Microphone &b)
+{
+  a.record();
+  b.record();
+}
+
+void storeAmplitude(Microphone &a, Microphone &b)
+{
+  a.storeIntoBuffer();
+  b.storeIntoBuffer();
+}
+
 
 /*
  *   if (piCommand.direction == 'y')
