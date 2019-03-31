@@ -13,7 +13,7 @@ class Camera():
     __interval = None
     __last_capture = None
 
-    def __init__(self, queue = None, pin = None, pos = 7):
+    def __init__(self, queue = None, pin = 12, pos = 7):
         if queue and pin:
             logger.write(str(datetime.datetime.now()) + " - Camera initialized")
             self.__pin = pin
@@ -69,10 +69,7 @@ class Camera():
             pos = self.__pos + 3 * float(message_packet["message"])
             logger.write(str(datetime.datetime.now()) + " - Brain to Camera: Camera Message Received -- " + message_packet["message"] + " -- Moving to " + str(pos))
            
-            self.__servo.ChangeDutyCycle(self.__pos)
-            
-            #self.__servo.ChangeDutyCycle(self.__pos)
-            #self.__servo.stop()
+            self.__servo.ChangeDutyCycle(pos)
             return 1
 
         elif message_packet["type"] == "manual":
