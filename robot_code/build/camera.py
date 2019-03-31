@@ -78,7 +78,7 @@ class Camera():
             logger.write(str(datetime.datetime.now()) + ".CameraThread.setManual.Enter")
 
             #self.__camera.capture('/home/pi/picamera/image{timestamp}.jpg')
-            self.capture_image(self)
+            self.capture_image()
 
             logger.write(str(datetime.datetime.now()) + ".CameraThread.setManual.Exit")
 
