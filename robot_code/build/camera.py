@@ -51,7 +51,7 @@ class Camera():
                         self.__last_capture = now    
                         logger.write(str(datetime.datetime.now()) + ".CameraThread.CaptureOnIntervasl.Enter")
 
-                        self.__camera.capture('/home/pi/picamera/image_%s.jpg')
+                        self.capture_image()
             
                         logger.write(str(datetime.datetime.now()) + ".CameraThread.CaptureOnInterval.Exit")
                         continue
@@ -77,7 +77,6 @@ class Camera():
         elif message_packet["type"] == "manual":
             logger.write(str(datetime.datetime.now()) + ".CameraThread.setManual.Enter")
 
-            #self.__camera.capture('/home/pi/picamera/image{timestamp}.jpg')
             self.capture_image()
 
             logger.write(str(datetime.datetime.now()) + ".CameraThread.setManual.Exit")
@@ -101,6 +100,6 @@ class Camera():
         logger.write(str(datetime.datetime.now()) + " - Camera: " + message)
 
     def capture_image(self):
-        date = datetime.datetime.now().strftime("%Y_%m_%d_%Y_%H_%M_%S")
+        date = datetime.datetime.now().strftime("%Y%m%d.%H:%M:%S")
         self.__camera.capture(self.__capture_path + "image_" + date + '.jpg')
         logger.write(str(datetime.datetime.now()) + " - Camera: " + self.__capture_path + "image_" + date)
