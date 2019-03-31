@@ -10,5 +10,5 @@
         "notification": ["Alert"]
     },
     "bucket": "rose-9876.appspot.com",
-    "image_path": "/home/pi/Desktop/Projects/rose/captures"
+    "image_path": "/home/pi/Desktop/Projects/rose/captures/"
 }
