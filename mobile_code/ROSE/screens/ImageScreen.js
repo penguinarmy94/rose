@@ -1,9 +1,11 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, TouchableOpacity, ScrollView, View, Image, Modal} from 'react-native';
+import {Platform, StyleSheet, Text, TouchableOpacity, ScrollView, View, Modal} from 'react-native';
 import { Icon } from 'react-native-elements';
 import { config } from "../assets/config/config";
 import firebase from 'react-native-firebase';
 import Loader from "../helpers/Loader";
+import Image from 'react-native-transformable-image-next';
+import TransformableImage from '../helpers/TransformableImage';
 
 export default class ImageScreen extends Component {
   
@@ -79,13 +81,15 @@ export default class ImageScreen extends Component {
         images.push(
           <TouchableOpacity key={url} style={styles.imageContainer} onPress={() => this._openImage(url)}>
             <View style={{flex:1}}>
-              <Image source={{uri: url}} style={{width: 120, height: 80, margin: 15}} />
+              <TransformableImage source={{uri: url}} style={{width: 120, height: 80, margin: 15}} />
             </View>
             <Text style={{flex:1, flexWrap: "wrap", marginRight: 15, fontWeight: "bold"}}>{imageText.split(".")[0]}</Text>
           </TouchableOpacity>
         );
         this.setState({ 
-          body: <ScrollView style={[{backgroundColor: "#64a2b7"}]}>{this.state.images}</ScrollView>, 
+          body: <ScrollView style={[{backgroundColor: "#64a2b7"}]}>
+                  {this.state.images}
+                </ScrollView>, 
           images: images
         });
       }).catch((error) => {
@@ -99,8 +103,7 @@ export default class ImageScreen extends Component {
     let viewing = false;
 
     if(this.state.viewing == false) {
-    
-      body = (
+      /*
         <Modal
           animationType="slide"
           transparent={false}
@@ -112,12 +115,34 @@ export default class ImageScreen extends Component {
             <Icon size={30} type="material-community" name="close-circle-outline" onPress={() => this._openImage(url)}/>
           </View>
           <View style={[styles.container]}>
-            <Image 
-              source={{uri: url}} 
-              resizeMode="stretch"
-              style={{width: 260, height: 180}}/>
+            <PinchZoomView>
+                <Image 
+                  source={{uri: url}} 
+                  resizeMode="stretch"
+                style={{width: 260, height: 180}}/>
+            </PinchZoomView>
           </View>
         </Modal>
+        */
+    
+      body = (
+        <Modal
+        animationType="slide"
+        transparent={false}
+        visible={true}
+        onRequestClose={() => {
+            this._openImage(url);
+        }}>
+          <View style={{flexDirection: "row", margin: 15, alignItems: "flex-end", justifyContent: "flex-end"}}>
+            <Icon size={30} type="material-community" name="close-circle-outline" onPress={() => this._openImage(url)}/>
+          </View>
+          <View style={[styles.container]}>
+                <Image 
+                  source={{uri: url}} 
+                  resizeMode="stretch"
+                style={{width: 260, height: 180}}/>
+          </View>
+      </Modal>
       );
       viewing = true;
     }

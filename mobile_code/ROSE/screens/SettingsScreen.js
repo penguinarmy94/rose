@@ -214,7 +214,7 @@ export default class SettingsScreen extends Component {
                         onPress={() => this.changeManualPictureStatus(true)} 
                         style={{backgroundColor: this.state.color, marginRight: 30}}
                         disabled={this.state.power ? (this.state.picture? true: false) : true}>
-                        <Text style={{color: "white", fontSize: 18, width: 100, height: 30, textAlign: "center"}}>Click</Text>
+                        <Text style={{color: "", fontSize: 18, width: 100, height: 30, textAlign: "center"}}>Click</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={[{flexDirection: "row", justifyContent: 'space-between'}]}>
@@ -225,9 +225,9 @@ export default class SettingsScreen extends Component {
                         enabled={this.state.power? true: false}
                         mode="dropdown"
                         style={{height: 50, width: 150, marginRight: 15}}>
-                            <Picker.Item label={this.upView} value={0}/>
-                            <Picker.Item label={this.middleView} value={1}/>
-                            <Picker.Item label={this.downView} value={2}/>
+                            <Picker.Item label={this.upView} value={1}/>
+                            <Picker.Item label={this.middleView} value={2}/>
+                            <Picker.Item label={this.downView} value={3}/>
                     </Picker>
                 </View>
                 <Text style={{display: this.state.display, color: "red"}}>Waiting to be applied</Text>

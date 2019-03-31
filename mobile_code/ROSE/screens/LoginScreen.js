@@ -11,6 +11,7 @@ import firebase from 'react-native-firebase';
 import Session from '../controllers/Session';
 import {config} from '../assets/config/config';
 import User from '../controllers/User';
+import Loader from '../helpers/Loader';
 
 const logo = require("../assets/images/logo.png");
 const title = "R.O.S.E";
@@ -22,7 +23,8 @@ export default class LoginScreen extends Component {
 
     this.state = { 
       username: "", 
-      password: ""
+      password: "",
+      authenticating: false
     };
 
     this.errorCodes = config.errorCodes;
@@ -84,9 +86,8 @@ export default class LoginScreen extends Component {
     firebase.auth().onAuthStateChanged((user) => {
         if(user) {
             let session = new Session(user.uid);
-            config.robotSnapshot = () => {}
 
-            session.createUser().then((user) => {
+            config.robotSnapshot = session.createUser().then((user) => {
               if(user.exists) {
                 config.session.setUser(new User(user));
                 config.session.currentRobot().onSnapshot((robot) => {
@@ -111,12 +112,11 @@ export default class LoginScreen extends Component {
 
   debugLogin = () => {
     let session = new Session(config.debugId);
-    config.robotSnapshot = () => {}
 
     session.createUser().then((user) => {
       if(user.exists) {
         session.setUser(new User(user));
-        session.currentRobot().onSnapshot((robot) => {
+        config.robotSnapshot = session.currentRobot().onSnapshot((robot) => {
           if(robot.exists) {
             config.robotObject = robot.data(); 
             config.session = session;
@@ -138,39 +138,44 @@ export default class LoginScreen extends Component {
   }
 
   render() {
-    return(
-      <ScrollView contentContainerStyle={[styles.container, styles.rose_background]}>
-        <View style={styles.login_container}>
-          <View style={styles.logo_container}>
-            <Image source={logo} />
+    if(!this.state.authenticating) {
+      return(
+        <ScrollView contentContainerStyle={[styles.container, styles.rose_background]}>
+          <View style={styles.login_container}>
+            <View style={styles.logo_container}>
+              <Image source={logo} />
+            </View>
+            <Text style={styles.title}>{title}</Text>
+            <FormInput placeholder="username" 
+                ref={input => this.usernameField = input}
+                onChangeText={this.usernameChange} 
+                value={this.state.username} 
+                containerStyle={styles.text_input}/>
+            <FormInput placeholder="password"
+                ref={input => this.passwordField = input} 
+                secureTextEntry={true} 
+                onChangeText={this.passwordChange} 
+                value={this.state.password} 
+                containerStyle={styles.text_input}/>
+            <TouchableOpacity onPress={this.authenticate} style={styles.login_button}>
+              <Text style={[styles.login_text]}>Login</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={this.register} style={{marginTop: 15, width: 300}}>
+              <Text style={[styles.hyperlink]}>Register ></Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => alert("not yet")} style={{marginTop: 5, width: 300}}>
+              <Text style={[styles.hyperlink]}>Recover Password ></Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={this.debugLogin} style={{marginTop: 5, marginBottom: 15, width: 300}}>
+              <Text style={[styles.hyperlink]}>Debug ></Text>
+            </TouchableOpacity>
           </View>
-          <Text style={styles.title}>{title}</Text>
-          <FormInput placeholder="username" 
-              ref={input => this.usernameField = input}
-              onChangeText={this.usernameChange} 
-              value={this.state.username} 
-              containerStyle={styles.text_input}/>
-          <FormInput placeholder="password"
-              ref={input => this.passwordField = input} 
-              secureTextEntry={true} 
-              onChangeText={this.passwordChange} 
-              value={this.state.password} 
-              containerStyle={styles.text_input}/>
-          <TouchableOpacity onPress={this.authenticate} style={styles.login_button}>
-            <Text style={[styles.login_text]}>Login</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={this.register} style={{marginTop: 15, width: 300}}>
-            <Text style={[styles.hyperlink]}>Register ></Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => alert("not yet")} style={{marginTop: 5, width: 300}}>
-            <Text style={[styles.hyperlink]}>Recover Password ></Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={this.debugLogin} style={{marginTop: 5, marginBottom: 15, width: 300}}>
-            <Text style={[styles.hyperlink]}>Debug ></Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    );
+        </ScrollView>
+      );
+    }
+    else {
+      return
+    }
   }
 }
 
