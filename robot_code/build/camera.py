@@ -13,12 +13,13 @@ class Camera():
     __interval = None
     __last_capture = None
 
-    def __init__(self, queue = None, pin = 12, pos = 7):
+    def __init__(self, queue = None, pin = 12, pos = 7, capture_path = "/home/pi/picamera/"):
         if queue and pin:
             logger.write(str(datetime.datetime.now()) + " - Camera initialized")
             self.__pin = pin
             self.__pos = pos
             self.__queue = queue
+            self.__capture_path = capture_path
             self.__interval = 0
             
         else:
@@ -50,7 +51,7 @@ class Camera():
                         self.__last_capture = now    
                         logger.write(str(datetime.datetime.now()) + ".CameraThread.CaptureOnIntervasl.Enter")
 
-                        self.__camera.capture('/home/pi/picamera/image{timestamp}.jpg')
+                        self.capture_image()
             
                         logger.write(str(datetime.datetime.now()) + ".CameraThread.CaptureOnInterval.Exit")
                         continue
@@ -76,8 +77,8 @@ class Camera():
         elif message_packet["type"] == "manual":
             logger.write(str(datetime.datetime.now()) + ".CameraThread.setManual.Enter")
 
-            self.__camera.capture('/home/pi/picamera/image{timestamp}.jpg')
-            
+            self.capture_image()
+
             logger.write(str(datetime.datetime.now()) + ".CameraThread.setManual.Exit")
 
         elif message_packet["type"] == "automatic":
@@ -97,3 +98,8 @@ class Camera():
 
     def move_camera(self, message=""):
         logger.write(str(datetime.datetime.now()) + " - Camera: " + message)
+
+    def capture_image(self):
+        date = datetime.datetime.now().strftime("%Y%m%d.%H:%M:%S")
+        self.__camera.capture(self.__capture_path + "image_" + date + '.jpg')
+        logger.write(str(datetime.datetime.now()) + " - Camera: " + self.__capture_path + "image_" + date)

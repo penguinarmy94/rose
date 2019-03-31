@@ -17,14 +17,14 @@ def runSpeakerThread():
     speaker_thread.start()
     return speaker_thread
 
-def runLightThread(pin=16):
+def runLightThread(pin = 16):
     light_object = light.Light(queues.brain_sensor_queue, pin)
     light_thread = Thread(target=functools.partial(light_object.run))
     light_thread.start()
     return light_thread
 
-def runCameraThread(pin=12):
-    camera_object = camera.Camera(queues.brain_camera_queue, pin)
+def runCameraThread(pin = 12, pos = 7, capture_path = config["capture_path"]):
+    camera_object = camera.Camera(queues.brain_camera_queue, pin, pos, capture_path)
     camera_thread = Thread(target=functools.partial(camera_object.run))
     camera_thread.start()
     return camera_thread
@@ -62,7 +62,7 @@ def initialize_threads(db, rob, off = True):
             nm_thread = runNotificationManager(rob=rob,config=config,initialized=True)
 
             spk_thread = runSpeakerThread()
-            ca_thread = runCameraThread(pin=12)
+            ca_thread = runCameraThread(pin=12, pos = 7, capture_path = config["capture_path"])
             light_thread = runLightThread(pin=11)
             log_thread = runLoggerThread()
 
