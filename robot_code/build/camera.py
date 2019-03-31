@@ -55,8 +55,10 @@ class Camera():
                         logger.write(str(datetime.datetime.now()) + ".CameraThread.CaptureOnInterval.Exit")
                         continue
         
+        self.__servo.stop()
         self.__camera.stop_preview()
         gpio.cleanup()
+
         logger.write(str(datetime.datetime.now()) + " - Camera: Powered off")
     
     def read_queue(self):
@@ -64,14 +66,13 @@ class Camera():
 
         if message_packet["type"] == "position":
             
-            message_packet = json.loads(self.__queue.get())
             pos = self.__pos + 3 * float(message_packet["message"])
             logger.write(str(datetime.datetime.now()) + " - Brain to Camera: Camera Message Received -- " + message_packet["message"] + " -- Moving to " + str(pos))
            
-            self.__servo.start(self.__pos)
+            self.__servo.ChangeDutyCycle(self.__pos)
             
             #self.__servo.ChangeDutyCycle(self.__pos)
-            self.__servo.stop()
+            #self.__servo.stop()
             return 1
 
         elif message_packet["type"] == "manual":
