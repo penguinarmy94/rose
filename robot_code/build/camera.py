@@ -13,12 +13,13 @@ class Camera():
     __interval = None
     __last_capture = None
 
-    def __init__(self, queue = None, pin = 12, pos = 7):
+    def __init__(self, queue = None, pin = 12, pos = 7, capture_path = "/home/pi/picamera/"):
         if queue and pin:
             logger.write(str(datetime.datetime.now()) + " - Camera initialized")
             self.__pin = pin
             self.__pos = pos
             self.__queue = queue
+            self.__capture_path = capture_path
             self.__interval = 0
             
         else:
@@ -101,5 +102,5 @@ class Camera():
 
     def capture_image(self):
         date = datetime.datetime.now().strftime("%Y_%m_%d_%Y_%H_%M_%S")
-        self.__camera.capture('/home/pi/picamera/image_' + date + .jpg')
-        logger.write(str(datetime.datetime.now()) + " - Camera: " + date)
+        self.__camera.capture(self.__capture_path + "image_" + date + '.jpg')
+        logger.write(str(datetime.datetime.now()) + " - Camera: " + self.__capture_path + "image_" + date)
