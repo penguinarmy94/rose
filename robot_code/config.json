@@ -7,7 +7,8 @@
     "functions": {
         "motor": ["Roaming"],
         "camera": ["Record"],
-        "notification": ["Alert"]
+        "notification": ["Alert"],
+        "light": ["Blink", "Turn On", "Turn Off"]
     },
     "bucket": "rose-9876.appspot.com",
     "capture_path": "/home/pi/Desktop/Projects/rose/captures/"
