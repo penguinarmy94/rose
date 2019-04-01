@@ -7,9 +7,10 @@ config_file = open('config.json')
 config = json.load(config_file)
 config_file.close()
 path.insert(0, config["home_path"])
-#path.insert(0, config["windows_home_path"])
 
-from build import brain, motor, robot, database, queues, logger, speaker, notification_manager, light, camera
+from build import brain, motor, robot, database
+from build import queues, logger, speaker, notification_manager
+from build import light, camera, uploader
 
 def runSpeakerThread():
     speaker_object = speaker.Speaker(queues.brain_speaker_queue)
@@ -52,26 +53,34 @@ def runNotificationManager(rob, config, initialized = False):
     notifier_thread.start()
     return notifier_thread
 
+def runUploader(config, rob):
+    uploader_object = uploader.Uploader(queues.brain_uploader_queue, config, rob)
+    uploader_thread = Thread(target=functools.partial(uploader_object.run))
+    uploader_thread.start()
+    return uploader_thread
+
 def initialize_threads(db, rob, off = True):
     if rob.power is True and off == True:
         off = False
         print("Turned on!")
         try:
-            br_thread = runBrainThread(db=db,rob=rob,config=config)
-            #mtr_thread = runMotorThread()
-            nm_thread = runNotificationManager(rob=rob,config=config,initialized=True)
+            brain_thread = runBrainThread(db=db,rob=rob,config=config)
+            #motor_thread = runMotorThread()
+            notification_manager_thread = runNotificationManager(rob=rob,config=config,initialized=True)
 
-            spk_thread = runSpeakerThread()
-            ca_thread = runCameraThread(pin=12, pos = 7, capture_path = config["capture_path"])
+            speaker_thread = runSpeakerThread()
+            camera_thread = runCameraThread(pin=12, pos = 7, capture_path = config["capture_path"])
             light_thread = runLightThread(pin=11)
             log_thread = runLoggerThread()
+            uploader_thread = runUploader(config=config, rob=rob)
 
-            br_thread.join()
-            #mtr_thread.join()
-            nm_thread.join()
-            spk_thread.join()
-            ca_thread.join()
+            brain_thread.join()
+            #motor_thread.join()
+            notification_manager_thread.join()
+            speaker_thread.join()
+            camera_thread.join()
             light_thread.join()
+            uploader_thread.join()
             logger.write("turn off")
             off = True
             print("Turned off!")
