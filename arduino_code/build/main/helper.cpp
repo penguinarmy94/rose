@@ -1,11 +1,14 @@
 #include "helper.h"
 
+extern unsigned long micTime;
+
 void Forward(Motor left, Motor right, int speed)
 {
   left.forward(speed);
   right.forward(speed);
 }
 
+//Unused but added for completeness
 void Backward(Motor left, Motor right, int speed)
 {
   left.backward(speed);
@@ -33,6 +36,7 @@ void Halt(Motor left, Motor right)
   right.halt();
 }
 
+//Will be phased out
 void calibrateMicrophones(Microphone &a, Microphone &b)
 {
   int aCumulative = 0;
@@ -50,9 +54,10 @@ void calibrateMicrophones(Microphone &a, Microphone &b)
     i++;
     delay(1);
   }
-  b.setCalibrationValue(bCumulative - aCumulative);
+  b.storeCalibrationValue(bCumulative - aCumulative);
 }
 
+//Parse string of numbers into one numerical value
 int getDistance(char arr[])
 {
   int i = 1;
@@ -68,7 +73,7 @@ int getDistance(char arr[])
 void parsePackage(PIData &package)
 {
   extern char fromPi[10];
-  Serial1.readBytesUntil('-', fromPi, 10); 
+  Serial.readBytesUntil('-', fromPi, 10); 
   package.direction = fromPi[0];
   int dist = 0;
   int i = 1;
@@ -95,7 +100,7 @@ void commandFromPi(PIData &package, Microphone &a, Microphone &b, Motor left, Mo
     case 'L': commandLeft(package, left, right);
     default: memset(&package, 0, sizeof(package));
   }
-  Serial1.print("K");
+  Serial.print("K");
   memset(&package, 0, sizeof(package));
 }
 
@@ -103,7 +108,7 @@ void warningDetected(Microphone &a, Microphone &b, Motor left, Motor right)
 {
   int aMax = a.getMax();
   int bMax = b.getMax();
-  (aMax > (bMax - b.getCalibrationValue())) ? Right(left, right, 175) : Left(left, right, 175);       
+  (aMax > bMax) ? Right(left, right, 175) : Left(left, right, 175);       
   a.clearBuffer();
   b.clearBuffer();
 }
@@ -155,6 +160,19 @@ void commandLeft(PIData package, Motor left, Motor right)
     }  
   Halt(left, right);  
 }
+
+void record(Microphone &a, Microphone &b)
+{
+  a.record();
+  b.record();
+}
+
+void storeAmplitude(Microphone &a, Microphone &b)
+{
+  a.storeIntoBuffer();
+  b.storeIntoBuffer();
+}
+
 
 /*
  *   if (piCommand.direction == 'y')

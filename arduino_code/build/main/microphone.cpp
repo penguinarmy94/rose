@@ -6,19 +6,22 @@ Microphone::Microphone(int Input)
 	kInputPin = Input;
 	kCounter = 0;
   kCalibrationValue = 0;
+  resetAmplitude();
 }
 
 unsigned int Microphone::record()
 {
-	return analogRead(kInputPin);
-	
+  unsigned int sample = analogRead(kInputPin);
+	if(sample > kHighest) kHighest = sample;
+  if(sample < kLowest) kLowest = sample;
 }
 
-void Microphone::storeIntoBuffer(int soundValue)
+void Microphone::storeIntoBuffer()
 {
-  kBuffer[kCounter] = soundValue;
-  kCounter = (kCounter == 9) ? 0 : kCounter + 1;
-  
+  kBuffer[kCounter] = kHighest - kLowest;
+  kCounter = (kCounter == 199) ? 0 : kCounter + 1;
+  kHighest = 0;
+  resetAmplitude();
 }
 
 void Microphone::clearBuffer()
@@ -27,12 +30,7 @@ void Microphone::clearBuffer()
 	kCounter = 0;
 }
 
-unsigned int Microphone::testMic()
-{
-  return analogRead(kInputPin);
-}
-
-void Microphone::setCalibrationValue(int value)
+void Microphone::storeCalibrationValue(unsigned int value)
 {
   kCalibrationValue = value;
 }
@@ -45,9 +43,22 @@ unsigned int Microphone::getCalibrationValue()
 unsigned int Microphone::getMax()
 {
 	int max = 0;
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < bufferSize; i++)
 	{
 		max = (max > kBuffer[i]) ? max : kBuffer[i];
 	}
+  resetAmplitude();
 	return max;
+}
+
+void Microphone::resetAmplitude()
+{
+  //Range from an ADC input is 10 bits -> 1023
+  kHighest = 0; //Guarantees value will change on first analogRead
+  kLowest = 1023; //Guarantees value will change on first analogRead
+}
+
+unsigned int Microphone::debugSound()
+{
+  return kBuffer[(kCounter-1)%bufferSize];
 }

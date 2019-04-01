@@ -12,11 +12,10 @@ class Motor
     void halt();
 
   private:
+    //Each variable correlates to a pin
     int kLowIn;
     int kHighIn;
     int kEn;
-    int kMotorA;
-    int kMotorB;  
 };
 
 #endif

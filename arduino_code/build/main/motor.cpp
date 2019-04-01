@@ -27,5 +27,5 @@ void Motor::backward(int speed)
 
 void Motor::halt()
 {
-  analogWrite(kEn, 0);
+  analogWrite(kEn, 0); //Low and Hi pins are irrelevant
 }

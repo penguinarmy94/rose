@@ -22,6 +22,10 @@ void calibrateMicrophones(Microphone &a, Microphone &b);
 int getDistance(char arr[]);
 void parsePackage(PIData &package);
 
+// Microphone Functions //
+void record(Microphone &a, Microphone &b);
+void storeAmplitude(Microphone &a, Microphone &b);
+
 // Parsing Data Functions //
 void commandFromPi(PIData &package, Microphone &a, Microphone &b, Motor left, Motor right);
 void warningDetected(Microphone &a, Microphone &b, Motor left, Motor right);

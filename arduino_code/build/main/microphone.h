@@ -7,20 +7,41 @@ class Microphone
 {
   public:
     Microphone(int Input);
+
+    //Main Functions
     unsigned int record();
-    void storeIntoBuffer(int soundValue);
+    void storeIntoBuffer();
     void clearBuffer();
-    void setCalibrationValue(int value);
-    unsigned int testMic();
+
+    //Calibration - Unused for the time being as differential more or less removes bias
+    void storeCalibrationValue(unsigned int value);
     unsigned int getCalibrationValue();
+
+    //Maximum Amplitude Acquisition
     unsigned int getMax();
-    
+    void resetAmplitude();
+
+    //Debugging
+    unsigned int debugSound();
 
   private:
-    int kBuffer[10];
+    //Arduino Input
     int kInputPin;
+
+    //Storing Values of Sound
+    unsigned int kBuffer[200];
     int kCounter;
+    int kMaxHold;
+
+    //Calibration
     int kCalibrationValue;
+
+    //Getting Amplitude
+    unsigned int kLowest;
+    unsigned int kHighest;
+
+    //Size of Buffer
+    const int bufferSize = sizeof(kBuffer) / sizeof(kBuffer[0]);
 };
 
 #endif

@@ -81,7 +81,8 @@ class Brain():
     def begin(self):
         #self.__write_motor(message_type="calibrate", message="C5-")
         self.__write_speaker(message_type="speaker", message="Powered on! I am ready to serve you master.")
-        
+        #For testing only:
+        self.__write_camera(message_type="automatic", message="1")
         while self.__robot.power is True:
             try:
                 self.__report_status()
