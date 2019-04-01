@@ -6,8 +6,8 @@
 
 
 //#define FRONTPRIORITY
-//#define TURNBASED
-#define STOPPED
+#define TURNBASED
+//#define STOPPED
   
 Motor left(8, 7 , 6); //7, 8, 6
 Motor right(9, 10, 11); //10, 9, 11
@@ -34,6 +34,10 @@ const unsigned long sampleWindow = 50;
 unsigned long micTime;
 unsigned long debugTime;
 
+unsigned long turntimer;
+bool turnflag;
+
+
 void setup() 
 {
 Serial.begin(9600); //Unusued in project. Mainly for debugging purposes.
@@ -41,9 +45,12 @@ Serial.begin(9600); //Unusued in project. Mainly for debugging purposes.
 Wire.begin();
 a.clearBuffer();
 b.clearBuffer();
-//laserSensor.setNumber(1);
-//laserSensor.setHighAccuracy();
+laserSensor.setNumber(SENSORS);
+laserSensor.setHighAccuracy();
 debugTime = millis();
+pinMode(2, OUTPUT);
+pinMode(4, OUTPUT);
+turnflag = false;
 }
 
 void loop()
@@ -59,9 +66,20 @@ if (!Serial.available())
   storeAmplitude(a, b);
   if(millis() - debugTime > 500)
   {
-    Serial.println(a.getMax());
-    Serial.println(b.getMax());
-    Serial.println();
+    if(a.getMax() > b.getMax()){
+      digitalWrite(2, HIGH);
+      digitalWrite(4, LOW);
+    }
+    else if(b.getMax() > a.getMax())
+    {
+      digitalWrite(4, HIGH);
+      digitalWrite(2, LOW);
+    }
+    else
+    {
+      digitalWrite(2, HIGH);
+      digitalWrite(4, HIGH);
+    }
     debugTime = millis();
   }
 }
@@ -71,6 +89,26 @@ else
   commandFromPi(piCommand, a, b, left, right);
   
 }
+}
+
+bool checkSensors(unsigned long &time, bool leftsensor, int &prev, int &next, bool checkprev, bool &checknext)
+{
+    bool result = false;
+  if(!checkprev)
+  {
+  prev = (leftsensor) ? laserSensor.getValue(LEFT_SENSOR) : laserSensor.getValue(RIGHT_SENSOR);
+  checknext = false;
+  time = millis();
+  }
+  
+  else if (millis() - time > 100)
+  {
+  next = (leftsensor) ? laserSensor.getValue(LEFT_SENSOR) : laserSensor.getValue(RIGHT_SENSOR);
+  checkprev = false;
+  result = (next > prev);
+  }
+  
+  return result;
 }
 
 
@@ -131,47 +169,36 @@ void readLaser() {
   #endif
   
   #ifdef TURNBASED
+  bool checkprev;
+  bool checknext;
+  bool turnleftsensor;
   int prev;
   int next;
-  if (state)
-  {
-    if (BLOCKED_FRONT & state)
-    {
-      if (laserSensor.getValue(LEFT_SENSOR) < laserSensor.getValue(RIGHT_SENSOR))
-      {
-        prev = -1;
-        next = 0;
-        while(prev < next)
-        {
-          prev = laserSensor.getValue(LEFT_SENSOR);
-          Left(left, right, 200);
-          delay(100);
-          next = laserSensor.getValue(LEFT_SENSOR);
-        }
-      }
-      else
-      {
-        prev = -1;
-        next = 0;
-        while(prev < next)
-        {
-          prev = laserSensor.getValue(RIGHT_SENSOR);
-          Right(left, right, 200);
-          delay(100);
-          next = laserSensor.getValue(RIGHT_SENSOR);
-        }      
-    }
+  unsigned long time;
+  
+  state = laserSensor.getState(); 
+  if(!turning & !state){
+  Forward(left, right, 150);
+  prev = -1;
+  next = 0;
   }
-    else if (BLOCKED_LEFT & state)
-    {
-      Right(left, right, 200);
-      delay(100);
-    }
-    else
-    {
-      Left(left, right, 225);
-      delay(100);
-    }
-}
+  
+  else
+  { 
+  if(!turning)
+  {
+    turnleftsensor = laserSensor.getValue(LEFT_SENSOR) < laserSensor.getValue(RIGHT_SENSOR);
+    checkprev = false;
+    checknext = false;
+  }
+  turning = true;
+  (turnleftsensor) ? Right(left, right, 200) : Left(left, right, 200);
+  if (checkSensors(time, turnleftsensor, prev, next, checkprev, checknext))
+  {
+    turning = false;
+    checkprev = false;
+    checknext = false;
+  }
+  }
 #endif
 }

@@ -8,6 +8,7 @@ void Forward(Motor left, Motor right, int speed)
   right.forward(speed);
 }
 
+//Unused but added for completeness
 void Backward(Motor left, Motor right, int speed)
 {
   left.backward(speed);
@@ -35,6 +36,7 @@ void Halt(Motor left, Motor right)
   right.halt();
 }
 
+//Will be phased out
 void calibrateMicrophones(Microphone &a, Microphone &b)
 {
   int aCumulative = 0;
@@ -55,6 +57,7 @@ void calibrateMicrophones(Microphone &a, Microphone &b)
   b.storeCalibrationValue(bCumulative - aCumulative);
 }
 
+//Parse string of numbers into one numerical value
 int getDistance(char arr[])
 {
   int i = 1;
@@ -105,7 +108,7 @@ void warningDetected(Microphone &a, Microphone &b, Motor left, Motor right)
 {
   int aMax = a.getMax();
   int bMax = b.getMax();
-  (aMax > (bMax - b.getCalibrationValue())) ? Right(left, right, 175) : Left(left, right, 175);       
+  (aMax > bMax) ? Right(left, right, 175) : Left(left, right, 175);       
   a.clearBuffer();
   b.clearBuffer();
 }

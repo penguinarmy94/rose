@@ -53,8 +53,9 @@ unsigned int Microphone::getMax()
 
 void Microphone::resetAmplitude()
 {
-  kHighest = 0;
-  kLowest = 1024;
+  //Range from an ADC input is 10 bits -> 1023
+  kHighest = 0; //Guarantees value will change on first analogRead
+  kLowest = 1023; //Guarantees value will change on first analogRead
 }
 
 unsigned int Microphone::debugSound()
