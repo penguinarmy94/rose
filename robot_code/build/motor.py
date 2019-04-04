@@ -16,7 +16,7 @@ class Motor():
     def __init__(self, motorQueue):
         self.__direction = ""
         self.__bqueue = motorQueue
-        self.__port = "/dev/ttyAMA0"
+        self.__port = "/dev/ttyACM0"
         self.__rate = 9600
         self.__timeout = 1
         self.__bytesToRead = 10
@@ -110,10 +110,14 @@ class Motor():
             end = start
             message = ""
             
+            """
             while end.second < start.second + 5:
                 message += self.__receive_port.read().decode()
                 print(message)
                 end = datetime.datetime.now()
+            """
+
+            message = self.__receive_port.readline().decode()
                 
             if message == "":
                 message = None
