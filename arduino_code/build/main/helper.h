@@ -20,7 +20,7 @@ void Halt(Motor left, Motor right);
 // PI Command Parse Functions //
 void calibrateMicrophones(Microphone &a, Microphone &b);
 int getDistance(char arr[]);
-void parsePackage(PIData &package);
+void parsePackage(PIData &package, char fromPi[], int size);
 
 // Microphone Functions //
 void record(Microphone &a, Microphone &b);

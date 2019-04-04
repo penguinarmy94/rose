@@ -70,10 +70,9 @@ int getDistance(char arr[])
   return distance;
 }
 
-void parsePackage(PIData &package)
+void parsePackage(PIData &package, char fromPi[], int size)
 {
-  extern char fromPi[10];
-  Serial.readBytesUntil('-', fromPi, 10); 
+  Serial.readBytesUntil('-', fromPi, size); 
   package.direction = fromPi[0];
   int dist = 0;
   int i = 1;
@@ -84,7 +83,7 @@ void parsePackage(PIData &package)
       i++;
     }
     package.distance = dist;
-  memset(fromPi, 0, sizeof(fromPi));
+  memset(fromPi, 0, size);
 }
 
 void commandFromPi(PIData &package, Microphone &a, Microphone &b, Motor left, Motor right)

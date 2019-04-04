@@ -41,21 +41,19 @@ bool turnflag;
 void setup() 
 {
 Serial.begin(9600); //Unusued in project. Mainly for debugging purposes.
-//Serial1.begin(9600);
 Wire.begin();
 a.clearBuffer();
 b.clearBuffer();
-laserSensor.setNumber(SENSORS);
-laserSensor.setHighAccuracy();
+laserSensor.setNumber(1);
+//laserSensor.setHighAccuracy();
 debugTime = millis();
-pinMode(2, OUTPUT);
-pinMode(4, OUTPUT);
 turnflag = false;
 }
 
 void loop()
 {
-//readLaser();
+Serial.println("Test");
+readLaser();
 if (!Serial.available())
 {
   micTime = millis();
@@ -64,28 +62,10 @@ if (!Serial.available())
     record(a, b);
   }
   storeAmplitude(a, b);
-  if(millis() - debugTime > 500)
-  {
-    if(a.getMax() > b.getMax()){
-      digitalWrite(2, HIGH);
-      digitalWrite(4, LOW);
-    }
-    else if(b.getMax() > a.getMax())
-    {
-      digitalWrite(4, HIGH);
-      digitalWrite(2, LOW);
-    }
-    else
-    {
-      digitalWrite(2, HIGH);
-      digitalWrite(4, HIGH);
-    }
-    debugTime = millis();
-  }
 }
 else
 {
-  parsePackage(piCommand);
+  parsePackage(piCommand, fromPi, sizeof(fromPi));
   commandFromPi(piCommand, a, b, left, right);
   
 }

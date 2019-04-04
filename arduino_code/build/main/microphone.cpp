@@ -12,15 +12,15 @@ Microphone::Microphone(int Input)
 unsigned int Microphone::record()
 {
   unsigned int sample = analogRead(kInputPin);
-	if(sample > kHighest) kHighest = sample;
-  if(sample < kLowest) kLowest = sample;
+	if(sample > kHighest) kHighest = sample; //Get highest value in time period
+  if(sample < kLowest) kLowest = sample; //Get lowest value in time period
 }
 
 void Microphone::storeIntoBuffer()
 {
-  kBuffer[kCounter] = kHighest - kLowest;
-  kCounter = (kCounter == 199) ? 0 : kCounter + 1;
-  kHighest = 0;
+  kBuffer[kCounter] = kHighest - kLowest; //Value stored is the difference between the highest value and lowest value of time period
+  //Amplitude of sound is directly proportional to the difference between highest and lowest
+  kCounter = (kCounter == 199) ? 0 : kCounter + 1; //Loop buffer back to 0 when max value is reached
   resetAmplitude();
 }
 
