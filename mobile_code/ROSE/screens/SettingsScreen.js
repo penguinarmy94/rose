@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import { StyleSheet, View, Text, Switch, TouchableOpacity, Dimensions, Picker } from 'react-native';
-import { Slider } from 'react-native-elements';
+import { StyleSheet, View, Text, Switch, TouchableOpacity, Dimensions, Picker, ScrollView } from 'react-native';
+import { Icon } from 'react-native-elements';
 import { config } from '../assets/config/config';
 import { NavigationEvents } from 'react-navigation';
 
@@ -27,14 +27,13 @@ export default class SettingsScreen extends Component {
             cameraAngle: config.robotObject.cameraAngle,
             display: "none",
             color: config.robotObject.power ? "#64a2b7" : "#ffffff",
-            minValue: 0,
-            maxValue: 6,
-            step: 0.5
+            icon: "camera"
         };
         this.props.navigation.setParams({headerTitle: config.headerTitle});
 
         this.robotSnapshot = config.session.currentRobot().onSnapshot((robot) => {
             if(robot.exists) {
+
                 this.setState({
                     "power": robot.data().power, 
                     "light": robot.data().light,
@@ -42,11 +41,11 @@ export default class SettingsScreen extends Component {
                     "cameraAngle": robot.data().camera_angle
                 });
 
-                if(!this.state.picture && this.state.power) {
-                    this.setState({color: "#64a2b7"});
+                if(!robot.data().manual_picture && this.state.power) {
+                    this.setState({color: "#64a2b7", icon: "camera"});
                 }
                 else {
-                    this.setState({color: "#Ffffff"});
+                    return;
                 }
             }
         });
@@ -131,11 +130,11 @@ export default class SettingsScreen extends Component {
 
         if(this.state.picture == true) {
             current.manual_picture = false;
-            state.color = "#64a2b7";
+            state.icon = "camera";
         }
         else {
             current.manual_picture = true;
-            state.color = "#ffffff";
+            state.icon = "camera-off";
         }
 
         state.display = "flex";
@@ -186,77 +185,105 @@ export default class SettingsScreen extends Component {
 
     render() {
         return(
-            <View style={styles.container}>
-                <View style={[{flexDirection: "row"}]}>
-                    <Text style={styles.text}>Power:</Text>
-                    <Switch
-                        style={{flex: 1, justifyContent: 'flex-end', marginRight: 30}}
-                        onValueChange={this.changePower} 
-                        value={this.state.power}
-                        activeText="ON"
-                        inActiveText="OFF" 
-                    />
-                </View>
-                <View style={[{flexDirection: "row"}]}>
-                    <Text style={styles.text}>Light:</Text>
-                    <Switch
-                        style={{flex: 1, justifyContent: 'flex-end', marginRight: 30}}
-                        onValueChange={this.changeLight} 
-                        value={this.state.light}
-                        activeText="ON"
-                        inActiveText="OFF"
-                        disabled={this.state.power? false: true} 
-                    />
-                </View>
-                <View style={[{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}]}>
-                    <Text style={styles.text}>Take Picture:</Text>
-                    <TouchableOpacity 
-                        onPress={() => this.changeManualPictureStatus(true)} 
-                        style={{backgroundColor: this.state.color, marginRight: 30}}
-                        disabled={this.state.power ? (this.state.picture? true: false) : true}>
-                        <Text style={{color: "#A9A9A9", fontSize: 18, width: 100, height: 30, textAlign: "center"}}>Click</Text>
+            <ScrollView contentContainerStyle={styles.container}>
+                <View style={styles.settings_container}>
+                    <View style={[{flexDirection: "row"}]}>
+                        <Text style={[styles.text, styles.label]}>Power:</Text>
+                        <Switch
+                            style={{flex: 1, justifyContent: 'flex-end', marginRight: 30}}
+                            onValueChange={this.changePower} 
+                            value={this.state.power}
+                            activeText="ON"
+                            inActiveText="OFF" 
+                        />
+                    </View>
+                    <View style={[{flexDirection: "row"}]}>
+                        <Text style={[styles.text, styles.label]}>Light:</Text>
+                        <Switch
+                            style={{flex: 1, justifyContent: 'flex-end', marginRight: 30}}
+                            onValueChange={this.changeLight} 
+                            value={this.state.light}
+                            activeText="ON"
+                            inActiveText="OFF"
+                            disabled={this.state.power? false: true} 
+                        />
+                    </View>
+                    <View style={[{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}]}>
+                        <Text style={[styles.text, styles.label]}>Take Picture:</Text>
+                        <Icon 
+                            color="black"
+                            iconStyle={{marginRight: 30}}
+                            size={40} 
+                            type="material-community" 
+                            name={this.state.icon} 
+                            onPress={() => {
+                                if(this.state.power) {
+                                    if(this.state.picture) {
+                                        return;
+                                    }
+                                    else {
+                                        this.changeManualPictureStatus(true);
+                                    }
+                                }
+                                else {
+                                    return;
+                                }
+                            }} />
+                    </View>
+                    <View style={[{flexDirection: "row", justifyContent: 'space-between'}]}>
+                        <Text style={[styles.text, styles.label]}>Camera Position:</Text>
+                        <Picker 
+                            selectedValue={this.state.cameraAngle}
+                            onValueChange={(value) => this.changeCameraPosition(value)}
+                            enabled={this.state.power? true: false}
+                            mode="dropdown"
+                            style={{width: 150, marginRight: 15}}>
+                                <Picker.Item label={this.upView} value={0}/>
+                                <Picker.Item label={this.middleView} value={1}/>
+                                <Picker.Item label={this.downView} value={2}/>
+                        </Picker>
+                    </View>
+                    <TouchableOpacity style={styles.bar} onPress={this.createNewRobot}>
+                        <Text style={styles.text}>Add Robot</Text>
+                        <Text style={styles.text}>></Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.bar} onPress={this.changeRobot}>
+                        <Text style={styles.text}>Change Robot</Text>
+                        <Text style={styles.text}>></Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.bar} onPress={this.editBehaviors}>
+                        <Text style={styles.text}>Behaviors</Text>
+                        <Text style={styles.text}>></Text>
                     </TouchableOpacity>
                 </View>
-                <View style={[{flexDirection: "row", justifyContent: 'space-between'}]}>
-                    <Text style={styles.text}>Camera Position:</Text>
-                    <Picker 
-                        selectedValue={this.state.cameraAngle}
-                        onValueChange={(value) => this.changeCameraPosition(value)}
-                        enabled={this.state.power? true: false}
-                        mode="dropdown"
-                        style={{height: 50, width: 150, marginRight: 15}}>
-                            <Picker.Item label={this.upView} value={0}/>
-                            <Picker.Item label={this.middleView} value={1}/>
-                            <Picker.Item label={this.downView} value={2}/>
-                    </Picker>
-                </View>
-                <Text style={{display: this.state.display, color: "red"}}>Waiting to be applied</Text>
-                <TouchableOpacity style={styles.bar} onPress={this.createNewRobot}>
-                    <Text style={styles.text}>Add Robot</Text>
-                    <Text style={styles.text}>></Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.bar} onPress={this.changeRobot}>
-                    <Text style={styles.text}>Change Robot</Text>
-                    <Text style={styles.text}>></Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.bar} onPress={this.editBehaviors}>
-                    <Text style={styles.text}>Behaviors</Text>
-                    <Text style={styles.text}>></Text>
-                </TouchableOpacity>
-            </View>
+            </ScrollView>
         );
     }
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#64a2b7",
+    },
     text: {
         fontSize: 18,
         fontWeight: "bold",
         margin: 20,
         marginRight: 30
     },
-    container: {
-      marginTop: 20
+    label: {
+        borderBottomWidth: 1
+    },
+    settings_container: {
+        justifyContent: 'space-between',
+        backgroundColor: "white",
+        borderWidth: 1,
+        borderRadius: 50,
+        paddingBottom: 40,
+        paddingTop: 20
     },
     bar: {
       flexDirection: "row",

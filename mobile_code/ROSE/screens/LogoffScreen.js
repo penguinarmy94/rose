@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, Text, View, Image, Button} from 'react-native';
+import {StyleSheet, Text, View, Image, Button, Alert} from 'react-native';
 import { Icon } from 'react-native-elements';
 import firebase from 'react-native-firebase';
 
@@ -10,12 +10,25 @@ export default class LogoffScreen extends Component {
     return({
       tabBarIcon: ({focused, tintColor}) => {
         return(<Icon color={tintColor} type="material-community" name="logout" />);
+      },
+      tabBarOnPress: ({navigation, defaultHandler}) => {
+        Alert.alert(
+          'Logout',
+          "Are you sure you want to log out?",
+          [
+              {text: 'Yes', onPress: () => {
+                defaultHandler();
+              }},
+              {text: 'No', onPress: () => {}}
+          ]
+        );
       }
     });
    }
 
   constructor(props) {
     super(props);
+    this.debugLogout();
   }
 
   logout = () => {
@@ -34,30 +47,7 @@ export default class LogoffScreen extends Component {
 
   render() {
     return(
-      <View style={styles.container}>
-        <Text style={styles.welcome}>{logout_message}</Text>
-        <Button title="Logout" onPress={this.logout} />
-        <Button title="Debug Logout" onPress={this.debugLogout} />
-      </View>
+      <View></View>
     );
   }
 }
-
-const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: '#F5FCFF',
-    },
-    welcome: {
-      fontSize: 20,
-      textAlign: 'center',
-      margin: 10,
-    },
-    instructions: {
-      textAlign: 'center',
-      color: '#333333',
-      marginBottom: 5,
-    },
-  });

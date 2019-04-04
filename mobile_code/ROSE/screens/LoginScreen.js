@@ -62,8 +62,12 @@ export default class LoginScreen extends Component {
         return;
     }
 
+    this.setState({authenticating: true});
+
     firebase.auth().signInWithEmailAndPassword(username, password).catch((error) => {
         let code = error.code;
+
+        this.setState({authenticating: false});
 
         if(code == this.errorCodes[3]) {
             this.usernameField.shake();
@@ -112,6 +116,7 @@ export default class LoginScreen extends Component {
 
   debugLogin = () => {
     let session = new Session(config.debugId);
+    this.setState({authenticating: true});
 
     session.createUser().then((user) => {
       if(user.exists) {
@@ -174,7 +179,28 @@ export default class LoginScreen extends Component {
       );
     }
     else {
-      return
+      return(
+        <ScrollView contentContainerStyle={[styles.container, styles.rose_background]}>
+          <View style={styles.login_container}>
+            <View style={styles.logo_container}>
+              <Image source={logo} />
+            </View>
+            <Text style={styles.title}>{title}</Text>
+            <FormInput placeholder="username" 
+                ref={input => this.usernameField = input}
+                onChangeText={this.usernameChange} 
+                value={this.state.username} 
+                containerStyle={styles.text_input}/>
+            <FormInput placeholder="password"
+                ref={input => this.passwordField = input} 
+                secureTextEntry={true} 
+                onChangeText={this.passwordChange} 
+                value={this.state.password} 
+                containerStyle={styles.text_input}/>
+            <Loader style={{width: 300, height: 100, justifyContent: "center"}} />
+          </View>
+        </ScrollView>
+      );
     }
   }
 }
