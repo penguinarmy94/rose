@@ -1,5 +1,6 @@
-import json, datetime, time
+import json, datetime, time, functools
 from . import queues, logger, status_manager
+from threading import Thread
 
 
 class Brain():
@@ -20,6 +21,7 @@ class Brain():
     __cameraPosition = 7
     __numberOfSensors = 1
     __updated = False
+    __behaviorSet = False
 
     """
         Description: Constructor for Brain class
@@ -172,6 +174,7 @@ class Brain():
 
                 logger.write(time_stamp + " - Brain: Idle Behavior Updated")
                 self.__updated = False
+                self.__behaviorSet = False
             
             # Change detect behavior if local reference is different from database reference
             if not self.__behaviorRef["detect"] == self.__robot.detect_behavior:
@@ -187,6 +190,7 @@ class Brain():
                 
                 logger.write(time_stamp + " - Brain: Detect Behavior Update")
                 self.__updated = False
+                self.__behaviorSet = False
         except Exception as e:
             error_message = "Brain.__update_behaviors() Error: " + str(e)
             time_stamp = str(datetime.datetime.now())
@@ -256,6 +260,8 @@ class Brain():
                 if message_packet["type"] == "brain":
                     message_packet = json.loads(self.__microphoneQueue.get())
                     logger.write(time_stamp + " - Microphone to Brain: Brain Message Received -- " + message_packet["message"])
+                    self.__state = "detect"
+                    self.__behaviorSet = False
                 else:
                     return
             else:
@@ -690,17 +696,46 @@ class Brain():
     """
     def __handle_behavior(self):
         try:
-            if self.__state == "idle":
+            if self.__state == "idle" and not self.__behaviorSet:
                 for action in self.__idle_behavior:
                     self.__action_map(action)
+                self.__behaviorSet = True
             elif self.__state == "detect":
-                for action in self.__detect_behavior:
+                for action in self.__detect_behavior and not self.__behaviorSet:
                     self.__action_map(action)
+                
+                self.__behaviorSet = True
+                detect = Thread(functools.partial(self.__detect_thread))
+                detect.start()
+
         except Exception as e:
             error_message = "Brain.__handle_behavior() Error: " + str(e)
             time_stamp = str(datetime.datetime.now())
 
             print(time_stamp + ": " + error_message)
             logger.write(time_stamp + ": " + error_message)
+    
+
+    """
+        Description: This function is only used for limiting the time that the
+        robot should stay in the 'detect' state. It'll stay in this state
+        for a specific amount of time and the power is on.
+
+        Parameters:
+        -----------
+        None
+
+    """
+    def __detect_thread(self):
+        start = datetime.datetime.now()
+        end = datetime.datetime.now()
+
+        while start.minutes + self.__config["detect_inteval"] < end and self.__robot.power is True:
+            pass
+        
+        self.__state = "idle"
+        self.__behaviorSet = False
+
+
             
     

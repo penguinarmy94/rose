@@ -11,5 +11,6 @@
         "light": ["Blink", "Turn On", "Turn Off"]
     },
     "bucket": "rose-9876.appspot.com",
-    "capture_path": "/home/pi/Desktop/Projects/rose/captures/"
+    "capture_path": "/home/pi/Desktop/Projects/rose/captures/",
+    "detect_interval": 2
 }
