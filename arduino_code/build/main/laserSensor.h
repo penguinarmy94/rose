@@ -23,7 +23,7 @@ class LaserSensor {
     int slowValue;
     int freeValue;
     void init();
-    int pinXShut[SENSORS] = {3, 4, 2};
+    int pinXShut[SENSORS] = {33, 34, 32}; //3,4,2
     VL53L0X sensor[SENSORS];
     
   public:

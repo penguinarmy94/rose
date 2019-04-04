@@ -5,7 +5,7 @@
 // Default constructor
 LaserSensor::LaserSensor() {
   this->number = 1;
-  this->stopValue = 400;
+  this->stopValue = 400; //Main value used. Defines when a laser is considered blocked
   this->slowValue = 500;
   this->freeValue = 8190;
   }
