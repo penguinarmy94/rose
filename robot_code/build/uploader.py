@@ -3,7 +3,6 @@ from . import logger
 import json, datetime
 from os import listdir
 from os.path import isfile, join
-onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
 
 class Uploader():
     __config = None
@@ -140,11 +139,14 @@ class Uploader():
     """
     def __upload(self, file_path):
         try:
-            storage_path = self.__root + self.__robot.id + str(datetime.datetime.now()) + ".png"
+            storage_path = self.__root + "/" + self.__robot.id + "/" + file_path
 
             with open(file_path) as file:
                 blob = self.__bucket.blob(storage_path)
                 blob.upload_from_filename(filename=file_path)
+                if file_path.endswith('.jpeg') or file_path.endswith('.jpg'):
+                    self.__robot.videos.append(storage_path)
+                    self.__robot.num_of_videos += 1
                 os.remove(file_path)
         except Exception as e:
             print(str(e))

@@ -3,6 +3,7 @@ from threading import Thread
 from sys import path
 from multiprocessing import Process
 
+# Fetches and loads config file
 config_file = open('config.json')
 config = json.load(config_file)
 config_file.close()
