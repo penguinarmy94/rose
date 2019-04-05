@@ -12,13 +12,14 @@ class Motor():
     __rate = None
     __timeout = None
     __bytesToRead = None
+    __code = "-"
 
     def __init__(self, motorQueue):
         self.__direction = ""
         self.__bqueue = motorQueue
         self.__port = "/dev/ttyACM0"
         self.__rate = 9600
-        self.__timeout = 1
+        self.__timeout = 5
         self.__bytesToRead = 10
        # self.__receive_port = serial.Serial("/dev/serial1", 9600)
     
@@ -37,10 +38,9 @@ class Motor():
                     else:
                         continue
                 else:
-                    continue
+                    self.move(self.__code)
 
             else:
-                print("not waiting")
                 if not self.__bqueue.empty():
                     print("queue not empty")
                     if self.__check_queue() == 2:
@@ -72,9 +72,9 @@ class Motor():
         if self.__isWaiting is False:
             if message_packet["type"] == "motor":
                 logger.write(str(datetime.datetime.now()) + " - Brain to Motor: Motor Message Received -- " + message_packet["message"])
-                #self.__port.writePython("F12;B45;F35".encode())
                 message_packet = json.loads(self.__bqueue.get())
-                self.move(message_packet["message"])
+                self.__code = message_packet["message"]
+                #self.move(message_packet["message"])
                 return 1
         
         if message_packet["type"] == "microphone":
@@ -111,13 +111,14 @@ class Motor():
             message = ""
             
             """
-            while end.second < start.second + 5:
+            while end.second < start.second + self.__timeout:
                 message += self.__receive_port.read().decode()
                 print(message)
                 end = datetime.datetime.now()
             """
 
             message = self.__receive_port.readline().decode()
+            print(message)
                 
             if message == "":
                 message = None
