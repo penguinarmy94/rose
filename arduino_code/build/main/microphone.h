@@ -29,7 +29,7 @@ class Microphone
     int kInputPin;
 
     //Storing Values of Sound
-    unsigned int kBuffer[200];
+    unsigned int kBuffer[20];
     int kCounter;
     int kMaxHold;
 

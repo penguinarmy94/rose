@@ -44,24 +44,27 @@ Serial.begin(9600); //Unusued in project. Mainly for debugging purposes.
 Wire.begin();
 a.clearBuffer();
 b.clearBuffer();
-laserSensor.setNumber(1);
+//laserSensor.setNumber(1);
 //laserSensor.setHighAccuracy();
 debugTime = millis();
+micTime = millis();
 turnflag = false;
 }
 
 void loop()
 {
-Serial.println("Test");
-readLaser();
+//readLaser();
 if (!Serial.available())
 {
-  micTime = millis();
-  while(millis() - micTime < sampleWindow)
+  if(millis() - micTime < sampleWindow)
   {
     record(a, b);
   }
-  storeAmplitude(a, b);
+  else
+  {
+    storeAmplitude(a, b);
+    micTime = millis();
+  }
 }
 else
 {
@@ -94,7 +97,7 @@ bool checkSensors(unsigned long &time, bool leftsensor, int &prev, int &next, bo
 
 void readLaser() {
   Forward(left, right, 150);
-  state = laserSensor.getState();
+  int state = laserSensor.getState();
   #ifdef FRONTPRIORITY 
   if (state)
   {

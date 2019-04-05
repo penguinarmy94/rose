@@ -26,7 +26,10 @@ void Microphone::storeIntoBuffer()
 
 void Microphone::clearBuffer()
 {
-	memset(kBuffer, 0, sizeof(kBuffer));
+	for(int i = 0; i < bufferSize; i++)
+ {
+  kBuffer[i] = 0;
+ }
 	kCounter = 0;
 }
 

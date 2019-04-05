@@ -17,6 +17,9 @@ void Left(Motor left, Motor right, int speed);
 void Right(Motor left, Motor right, int speed);
 void Halt(Motor left, Motor right);
 
+// Obstacle Avoidance //
+extern void readLaser(); //Defined in main.ino
+
 // PI Command Parse Functions //
 void calibrateMicrophones(Microphone &a, Microphone &b);
 int getDistance(char arr[]);

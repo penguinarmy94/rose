@@ -1,7 +1,5 @@
 #include "helper.h"
 
-extern unsigned long micTime;
-
 void Forward(Motor left, Motor right, int speed)
 {
   left.forward(speed);
@@ -83,12 +81,14 @@ void parsePackage(PIData &package, char fromPi[], int size)
       i++;
     }
     package.distance = dist;
-  memset(fromPi, 0, size);
+  for(int i = 0; i < size; i++)
+  {
+    fromPi[i] = 0;
+  }
 }
 
 void commandFromPi(PIData &package, Microphone &a, Microphone &b, Motor left, Motor right)
 {
-  package.distance *= 1000;
   switch(package.direction)
   {
     case 'Y': warningDetected(a, b, left, right);
@@ -99,15 +99,16 @@ void commandFromPi(PIData &package, Microphone &a, Microphone &b, Motor left, Mo
     case 'L': commandLeft(package, left, right);
     default: memset(&package, 0, sizeof(package));
   }
-  Serial.print("K");
+  Serial.println("ack");
   memset(&package, 0, sizeof(package));
 }
 
 void warningDetected(Microphone &a, Microphone &b, Motor left, Motor right)
 {
-  int aMax = a.getMax();
-  int bMax = b.getMax();
-  (aMax > bMax) ? Right(left, right, 175) : Left(left, right, 175);       
+  unsigned int aMax = a.getMax();
+  unsigned int bMax = b.getMax();
+  (aMax > bMax) ? Right(left, right, 175) : Left(left, right, 175);  
+  Halt(left, right);   
   a.clearBuffer();
   b.clearBuffer();
 }
@@ -120,14 +121,21 @@ void commandForward(PIData package, Motor left, Motor right)
     {
       //readLaser();
       i++;
+      delay(1000);
     }  
   Halt(left, right);  
 }
 
+//Most likely not used but brought in for completeness
 void commandBackward(PIData package, Motor left, Motor right)
 {
   int i = 0;
-  Backward(left, right, 150);
+  unsigned long start = millis();
+  unsigned long turntime = 100;
+  while(millis() - start < turntime)
+  {
+    Left(left, right, 150);
+  }
   while (i < package.distance)
     {
       //readLaser();
@@ -139,7 +147,12 @@ void commandBackward(PIData package, Motor left, Motor right)
 void commandRight(PIData package, Motor left, Motor right)
 {
   int i = 0;
-  Right(left, right, 150);
+  unsigned long start = millis();
+  unsigned long turntime = 50;
+  while(millis() - start < turntime)
+  {
+    Right(left, right, 150);
+  }
   while (i < package.distance)
     {
       //readLaser();
@@ -151,7 +164,12 @@ void commandRight(PIData package, Motor left, Motor right)
 void commandLeft(PIData package, Motor left, Motor right)
 {
   int i = 0;
-  Left(left, right, 150);
+  unsigned long start = millis();
+  unsigned long turntime = 50;
+  while(millis() - start < turntime)
+  {
+    Left(left, right, 150);
+  }
   while (i < package.distance)
     {
       //readLaser();
@@ -171,72 +189,3 @@ void storeAmplitude(Microphone &a, Microphone &b)
   a.storeIntoBuffer();
   b.storeIntoBuffer();
 }
-
-
-/*
- *   if (piCommand.direction == 'y')
-      {
-        aMax = a.getMax();
-        bMax = b.getMax();
-        if (aMax > (bMax - b.getCalibrationValue()))
-        {
-          Right(left, right, 175);
-        }
-        else
-        {
-          Left(left, right, 175);
-        }        
-        a.clearBuffer();
-        b.clearBuffer();
-        aMax = 0;
-        bMax = 0; 
-      }
-    else if (piCommand.direction == 'c')
-    {
-      calibrateMicrophones(a, b);
-    }
-    else if (piCommand.direction == 'f')
-    {
-      while (i < piCommand.distance)
-      {
-        readLaser();
-        i++;
-      }
-      i = 0;
-    }
-    else if (piCommand.direction == 'b')
-    {
-      Left(left, right, 200);
-      delay(100);
-      while (i < piCommand.distance)
-      {
-        readLaser();
-        i++;
-      }
-      i = 0;
-    }
-    else if (piCommand.direction == 'l')
-    {
-      Left(left, right, 200);
-      delay(50);
-      while (i < piCommand.distance)
-      {
-        readLaser();
-        i++;
-      }
-      i = 0;
-    }
-    else if (piCommand.direction == 'r')
-    {
-      Right(left, right, 200);
-      delay(50);
-      while (i < piCommand.distance)
-      {
-        readLaser();
-        i++;
-      }
-      i = 0;
-    }
-    Serial1.print("k-");
-    memset(&piCommand, 0, sizeof(piCommand));
- */
