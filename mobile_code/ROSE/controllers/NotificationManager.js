@@ -78,9 +78,8 @@ export default class NotificationManager {
         this._notificationListener = firebase.notifications().onNotification((notification) => {
             if (this._notificationReceived == true) {
                 this._notificationReceived = false;
-                alert("activated");
                 notification.android.setChannelId("messaging-channel");
-                notification.android.setSmallIcon("rose_logo")
+                notification.android.setSmallIcon("logo")
                 firebase.notifications().displayNotification(notification);
             }
         });
