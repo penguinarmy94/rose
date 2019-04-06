@@ -49,6 +49,31 @@ export default class LoginScreen extends Component {
         this.setState(currentState);
     }
 
+    this.authState = firebase.auth().onAuthStateChanged((user) => {
+      if(user) {
+        let session = new Session(this.state.username);
+    
+        session.createUser().then((user) => {
+          if(user.exists) {
+            session.setUser(new User(user));
+            config.robotSnapshot = session.currentRobot().onSnapshot((robot) => {
+              if(robot.exists) {
+                config.robotObject = robot.data(); 
+                config.session = session;
+                this.props.screenProps.rootNav.navigate("Home", {sessionVar: session});           
+              }
+            });
+          }
+        }).catch((error) => {
+          alert(error);
+        });
+      }
+    });
+
+  }
+
+  componentWillUnmount = () => {
+    this.authState();
   }
 
   authenticate = () => {
@@ -64,7 +89,16 @@ export default class LoginScreen extends Component {
 
     this.setState({authenticating: true});
 
-    firebase.auth().signInWithEmailAndPassword(username, password).catch((error) => {
+    firebase.auth().signOut().then(() => {
+        this.signIn(username, password);
+    }).catch(() => {
+        this.signIn(username, password);
+      }
+    );
+  }
+
+  signIn = (username, password) => {
+      firebase.auth().signInWithEmailAndPassword(username, password).catch((error) => {
         let code = error.code;
 
         this.setState({authenticating: false});
@@ -85,61 +119,20 @@ export default class LoginScreen extends Component {
         else {
             alert(code);
         }
-    });
-
-    firebase.auth().onAuthStateChanged((user) => {
-        if(user) {
-            let session = new Session(user.uid);
-
-            config.robotSnapshot = session.createUser().then((user) => {
-              if(user.exists) {
-                config.session.setUser(new User(user));
-                config.session.currentRobot().onSnapshot((robot) => {
-                  if(robot.exists) {
-                    config.robotObject = robot.data(); 
-                    config.session = session
-                    this.props.screenProps.rootNav.navigate("Home", {sessionVar: session});           
-                  }
-                });
-              }
-            }).catch((error) => {
-              alert(error);
-            });
-        }
-    });
-    
+      });
   }
 
   register = () => {
-    this.props.navigation.navigate("Register", {errorCodes: this.errorCodes});
-  }
-
-  debugLogin = () => {
-    let session = new Session(config.debugId);
-    this.setState({authenticating: true});
-
-    session.createUser().then((user) => {
-      if(user.exists) {
-        session.setUser(new User(user));
-        config.robotSnapshot = session.currentRobot().onSnapshot((robot) => {
-          if(robot.exists) {
-            config.robotObject = robot.data(); 
-            config.session = session;
-            this.props.screenProps.rootNav.navigate("Home", {sessionVar: session});           
-          }
-        });
-      }
-    }).catch((error) => {
-      alert(error);
-    });
+    alert("Sorry but you don't have enough privilege to register an account");
+    //this.props.navigation.navigate("Register", {errorCodes: this.errorCodes});
   }
 
   passwordRecovery = () => {
-
+    alert("Password Recovery is coming soon");
   }
 
-  about = () => {
-
+  aboutPage = () => {
+    alert("Our about page is coming soon");
   }
 
   render() {
@@ -171,8 +164,8 @@ export default class LoginScreen extends Component {
             <TouchableOpacity onPress={() => alert("not yet")} style={{marginTop: 5, width: 300}}>
               <Text style={[styles.hyperlink]}>Recover Password ></Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={this.debugLogin} style={{marginTop: 5, marginBottom: 15, width: 300}}>
-              <Text style={[styles.hyperlink]}>Debug ></Text>
+            <TouchableOpacity onPress={this.aboutPage} style={{marginTop: 5, marginBottom: 15, width: 300}}>
+              <Text style={[styles.hyperlink]}>About ></Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

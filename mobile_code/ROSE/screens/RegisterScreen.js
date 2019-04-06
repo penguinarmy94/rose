@@ -13,6 +13,7 @@ export default class LoginScreen extends Component {
     this.users = firebase.firestore().collection('Users');
     this.robotTags = firebase.firestore().collection('RobotTags');
     this.robots = firebase.firestore().collection('Robots');
+    this.defaultBehavior = firebase.firestore().collection('Behaviors').doc('default');
     this.state = { 
       username: null, 
       password: null,
@@ -69,16 +70,16 @@ export default class LoginScreen extends Component {
               else {
 
                   this.robotTags.doc(this.state.robot_id).update({activated: true}).then(() => {
-                      let robot = {
+                      var robot = {
                         name: this.state.robot_name,
                         id: this.state.robot_id,
-                        detect_behavior: "",
-                        idle_behavior: "",
-                        battery: 0,
+                        detect_behavior: this.defaultBehavior,
+                        idle_behavior: this.defaultBehavior,
+                        battery: 100,
                         charging: false,
                         connection: 0,
                         num_of_videos: 0,
-                        power: true,
+                        power: false,
                         light: false,
                         camera_angle: 1,
                         manual_picture: false,
@@ -87,21 +88,20 @@ export default class LoginScreen extends Component {
                       };
   
                       this.robots.doc(this.state.robot_id).set(robot).then(() => {
-                          let user = {
+                          var userObj = {
                             username: this.state.username, 
                             security_code: "1234", 
-                            behaviors: [], 
+                            behaviors: [this.defaultBehavior], 
                             robots: [this.robots.doc(this.state.robot_id)]
                           };
 
-                          this.users.doc(this.state.username).set(user).then(() => {
-                              Alert.alert("User Creation Complete", "Your account was created successfully!", [{
-                                  text: "OK", onPress: () => {
-                                    firebase.auth().signOut().then(() => {
-                                      this.props.navigation.navigate("Login");
-                                    });
-                                  }
-                              }]);
+                          this.users.doc(this.state.username).set(userObj).then(() => {
+                            this.setState({registering: false});
+                            Alert.alert("User Creation Complete", "Your account was created successfully!", [{
+                                text: "OK", onPress: () => {
+                                    this.props.navigation.navigate("Login");
+                                }
+                            }]);
                           }).catch((error) => {
                               alert(error);
                               firebase.auth().currentUser.delete().then(() => {
@@ -146,9 +146,14 @@ export default class LoginScreen extends Component {
           }
           else {
             this.setState({"registering": false});
+            firebase.auth().currentUser.delete().then(() => {
               Alert.alert("Robot Creation Error", "No robot with that ID was found", [{
-                  text: "OK", onPress: () => {}
+                text: "OK", onPress: () => {}
               }]);
+            }).catch((error) => {
+              alert("User Deletion Error - " + error);
+              this.setState({"registering": false});
+            });
           }
       }).catch((error) => {
           alert("TagRef get: " + error);
@@ -206,8 +211,8 @@ export default class LoginScreen extends Component {
       }
       else {
         return(
-          <ScrollView contentContainerStyle={[styles.container, styles.rose_background]}>
-            <View style={styles.login_container}>
+          <ScrollView contentContainerStyle={[styles.loadingcontainer, styles.rose_background]}>
+            <View style={styles.loading_container}>
               <Text style={styles.title}>{title}</Text>
               <Loader text="Creating New Account..." />
             </View>
@@ -222,6 +227,17 @@ const styles = StyleSheet.create({
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
+    },
+    loading_container: {
+      width: 200,
+      height: 200,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: "white",
+      borderWidth: 1,
+      borderRadius: 50,
+      paddingLeft: 10,
+      paddingRight: 10
     },
     logo_container: {
       marginTop: 15
