@@ -28,7 +28,6 @@ class Motor():
         while True:
             if self.__isWaiting is True:
                 responseReceived = self.__get_motor_response()
-                print("waiting")
                 if not responseReceived is None:
                     self.__isWaiting = False
                     self.write_brain(responseReceived)
@@ -38,17 +37,16 @@ class Motor():
                     else:
                         continue
                 else:
-                    self.move(self.__code)
+                    continue
 
             else:
                 if not self.__bqueue.empty():
-                    print("queue not empty")
                     if self.__check_queue() == 2:
                         break
                     else:
                         continue
                 else:
-                    continue
+                    self.move(self.__code)
         
         logger.write(str(datetime.datetime.now()) + " - Motor: Powered Off")
                 
@@ -74,7 +72,7 @@ class Motor():
                 logger.write(str(datetime.datetime.now()) + " - Brain to Motor: Motor Message Received -- " + message_packet["message"])
                 message_packet = json.loads(self.__bqueue.get())
                 self.__code = message_packet["message"]
-                #self.move(message_packet["message"])
+                self.move(message_packet["message"])
                 return 1
         
         if message_packet["type"] == "microphone":

@@ -82,7 +82,7 @@ class Brain():
     """
     def begin(self):
         #self.__write_motor(message_type="calibrate", message="C5-")
-        self.__write_speaker(message_type="speaker", message="Powered on! I am ready to serve you master.")
+        self.__write_speaker(message_type="speaker", message="blah, unit 7 5 5 5 6 7 6 8 a y t b t n n 5 5 5 on")
         #For testing only:
         self.__write_camera(message_type="automatic", message="1")
         while self.__robot.power is True:
