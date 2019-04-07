@@ -6,7 +6,8 @@ let config = {
         "counter": "times",
         "time": "min",
         "minitime": "sec",
-        "distance": "cm"
+        "distance": "cm",
+        "mood": "mood"
     }
 }
 

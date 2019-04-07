@@ -104,7 +104,12 @@ export default class BehaviorAddScreen extends Component {
                         ref={input => this.values[key] = input}
                         onChangeText={(text) => {
                                 try {
-                                    if (/^[0-9]{0,3}$/.test(text) === false) {
+                                    if(this.state.actionSelection[key].type == "mood") {
+                                        if(/^[0-2]?$/.test(text) === false) {
+                                            throw new TypeError("Value is not one of the options " + text);
+                                        }
+                                    }
+                                    else if (/^[0-9]{0,3}$/.test(text) === false) {
                                         throw new TypeError("Value is not a number " + text);
                                     }
                                     let state = this.state;

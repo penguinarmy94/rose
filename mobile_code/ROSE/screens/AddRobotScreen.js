@@ -116,10 +116,10 @@ export default class AddRobotScreen extends Component {
                             this.setState({robot: robot});
                         }}
                         value={this.state.robot.name}
-                        style={styles.form}
+                        style={styles.text_input}
                     />
                     <FormInput 
-                        placeholder="Enter the robot's ID"
+                        placeholder="Robot ID"
                         ref={input => this.state.input.idRef = input}
                         onChangeText={(text) => {
                             let robot = this.state.robot;
@@ -128,13 +128,13 @@ export default class AddRobotScreen extends Component {
                             this.setState({robot: robot});
                         }}
                         value={this.state.robot.id}
-                        style={styles.form}
+                        style={styles.text_input}
                     />
-                    <TouchableOpacity title="Submit" onPress={this.createRobot}>
-                        <Text style={styles.submit_button}>Submit</Text>
+                    <TouchableOpacity style={[styles.submit_button]} onPress={this.createRobot}>
+                        <Text style={styles.button_text}>Submit</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity title="Cancel" onPress={this.cancel}>
-                        <Text style={styles.cancel_button}>Cancel</Text>
+                    <TouchableOpacity style={[styles.cancel_button]} onPress={this.cancel}>
+                        <Text style={styles.button_text}>Cancel</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -157,13 +157,25 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         paddingRight: 10
     },
+    text_input: {
+        width: 300, 
+        borderBottomWidth: 1
+    },
+    rose_background: {
+        backgroundColor: "#000000"
+    },
+    button_text: {
+        color: "white", 
+        margin: 10, 
+        fontWeight: "bold"
+    },
     submit_button: {
         width: 300, 
         backgroundColor: "#64a2b7", 
         alignItems: "center", 
         marginTop: 100
     },
-        cancel_button: {
+    cancel_button: {
         width: 300, 
         backgroundColor: "black", 
         alignItems: "center", 
