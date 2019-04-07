@@ -54,7 +54,9 @@ class Motor():
         directions = ["F", "B", "L", "R", "Y", "C"]
 
         try:
-            if direction[0] in directions:
+            if direction == " ":
+                return
+            elif direction[0] in directions:
                 success = self.__write_serial(direction)
                 self.__isWaiting = True
                 return success

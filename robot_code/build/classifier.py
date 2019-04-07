@@ -1,11 +1,3 @@
-#import numpy as np
-#import scipy as sp
-#import pydub
-#import matplotlib as plt
-#import hmmlearn
-#import sklearn
-#import eyed3
-#import simplejson
 from sys import path
 import json
 from pyAudioAnalysis import audioTrainTest as aT
@@ -13,7 +5,7 @@ from pyAudioAnalysis import audioTrainTest as aT
 class Classifier:
     __threshold = 0.70
     __config = None
-    __model = "svmSMtemp"
+    __model = "/svmModel"
 
     def __init__(self, config = None):
         try:
@@ -26,7 +18,7 @@ class Classifier:
 
     #Train and Test Split here
     def classify(self, file_path):
-        result =  aT.fileClassification(file_path , self.__model,"svm")
+        result =  aT.fileClassification(file_path , self.__config["home_path"] + self.__model,"svm")
         print("Classification Success")
     
         #check the gunshot by parsing the result tuple

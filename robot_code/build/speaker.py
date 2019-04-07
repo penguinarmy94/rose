@@ -1,28 +1,33 @@
 from . import logger
 from threading import Thread
-import json, datetime, time, pyttsx3, functools, subprocess
+import json, datetime, time, pyttsx3, functools, subprocess, random, signal
 
 class Speaker():
     __spQueue = None
     __player = None
+    __mood = "neutral"
+    __isInMoodState = False
 
-    def __init__(self, queue):
+    def __init__(self, queue = None, config = None):
         self.__spQueue = queue
+        self.__config = config
         self.__player = pyttsx3.init()
-        self.__player.setProperty("rate", 120)
+        self.__player.setProperty("rate", 100)
 
     def run(self):
         while True:
             if not self.__spQueue.empty():
                 result = self.read_queue()
                 if result == 2:
-                    print("something")
                     break
                 else:
-                    print("good")
                     continue
             else:
-                continue
+                if not self.__isInMoodState:
+                    timer = signal.signal(signal.SIGALRM, self.__setMood)
+                    timer.alarm(random.randint(60,240))
+                    self.__isInMoodState = True
+
         
         logger.write(str(datetime.datetime.now()) + " - Speaker: Powered off")
         print("powered off")
@@ -35,6 +40,11 @@ class Speaker():
             logger.write(str(datetime.datetime.now()) + " - Brain to Speaker: Speaker Message Received -- " + message_packet["message"])
             self.say(message_packet["message"])
             return 1
+        elif message_packet["type"] == "automatic":
+            message_packet = json.loads(self.__spqueue.get())
+            logger.write(str(datetime.datetime.now()) + " - Brain to Speaker: Speaker Message Received -- " + message_packet["message"])
+            self.__mood = message_packet["message"]
+
         elif message_packet["type"] == "off":
             message_packet = json.loads(self.__spQueue.get())
             logger.write(str(datetime.datetime.now()) + " - Brain to Speaker: Off Message Received -- " + message_packet["message"])
@@ -47,3 +57,10 @@ class Speaker():
         self.__player.runAndWait()
 
         logger.write(str(datetime.datetime.now()) + " - Speaker: " + message)
+    
+    def __setMood(self):    
+        if self.__mood in self.__config["moods"].keys():
+            choice = random.choice(self.__config["moods"][self.__mood])
+            self.say(choice)
+        
+        self.__isInMoodState = False

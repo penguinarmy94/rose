@@ -109,6 +109,13 @@ class Brain():
         logger.write(str(datetime.datetime.now()) + " - Brain: Powered Off")
 
 
+    def __reset(self):
+        self.__write_sensor(message_type="light", message="turn off")
+        self.__write_motor(message_type="motor", message=" ")
+        self.__write_speaker(message_type="automatic", message="neutral")
+        self.__write_camera(message_type="automatic", message="0")
+        self.__write_notifier(message_type="notification_off", message="Reset")
+
     """
         Description: This is the status manager function which checks the values for
         wireless connectivity and battery level. 
@@ -162,6 +169,7 @@ class Brain():
 
             # Change idle behavior if local reference is different from database reference
             if not self.__behaviorRef["idle"] == self.__robot.idle_behavior:
+                self.__reset()
                 self.__behaviorRef["idle"] = self.__robot.idle_behavior
                 idle = self.__robot.idle_behavior.get().to_dict()
                 self.__idle_behavior = []
@@ -178,6 +186,7 @@ class Brain():
             
             # Change detect behavior if local reference is different from database reference
             if not self.__behaviorRef["detect"] == self.__robot.detect_behavior:
+                self.__reset()
                 self.__behaviorRef["detect"] = self.__robot.detect_behavior
                 detect = self.__robot.detect_behavior.get().to_dict()
                 self.__detect_behavior = []
