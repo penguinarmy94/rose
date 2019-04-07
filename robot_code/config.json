@@ -12,5 +12,8 @@
     },
     "bucket": "rose-9876.appspot.com",
     "capture_path": "/home/pi/Desktop/Projects/rose/captures/",
-    "detect_interval": 2
+    "detect_interval": 2,
+    "moods": {
+         "happy": ["I hope you are having a nice day", "Hooray!", "If you are happy and you know it clap your hands"]
+    }
 }
