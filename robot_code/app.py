@@ -1,3 +1,4 @@
+
 import json, functools, time, sys
 from threading import Thread
 from sys import path
@@ -11,7 +12,7 @@ path.insert(0, config["home_path"])
 
 from build import brain, motor, robot, database
 from build import queues, logger, speaker, notification_manager
-from build import light, camera, uploader
+from build import light, camera, uploader, microphone
 
 def runSpeakerThread():
     speaker_object = speaker.Speaker(queues.brain_speaker_queue)
@@ -36,6 +37,12 @@ def runMotorThread():
     motor_thread = Thread(target=functools.partial(motor_object.run))
     motor_thread.start()
     return motor_thread
+
+def runMicrophoneThread(config):
+    microphone_object = microphone.Microphone(queues.brain_microphone_queue, config)
+    microphone_thread = Thread(target=functools.partial(microphone_object.run))
+    microphone_thread.start()
+    return microphone_thread
 
 def runBrainThread(db, rob, config):
     brain_object = brain.Brain(db, rob, config)
@@ -66,7 +73,9 @@ def initialize_threads(db, rob, off = True):
         print("Turned on!")
         try:
             brain_thread = runBrainThread(db=db,rob=rob,config=config)
-            motor_thread = runMotorThread()
+            #motor_thread = runMotorThread()
+            microphone_thread = runMicrophoneThread(config)
+            print("Microphone")
             notification_manager_thread = runNotificationManager(rob=rob,config=config,initialized=True)
 
             speaker_thread = runSpeakerThread()
@@ -77,6 +86,7 @@ def initialize_threads(db, rob, off = True):
 
             brain_thread.join()
             #motor_thread.join()
+            microphone_thread.join()
             notification_manager_thread.join()
             speaker_thread.join()
             #camera_thread.join()

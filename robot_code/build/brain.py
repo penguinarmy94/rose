@@ -82,7 +82,7 @@ class Brain():
     """
     def begin(self):
         #self.__write_motor(message_type="calibrate", message="C5-")
-        self.__write_speaker(message_type="speaker", message="blah, unit 7 5 5 5 6 7 6 8 a y t b t n n 5 5 5 on")
+        self.__write_speaker(message_type="speaker", message="blah, Robot 1 ready to party")
         #For testing only:
         self.__write_camera(message_type="automatic", message="1")
         while self.__robot.power is True:
@@ -90,7 +90,7 @@ class Brain():
                 self.__report_status()
                 self.__read_motor()
                 self.__read_sensors()
-                #self.__read_microphone()
+                self.__read_microphone()
                 self.__read_camera()
                 self.__update_behaviors()
                 self.__handle_behavior()
@@ -260,8 +260,8 @@ class Brain():
                 if message_packet["type"] == "brain":
                     message_packet = json.loads(self.__microphoneQueue.get())
                     logger.write(time_stamp + " - Microphone to Brain: Brain Message Received -- " + message_packet["message"])
-                    self.__state = "detect"
-                    self.__behaviorSet = False
+                    #self.__state = "detect"
+                    #self.__behaviorSet = False
                 else:
                     return
             else:
