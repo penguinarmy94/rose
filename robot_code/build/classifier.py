@@ -1,65 +1,52 @@
 
-# coding: utf-8
-
-# In[1]:
-
-import numpy as np
-import scipy as sp
-import pydub
-import matplotlib as plt 
-from pyAudioAnalysis import audioTrainTest as aT
-
+#import numpy as np
+#import scipy as sp
+#import pydub
+#import matplotlib as plt
+#import hmmlearn
+#import sklearn
+#import eyed3
+#import simplejson
 from sys import path
 import json
+from pyAudioAnalysis import audioTrainTest as aT
 
-config_file = open('config.json')
-config = json.load(config_file)
-config_file.close()
-path.insert(0, config["home_path"])
+class Classifier:
+    __threshold = 0.70
+    __config = None
 
-# In[2]:
-
-# Reading the dataset with .wav files
-#sr, x = scipy.io.wavfile.read('/home/sarvpsin/Desktop/pyAudioAnalysis/pyAudioAnalysis/Data_mic/gun_shot_wav/102305.wav ')
-
-
-# In[8]:
+    def __init__(self, config = None):
+        positiveData = self.__config["home_path"] + "/assets/gun_shot"
+        negativeData = self.__config["home_path"] + "assets/car_horn"
+        aT.featureAndTrain([positiveData, negativeData], 1.0, 1.0, aT.shortTermWindow, aT.shortTermStep, "svm", "svmSMtemp", False)
 
 
-aT.featureAndTrain(["build/gun_shot", "build/car_horn"], 1.0, 1.0, aT.shortTermWindow, aT.shortTermStep, "svm", "SVMTry", False)
-
-
-# In[12]:
-
-#train test split here
-
-aT.fileClassification("build/gun_shot/7060.wav", "SVMTry","svm")
-
-
-# In[6]:
-
-# knn
-#accuracy and F1_score
-
-
-# In[7]:
-
-#svm
-#accuracy and F1_score
-
-
-# In[8]:
-
-#random forest
-#accuracy and F1_score
-
-
-# In[9]:
-
-#CPU Usage
-
-
-# In[ ]:
-
-#Time taken by each model
+    #Train and Test Split here
+    def __classify(self, file_path  ):
+        result =  aT.fileClassification(file_path , "svmTry","svm")
+        print(result)
+    
+        #check the gunshot by parsing the result tuple
+        percentage = result[1]
+        print(percentage)
+        
+        act = result[2]
+        print(act)
+        
+        
+        index = act.index("gun_shot")
+        
+        percentageGunshot = percentage[index]
+        
+        
+        if percentageGunshot > self.__threshold:
+            return (True, percentageGunshot)
+        else:
+            return (False, percentageGunshot)
+            
+            
+        
+            
+            
+    
 

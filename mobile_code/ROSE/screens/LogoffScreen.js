@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {StyleSheet, Text, View, Image, Button, Alert} from 'react-native';
 import { Icon } from 'react-native-elements';
 import firebase from 'react-native-firebase';
+import { config } from '../assets/config/config';
 
 let logout_message = "Are you sure you want to logout?";
 
@@ -28,11 +29,15 @@ export default class LogoffScreen extends Component {
 
   constructor(props) {
     super(props);
-    this.debugLogout();
+    //this.debugLogout();
+    this.logout();
   }
 
   logout = () => {
       firebase.auth().signOut().then(() => {
+        config.session = null;
+        config.robotSnapshot();
+        config.robotSnapshot = null;
         this.props.screenProps.rootNav.navigate("Main");
         alert("You have been signed out!");
       }).catch((error) => {
