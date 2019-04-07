@@ -47,7 +47,7 @@ class Microphone():
     def __record(self):
         try:
             file_path = self.__config["capture_path"] + "image_" + datetime.datetime.now().strftime("%Y%m%d.%H:%M:%S") + ".wav"
-            subprocess.check_output("arecord -D plughw:1 -c2 -r 48000 -d 10 -f S32_LE -t wav -q " + file_path, shell=True)
+            subprocess.check_output("arecord -D plughw:1 -c2 -r 48000 -d 5 -f S32_LE -t wav -q " + file_path, shell=True)
             print("microphone done recording")
             return file_path
         

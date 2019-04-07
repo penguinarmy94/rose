@@ -1,5 +1,5 @@
 from . import logger
-from threading import Thread
+from threading import Thread, Timer
 import json, datetime, time, pyttsx3, functools, subprocess, random, signal
 
 class Speaker():
@@ -24,8 +24,8 @@ class Speaker():
                     continue
             else:
                 if not self.__isInMoodState:
-                    timer = signal.signal(signal.SIGALRM, self.__setMood)
-                    timer.alarm(random.randint(60,240))
+                    timer = Timer(random.randint(60,240), self.__setMood)
+                    timer.start()
                     self.__isInMoodState = True
 
         
@@ -41,7 +41,7 @@ class Speaker():
             self.say(message_packet["message"])
             return 1
         elif message_packet["type"] == "automatic":
-            message_packet = json.loads(self.__spqueue.get())
+            message_packet = json.loads(self.__spQueue.get())
             logger.write(str(datetime.datetime.now()) + " - Brain to Speaker: Speaker Message Received -- " + message_packet["message"])
             self.__mood = message_packet["message"]
 

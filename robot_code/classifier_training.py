@@ -1,0 +1,5 @@
+from pyAudioAnalysis import audioTrainTest as aT
+from sys import path
+import json
+
+aT.featureAndTrain(["assets/gun_shot", "assets/car_horn"],1.0, 1.0, aT.shortTermWindow, aT.shortTermStep, "randomforest", "randomforestModel", False )
