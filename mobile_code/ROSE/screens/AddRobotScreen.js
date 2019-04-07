@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Button, StyleSheet, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { FormInput } from 'react-native-elements';
 import { config } from '../assets/config/config';
 
@@ -104,11 +104,10 @@ export default class AddRobotScreen extends Component {
 
     render() {
         return(
-            <View>
-                <View style={styles.inputBlock}>
-                    <Text style={styles.label}>Name: </Text>
+            <View style={[styles.container, styles.rose_background]}>
+                <View style={[styles.formBlock]}>
                     <FormInput 
-                        placeholder="Enter the name of the robot"
+                        placeholder="Robot Name"
                         ref={input => this.state.input.nameRef = input}
                         onChangeText={(text) => {
                             let robot = this.state.robot;
@@ -119,9 +118,6 @@ export default class AddRobotScreen extends Component {
                         value={this.state.robot.name}
                         style={styles.form}
                     />
-                </View>
-                <View style={styles.inputBlock}>
-                    <Text style={styles.label}>ID: </Text>
                     <FormInput 
                         placeholder="Enter the robot's ID"
                         ref={input => this.state.input.idRef = input}
@@ -134,14 +130,12 @@ export default class AddRobotScreen extends Component {
                         value={this.state.robot.id}
                         style={styles.form}
                     />
-                </View>
-                <View style={styles.buttonBlock}>
-                    <View style={styles.button}>
-                        <Button title="Submit" onPress={this.createRobot} />
-                    </View>
-                    <View style={styles.button}>
-                        <Button title="Cancel" onPress={this.cancel} />
-                    </View>
+                    <TouchableOpacity title="Submit" onPress={this.createRobot}>
+                        <Text style={styles.submit_button}>Submit</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity title="Cancel" onPress={this.cancel}>
+                        <Text style={styles.cancel_button}>Cancel</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         );
@@ -149,19 +143,36 @@ export default class AddRobotScreen extends Component {
 }
 
 const styles = StyleSheet.create({
-    form: {
-        width: 200,
-        height: 50,
-        justifyContent: 'flex-end'
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    formBlock: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: "white",
+        borderWidth: 1,
+        borderRadius: 50,
+        paddingLeft: 10,
+        paddingRight: 10
+    },
+    submit_button: {
+        width: 300, 
+        backgroundColor: "#64a2b7", 
+        alignItems: "center", 
+        marginTop: 100
+    },
+        cancel_button: {
+        width: 300, 
+        backgroundColor: "black", 
+        alignItems: "center", 
+        marginTop: 15,
+        marginBottom: 25
     },
     label: {
         fontSize: 16,
         margin: 10,
-    },
-    inputBlock: {
-        flexDirection: "row",
-        justifyContent: "flex-start",
-        marginTop: 10
     },
     buttonBlock: {
         flexDirection: "row",

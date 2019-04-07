@@ -123,8 +123,8 @@ export default class LoginScreen extends Component {
   }
 
   register = () => {
-    alert("Sorry but you don't have enough privilege to register an account");
-    //this.props.navigation.navigate("Register", {errorCodes: this.errorCodes});
+    //alert("Sorry but you don't have enough privilege to register an account");
+    this.props.navigation.navigate("Register", {errorCodes: this.errorCodes});
   }
 
   passwordRecovery = () => {
