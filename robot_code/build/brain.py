@@ -14,7 +14,7 @@ class Brain():
     __db = None
     __idle_behavior = None
     __detect_behavior = None
-    __idle = False
+    __state = None
     __config = {}
     __motorBusy = False
     __lightOn = False
@@ -57,9 +57,6 @@ class Brain():
         self.__config = config
 
         self.__update_behaviors()
-
-        self.__behaviorRef["idle"] = robot.idle_behavior
-        self.__behaviorRef["detect"] = robot.detect_behavior
 
         status_manager.battery_level = self.__robot.battery
 
@@ -111,7 +108,7 @@ class Brain():
 
     def __reset(self):
         self.__write_sensor(message_type="light", message="turn off")
-        self.__write_motor(message_type="motor", message=" ")
+        self.__write_motor(message_type="motor", message="S5-")
         self.__write_speaker(message_type="automatic", message="neutral")
         self.__write_camera(message_type="automatic", message="0")
         self.__write_notifier(message_type="notification_off", message="Reset")
@@ -169,7 +166,6 @@ class Brain():
 
             # Change idle behavior if local reference is different from database reference
             if not self.__behaviorRef["idle"] == self.__robot.idle_behavior:
-                self.__reset()
                 self.__behaviorRef["idle"] = self.__robot.idle_behavior
                 idle = self.__robot.idle_behavior.get().to_dict()
                 self.__idle_behavior = []
@@ -186,7 +182,6 @@ class Brain():
             
             # Change detect behavior if local reference is different from database reference
             if not self.__behaviorRef["detect"] == self.__robot.detect_behavior:
-                self.__reset()
                 self.__behaviorRef["detect"] = self.__robot.detect_behavior
                 detect = self.__robot.detect_behavior.get().to_dict()
                 self.__detect_behavior = []
@@ -706,10 +701,12 @@ class Brain():
     def __handle_behavior(self):
         try:
             if self.__state == "idle" and not self.__behaviorSet:
+                #self.__reset()
                 for action in self.__idle_behavior:
                     self.__action_map(action)
                 self.__behaviorSet = True
             elif self.__state == "detect":
+                #self.__reset()
                 for action in self.__detect_behavior and not self.__behaviorSet:
                     self.__action_map(action)
                 

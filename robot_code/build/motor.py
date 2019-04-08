@@ -51,12 +51,10 @@ class Motor():
         logger.write(str(datetime.datetime.now()) + " - Motor: Powered Off")
                 
     def move(self, direction):
-        directions = ["F", "B", "L", "R", "Y", "C"]
+        directions = ["F", "B", "L", "R", "Y", "C", "S"]
 
         try:
-            if direction == " ":
-                return
-            elif direction[0] in directions:
+            if direction[0] in directions:
                 success = self.__write_serial(direction)
                 self.__isWaiting = True
                 return success
