@@ -102,10 +102,11 @@ def setCMD():
     parser.add_argument("-a","--all", help="Set all of the modules", action="store_true")
     parser.add_argument("-q","--no_log", help="Remove all file logging", action="store_true")
 
-    return parser
-
-def parseArgs(parser, db, rob, config):
     args = parser.parse_args()
+    
+    return args
+
+def parseArgs(args, db, rob, config):
     counter = 1
 
     while counter > 0:
