@@ -59,7 +59,7 @@ class Speaker():
         logger.write(str(datetime.datetime.now()) + " - Speaker: " + message)
     
     def __setMood(self):    
-        if self.__mood in self.__config["moods"].keys():
+        if self.__mood in self.__config["moods"]:
             choice = random.choice(self.__config["moods"][self.__mood])
             self.say(choice)
         

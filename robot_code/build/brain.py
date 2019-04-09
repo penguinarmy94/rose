@@ -479,7 +479,7 @@ class Brain():
 
             # Only writes to the motor if the message is an Off message, Microphone message, or if
             # the motor is waiting for its next instruction
-            if message_type == "off" or message_type == "microphone" or self.__motorBusy is False:  
+            if message_type == "off" or message_type == "microphone" or message == "S5-" or self.__motorBusy is False:  
                 self.__motorQueue.put(json.dumps({"type": message_type, "message": message}))
                 logger.write(time_stamp + " - Brain to Motor: " + message)
                 self.__motorBusy = True
