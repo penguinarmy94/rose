@@ -49,7 +49,7 @@ if args.id:
 path.insert(0, config["home_path"])
 
 if args.purge:
-	print([config['log_path'], config['capture_path'])
+	print([config['log_path'], config['capture_path']])
 
 from build import brain, motor, robot, database
 from build import queues, logger, speaker, notification_manager
