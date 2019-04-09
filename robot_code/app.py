@@ -49,7 +49,19 @@ if args.id:
 path.insert(0, config["home_path"])
 
 if args.purge:
-	print([config['log_path'], config['capture_path']])
+    for aPath in [config['log_path'], config['capture_path']]:
+		try:
+			for aFile in os.listdir(aPath):
+				aFilePath = os.path.join(aPath, aFile)
+		
+				if os.path.isfile(aFilePath):
+					if args.verbose:
+						print("Deleting {}...".format(aFilePath))
+					os.unlink(aFilePath)
+	
+		except Exception as e:
+			if args.verbose:
+				print(e)
 
 from build import brain, motor, robot, database
 from build import queues, logger, speaker, notification_manager
