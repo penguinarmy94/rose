@@ -1,18 +1,60 @@
-
+import argparse
+import os
 import json, functools, time, sys
 from threading import Thread
 from sys import path
 from multiprocessing import Process
 
+appName = "ROSE Controller"
+appVersion = "1.0"
+logLevels = ["none", "info", "debug"]
+devices = ["mic", "camera", "speaker", "led"]
+purgePath = ["c:/temp", "c:/temp2"]
+configFile = "c:/Users/Clark Kent/config.json"
+
+parser = argparse.ArgumentParser("app.py")
+parser.add_argument("-v", "--verbose", help = "Print debug info to console", action = "store_true", default = False)
+parser.add_argument("-l", "--loglevel", help = "Log level={none|info|debug}. Default: none", default = "none")
+parser.add_argument("-d", "--logdays", help = "Days to keep logs", action = "store", type=int, default = 1)
+parser.add_argument("-p", "--purge", help = "Remove all logs and captures", action = "store_true", default = False) 
+parser.add_argument("-c", "--console", help = "Show interactive console", action = "store_true", default = False)
+parser.add_argument("-i", "--id", help = "set robot id", action = "store")
+parser.add_argument("-s", "--skip", help = "Skip enabling devices: mic, camera, speaker (separate devices with space)", nargs = "+")
+args = parser.parse_args()
+
+if not args.loglevel in logLevels:
+	if args.verbose:
+		print("Invalid log level '{}'. Assuming 'none'...".format(args.loglevel))
+	args.loglevel = "none"
+
+if (args.skip):
+	for skip in args.skip:
+		if skip in devices:
+			if args.verbose:
+				print("Skipping {}.".format(skip))
+			devices.remove(skip)
+
 # Fetches and loads config file
-config_file = open('config.json')
-config = json.load(config_file)
-config_file.close()
+#config_file = open('config.json')
+#config = json.load(config_file)
+#config_file.close()
+with open('config.json', 'r') as jsonFile:
+    config = json.load(jsonFile)
+if args.id:
+    if args.verbose:
+        print("Changing robot id to '{}'...".format(args.id))
+    config["robotid"] = args.id
+    with open('config.json', 'w') as jsonFile:
+        json.dump(config, jsonFile)
+
 path.insert(0, config["home_path"])
 
 from build import brain, motor, robot, database
 from build import queues, logger, speaker, notification_manager
-from build import light, camera, uploader, microphone
+from build import light, camera, uploader
+
+if 'mic' in devices:
+    import microphone
 
 def runSpeakerThread():
     speaker_object = speaker.Speaker(queues.brain_speaker_queue)
@@ -74,23 +116,29 @@ def initialize_threads(db, rob, off = True):
         try:
             brain_thread = runBrainThread(db=db,rob=rob,config=config)
             #motor_thread = runMotorThread()
-            microphone_thread = runMicrophoneThread(config)
-            print("Microphone")
+
+            if 'mic' in devices:
+                microphone_thread = runMicrophoneThread(config)
+                print("Microphone")
+
             notification_manager_thread = runNotificationManager(rob=rob,config=config,initialized=True)
 
             speaker_thread = runSpeakerThread()
-            #camera_thread = runCameraThread(pin=12, pos = 7, capture_path = config["capture_path"])
-            #light_thread = runLightThread(pin=11)
+            camera_thread = runCameraThread(pin=12, pos = 7, capture_path = config["capture_path"])
+            light_thread = runLightThread(pin=11)
             log_thread = runLoggerThread()
             #uploader_thread = runUploader(config=config, rob=rob)
 
             brain_thread.join()
             #motor_thread.join()
-            microphone_thread.join()
+
+            if 'mic' in devices:
+                microphone_thread.join()
+                
             notification_manager_thread.join()
             speaker_thread.join()
-            #camera_thread.join()
-            #light_thread.join()
+            camera_thread.join()
+            light_thread.join()
             #uploader_thread.join()
             logger.write("turn off")
             off = True
