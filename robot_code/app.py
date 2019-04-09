@@ -9,7 +9,6 @@ appName = "ROSE Controller"
 appVersion = "1.0"
 logLevels = ["none", "info", "debug"]
 devices = ["mic", "camera", "speaker", "led"]
-purgePath = ["c:/temp", "c:/temp2"]
 configFile = "c:/Users/Clark Kent/config.json"
 
 parser = argparse.ArgumentParser("app.py")
@@ -48,6 +47,9 @@ if args.id:
         json.dump(config, jsonFile)
 
 path.insert(0, config["home_path"])
+
+if args.purge:
+	print([config['log_path', 'capture_path'])
 
 from build import brain, motor, robot, database
 from build import queues, logger, speaker, notification_manager
@@ -134,7 +136,7 @@ def initialize_threads(db, rob, off = True):
 
             if 'mic' in devices:
                 microphone_thread.join()
-                
+
             notification_manager_thread.join()
             speaker_thread.join()
             camera_thread.join()
