@@ -9,7 +9,6 @@ appName = "ROSE Controller"
 appVersion = "1.0"
 logLevels = ["none", "info", "debug"]
 devices = ["mic", "camera", "speaker", "led"]
-configFile = "c:/Users/Clark Kent/config.json"
 
 parser = argparse.ArgumentParser("app.py")
 parser.add_argument("-v", "--verbose", help = "Print debug info to console", action = "store_true", default = False)
