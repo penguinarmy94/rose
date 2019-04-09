@@ -87,7 +87,9 @@ export default class LoginScreen extends Component {
         return;
     }
 
-    this.setState({authenticating: true});
+    username = username.toLowerCase();
+
+    this.setState({authenticating: true, username: username});
 
     firebase.auth().signOut().then(() => {
         this.signIn(username, password);
@@ -144,12 +146,12 @@ export default class LoginScreen extends Component {
               <Image source={logo} />
             </View>
             <Text style={styles.title}>{title}</Text>
-            <FormInput placeholder="username" 
+            <FormInput placeholder="Email" 
                 ref={input => this.usernameField = input}
                 onChangeText={this.usernameChange} 
                 value={this.state.username} 
                 containerStyle={styles.text_input}/>
-            <FormInput placeholder="password"
+            <FormInput placeholder="Password"
                 ref={input => this.passwordField = input} 
                 secureTextEntry={true} 
                 onChangeText={this.passwordChange} 

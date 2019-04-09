@@ -36,7 +36,7 @@ export default class LoginScreen extends Component {
   register = () => {
 
     if(this.state.username && this.state.password && this.state.robot_name && this.state.robot_id) {
-      this.setState({"registering": true});
+      this.setState({"registering": true, username: this.state.username.toLowerCase()});
     }
     else {
       Alert.alert("User Creation Error", "One of the fields is missing. Make sure all fields are filled out", [{
