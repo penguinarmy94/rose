@@ -179,9 +179,9 @@ def init():
     if initialized == 1:  
         db.create_subscriber_model()
 
-        print("Robot initializing", end='')
+        print("Robot initializing", end='', flush = True)
         while rob.isInitialized() is False:
-            print(".", end='')
+            print(".", end='', flush = True)
             time.sleep(0.2)
         print("")
 
