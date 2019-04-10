@@ -226,7 +226,8 @@ def init():
         
         while True:
             print(rob.battery)
-            if rob.battery <= 0:
+            # Should be <= 0 ?
+            if rob.battery == 0:
                 rob.power = False
                 db.update_robot()
                 #off = True

@@ -11,7 +11,7 @@ class Robot():
     light = False
     camera_angle = 7
     videos = []
-    charging = False
+    charging = True
     manualPicture = False
 
     def isInitialized(self):
