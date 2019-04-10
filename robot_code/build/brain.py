@@ -80,12 +80,21 @@ class Brain():
         None
     """
     def begin(self):
+
+        if args.verbose:
+            print("Entering brain.begin()")
+
         while True:
+            if args.verbose:
+                print("Running app.begin() while TRUE loop")
+
             #self.__write_motor(message_type="calibrate", message="C5-")
             self.__write_speaker(message_type="speaker", message="blah, Robot 1 ready to party")
             #For testing only:
             self.__write_camera(message_type="automatic", message="1")
             while self.__robot.power is True:
+                if args.verbose:
+                    print("Running app.begin() while power loop")
                 try:
                     self.__readConsole()
                     self.__report_status()
@@ -99,6 +108,9 @@ class Brain():
                     logger.write(str(datetime.datetime.now()) + " - Brain Error: " + str(e))
                     break
         
+            if args.verbose:
+                print("Exiting app.begin() while root.power is True loop")
+
             self.__write_sensor(message_type="off", message="Powered Off")
             self.__write_motor(message_type="off", message="turn off")
             self.__write_microphone(message_type="off", message="turn off")
@@ -222,6 +234,20 @@ class Brain():
 
     def __readConsole(self):
         print("Console read")
+         try:
+            time_stamp = str(datetime.datetime.now())
+
+            # Check that queue is not empty
+            if not self.__consoleQueue.empty():
+                # Read first item in the queue
+                message_packet = json.loads(self.__consoleQueue.peek())
+
+                # Message incoming from camera
+                if message_packet["type"] == "brain":
+                    message_packet = json.loads(self.__consoleQueue.get())
+                    logger.write(time_stamp + " - Camera to Brain: Brain Message Received -- " + message_packet["message"])
+                else:
+                    return
 
     def __read_motor(self):
         try:

@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-
 import argparse
 import os
 import json, functools, time, sys
@@ -23,11 +22,13 @@ parser.add_argument("-i", "--id", help = "set robot id. If arg ends in .id, will
 parser.add_argument("-s", "--skip", help = "Skip enabling devices: mic, camera, speaker (separate devices with space)", nargs = "+")
 args = parser.parse_args()
 
+# Checking log level from command line arg
 if not args.loglevel in logLevels:
 	if args.verbose:
 		print("Invalid log level '{}'. Assuming 'none'...".format(args.loglevel))
 	args.loglevel = "none"
 
+# Removing deveices from devices list that should be skipped
 if (args.skip):
 	for skip in args.skip:
 		if skip in devices:
@@ -35,10 +36,8 @@ if (args.skip):
 				print("Skipping {}.".format(skip))
 			devices.remove(skip)
 
-# Fetches and loads config file
-#config_file = open('config.json')
-#config = json.load(config_file)
-#config_file.close()
+# Upddate robot id in config.json. If file.id is given, the value from the file
+# is read and used as id
 with open(configFile, 'r') as jsonFile:
     config = json.load(jsonFile)
 if args.id:
@@ -54,6 +53,7 @@ if args.id:
 
 path.insert(0, config["home_path"])
 
+# If --purge is set, delete all logs and capture data
 if args.purge:
     for aPath in [config['log_path'], config['capture_path']]:
         try:
@@ -71,7 +71,7 @@ if args.purge:
 
 from build import brain, motor, robot, database
 from build import queues, logger, speaker, notification_manager
-from build import light, camera, uploader
+from build import light, camera, uploader, console
 
 if 'mic' in devices:
     import microphone
@@ -136,6 +136,9 @@ def runUploader(config, rob):
     return uploader_thread
 
 def initialize_threads(db, rob, off = True):
+    if args.verbose:
+        print("Entering app.initialize_threads()")
+
     if rob.power is True and off == True:
         off = False
         print("Turned on!")
@@ -171,18 +174,37 @@ def initialize_threads(db, rob, off = True):
             
             speaker_thread.join()
             camera_thread.join()
+            if args.verbose:
+                print("light_thread joined...")
             light_thread.join()
+
             #uploader_thread.join()
+
+            # Not sure why this is called here. Called when threads abort?
+            if args.verbose:
+                print("goimg to turning off...")
             logger.write("turn off")
             off = True
             print("Turned off!")
+
+            if args.verbose:
+                print("Exiting app.initialize_threads() from IF clause")
+
             return off
         except Exception as e:
             print(str(e))
     else:
+        if args.verbose:
+        print("Exiting app.initialize_threads() from ELSE clause")
+
         return off
 
+    
+
 def init():
+    if args.verbose:
+        print("Entering app.init()")
+
     rob = robot.Robot()
     rob.id = config["robotid"]
     off = True
@@ -198,54 +220,18 @@ def init():
             time.sleep(0.2)
         print("done!")
 
-        #option = input('0 - Start in Mobile Mode\n1 - Start in Single Use Mode\n2 - Start in Command Line Mode\n\nChoice: ')
         if (args.console):
             print("\n{} Interactive Shell v{}\n".format(appName, appVersion))
         
-        option = "0"
-
-        if option == "0":
-            while True:
-                print("option 0")
-                if rob.battery == 0:
-                    rob.power = False
-                    db.update_robot()
-                    off = True
+        while True:
+            print("option 0")
+            if rob.battery == 0:
+                rob.power = False
+                db.update_robot()
+                off = True
                 
-                off = initialize_threads(db,rob,off)
-        elif option == "1":
-            initialize_threads(db,rob)
-        elif option == "2":
-            option = 0
-            while option != "2": 
-                option = input('0 - Send message to camera\n1 - Send message to speaker\n2 - exit\n\nChoice: ')
-
-                if option == "0":
-                    cam_thread = runCameraThread()
-                    logger = runLoggerThread()
-                    message = input('\nWhat message would you like to send? ')
-                    queues.brain_camera_queue.put(json.dumps({"type" : "camera", "message" : int(message)}))
-                    queues.brain_camera_queue.put(json.dumps({"type": "off", "message" : "turn off"}))
-                    cam_thread.join()
-                    queues.logger_queue.put("turn off")
-                    logger.join()
-                elif option == "1":
-                    spk_thread = runSpeakerThread()
-                    logger = runLoggerThread()
-                    message = input('\nWhat message would you like to send? ')
-                    queues.brain_speaker_queue.put(json.dumps({"type" : "speaker", "message" : message}))
-                    queues.brain_speaker_queue.put(json.dumps({"type": "off", "message" : "turn off"}))
-                    spk_thread.join()
-                    queues.logger_queue.put("turn off")
-                    logger.join()
-                elif option == "2":
-                    break
-                else:
-                    print("Not a valid option")
-                    continue
-        else:
-            print("%s Not a valid option!"%option)
-
+            off = initialize_threads(db,rob,off)
+        
 if __name__ == "__main__":
     init()
 
