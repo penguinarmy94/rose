@@ -221,7 +221,7 @@ class Brain():
 
 
     def __readConsole(self):
-        print("!")
+        print("Console read")
 
     def __read_motor(self):
         try:

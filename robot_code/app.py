@@ -206,6 +206,7 @@ def init():
 
         if option == "0":
             while True:
+                print("option 0")
                 if rob.battery == 0:
                     rob.power = False
                     db.update_robot()
