@@ -107,6 +107,7 @@ class Brain():
                 self.__handle_behavior()
                 print("2: Power is {}".format(self.__robot.power))
             except Exception as e:
+                print(e)
                 logger.write(str(datetime.datetime.now()) + " - Brain Error: " + str(e))
                 break
         
