@@ -32,7 +32,7 @@ class Camera():
         self.__servo = gpio.PWM(self.__pin, 50)
         self.__servo.start(self.__pos)
         self.__camera = PiCamera()
-        self.__camera.start_preview()
+        self.__camera.start_preview(fullscreen = False, window = (100, 20, 640, 480))
         
         while True:
             if not self.__queue.empty():
