@@ -80,33 +80,34 @@ class Brain():
         None
     """
     def begin(self):
-        #self.__write_motor(message_type="calibrate", message="C5-")
-        self.__write_speaker(message_type="speaker", message="blah, Robot 1 ready to party")
-        #For testing only:
-        self.__write_camera(message_type="automatic", message="1")
-        while self.__robot.power is True:
-            try:
-                self.__readConsole()
-                self.__report_status()
-                self.__read_motor()
-                self.__read_sensors()
-                self.__read_microphone()
-                self.__read_camera()
-                self.__update_behaviors()
-                self.__handle_behavior()
-            except Exception as e:
-                logger.write(str(datetime.datetime.now()) + " - Brain Error: " + str(e))
-                break
+        while True:
+            #self.__write_motor(message_type="calibrate", message="C5-")
+            self.__write_speaker(message_type="speaker", message="blah, Robot 1 ready to party")
+            #For testing only:
+            self.__write_camera(message_type="automatic", message="1")
+            while self.__robot.power is True:
+                try:
+                    self.__readConsole()
+                    self.__report_status()
+                    self.__read_motor()
+                    self.__read_sensors()
+                    self.__read_microphone()
+                    self.__read_camera()
+                    self.__update_behaviors()
+                    self.__handle_behavior()
+                except Exception as e:
+                    logger.write(str(datetime.datetime.now()) + " - Brain Error: " + str(e))
+                    break
         
-        self.__write_sensor(message_type="off", message="Powered Off")
-        self.__write_motor(message_type="off", message="turn off")
-        self.__write_microphone(message_type="off", message="turn off")
-        self.__write_camera(message_type="off", message="turn off")
-        self.__write_speaker(message_type="speaker", message="Damn. You. Humans.")
-        self.__write_speaker(message_type="off", message="Powered Off")
-        self.__write_notifier(message_type="off", message="Powered Off")
-        self.__write_uploader(message_type="off", message="Powered Off")
-        logger.write(str(datetime.datetime.now()) + " - Brain: Powered Off")
+            self.__write_sensor(message_type="off", message="Powered Off")
+            self.__write_motor(message_type="off", message="turn off")
+            self.__write_microphone(message_type="off", message="turn off")
+            self.__write_camera(message_type="off", message="turn off")
+            self.__write_speaker(message_type="speaker", message="Damn. You. Humans.")
+            self.__write_speaker(message_type="off", message="Powered Off")
+            self.__write_notifier(message_type="off", message="Powered Off")
+            self.__write_uploader(message_type="off", message="Powered Off")
+            logger.write(str(datetime.datetime.now()) + " - Brain: Powered Off")
 
 
     def __reset(self):
