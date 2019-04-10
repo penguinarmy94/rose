@@ -93,11 +93,11 @@ class Brain():
         #For testing only:
         self.__write_camera(message_type="automatic", message="1")
 
-        while True:
+        while self.__robot.power:
             print("!@#$%")
 
         print("12345")
-        
+
         while self.__robot.power:
             #if args.verbose:
             print("Running brain.begin() while power loop")
