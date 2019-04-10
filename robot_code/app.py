@@ -143,6 +143,9 @@ def initialize_threads(db, rob, off = True):
             brain_thread = runBrainThread(db=db,rob=rob,config=config)
             #motor_thread = runMotorThread()
 
+            if (args.console):
+                console_thread = runConsoleThread(config = config)
+                
             if 'mic' in devices:
                 microphone_thread = runMicrophoneThread(config)
                 print("Microphone")
@@ -162,6 +165,7 @@ def initialize_threads(db, rob, off = True):
                 microphone_thread.join()
 
             notification_manager_thread.join()
+            console_thread.join()
             speaker_thread.join()
             camera_thread.join()
             light_thread.join()
