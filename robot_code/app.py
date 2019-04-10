@@ -228,6 +228,7 @@ def init():
             print(rob.battery)
             if rob.battery <= 0:
                 rob.power = False
+                rob.charging = True
                 db.update_robot()
                 off = True
                 
