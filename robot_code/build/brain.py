@@ -95,17 +95,18 @@ class Brain():
 
         while self.__robot.power:
             print("!@#$%")
-            self.__report_status()
-            self.__read_motor()
-            self.__read_sensors()
-            #self.__read_microphone()
-            self.__read_camera()
-            self.__update_behaviors()
-            self.__handle_behavior()
-        except Exception as e:
-            print(e)
-            logger.write(str(datetime.datetime.now()) + " - Brain Error: " + str(e))
-            break
+            try:
+                self.__report_status()
+                self.__read_motor()
+                self.__read_sensors()
+                #self.__read_microphone()
+                self.__read_camera()
+                self.__update_behaviors()
+                self.__handle_behavior()
+            except Exception as e:
+                print(e)
+                logger.write(str(datetime.datetime.now()) + " - Brain Error: " + str(e))
+                break
 
         print("123456")
 
