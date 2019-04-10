@@ -101,7 +101,7 @@ class Brain():
                 self.__report_status()
                 self.__read_motor()
                 self.__read_sensors()
-                self.__read_microphone()
+                #self.__read_microphone()
                 self.__read_camera()
                 self.__update_behaviors()
                 self.__handle_behavior()
