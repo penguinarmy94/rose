@@ -44,7 +44,7 @@ with open(configFile, 'r') as jsonFile:
 if args.id:
     if args.id[-3:] == '.id':
         with open(args.id, 'r') as idFile:
-            args.id = idFile.read()
+            args.id = idFile.read().splitlines()[0]
 
     if args.verbose:
         print("Changing robot id to '{}'...".format(args.id))
