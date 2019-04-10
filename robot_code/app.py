@@ -179,19 +179,15 @@ def init():
     if initialized == 1:  
         db.create_subscriber_model()
 
+        print("Robot initializing"),
         while rob.isInitialized() is False:
-            print("Waiting for robot initialization")
+            print("."),
             time.sleep(0.2)
-            print("Waiting for robot initialization.")
-            time.sleep(0.2)
-            print("Waiting for robot initialization..")
-            time.sleep(0.2)
-            print("Waiting for robot initialization...")
-            time.sleep(0.2)
-
+        print("")
+        
         #option = input('0 - Start in Mobile Mode\n1 - Start in Single Use Mode\n2 - Start in Command Line Mode\n\nChoice: ')
         option = "0"
-        
+
         if option == "0":
             while True:
                 if rob.battery == 0:
