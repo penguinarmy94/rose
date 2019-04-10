@@ -81,8 +81,9 @@ class Brain():
     """
     def begin(self):
 
-        if args.verbose:
-            print("Entering brain.begin()")
+        #pass args?
+        #if args.verbose:
+        print("Entering brain.begin()")
 
         while True:
             if args.verbose:
@@ -93,8 +94,8 @@ class Brain():
             #For testing only:
             self.__write_camera(message_type="automatic", message="1")
             while self.__robot.power is True:
-                if args.verbose:
-                    print("Running app.begin() while power loop")
+                #if args.verbose:
+                print("Running app.begin() while power loop")
                 try:
                     self.__readConsole()
                     self.__report_status()
@@ -108,8 +109,8 @@ class Brain():
                     logger.write(str(datetime.datetime.now()) + " - Brain Error: " + str(e))
                     break
         
-            if args.verbose:
-                print("Exiting app.begin() while root.power is True loop")
+            #if args.verbose:
+            print("Exiting app.begin() while root.power is True loop")
 
             self.__write_sensor(message_type="off", message="Powered Off")
             self.__write_motor(message_type="off", message="turn off")
