@@ -99,6 +99,7 @@ class Brain():
             self.__read_motor()
             self.__read_sensors()
             #self.__read_microphone()
+            self.__read_camera()
 
         print("12345")
 
