@@ -88,7 +88,7 @@ def runSpeakerThread(config):
     speaker_thread.start()
     return speaker_thread
 
-def runLightThread(pin = 18):
+def runLightThread(pin = 13):
     light_object = light.Light(queues.brain_sensor_queue, pin)
     light_thread = Thread(target=functools.partial(light_object.run))
     light_thread.start()
@@ -157,7 +157,7 @@ def initialize_threads(db, rob, off = True):
 
             speaker_thread = runSpeakerThread(config = config)
             camera_thread = runCameraThread(pin=12, pos = 7, capture_path = config["capture_path"])
-            light_thread = runLightThread(pin=11)
+            light_thread = runLightThread(pin=13)
             log_thread = runLoggerThread()
             #uploader_thread = runUploader(config=config, rob=rob)
 
