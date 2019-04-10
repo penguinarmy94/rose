@@ -19,7 +19,7 @@ parser.add_argument("-l", "--loglevel", help = "Log level={none|info|debug}. Def
 parser.add_argument("-d", "--logdays", help = "Days to keep logs", action = "store", type=int, default = 1)
 parser.add_argument("-p", "--purge", help = "Remove all logs and captures", action = "store_true", default = False) 
 parser.add_argument("-c", "--console", help = "Show interactive console", action = "store_true", default = False)
-parser.add_argument("-i", "--id", help = "set robot id", action = "store")
+parser.add_argument("-i", "--id", help = "set robot id. If arg ends in .id, will read from file.", action = "store")
 parser.add_argument("-s", "--skip", help = "Skip enabling devices: mic, camera, speaker (separate devices with space)", nargs = "+")
 args = parser.parse_args()
 
@@ -189,8 +189,9 @@ def init():
             print("Waiting for robot initialization...")
             time.sleep(0.2)
 
-        option = input('0 - Start in Mobile Mode\n1 - Start in Single Use Mode\n2 - Start in Command Line Mode\n\nChoice: ')
-
+        #option = input('0 - Start in Mobile Mode\n1 - Start in Single Use Mode\n2 - Start in Command Line Mode\n\nChoice: ')
+        option = "0"
+        
         if option == "0":
             while True:
                 if rob.battery == 0:
