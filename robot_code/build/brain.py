@@ -234,6 +234,7 @@ class Brain():
 
     def __readConsole(self):
         print("Console read")
+        """
         try:
             time_stamp = str(datetime.datetime.now())
 
@@ -256,6 +257,7 @@ class Brain():
 
             print(time_stamp + ": " + error_message)
             logger.write(time_stamp + ": " + error_message)
+        """
 
     def __read_motor(self):
         try:
