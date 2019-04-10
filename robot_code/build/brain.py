@@ -96,7 +96,7 @@ class Brain():
             #if args.verbose:
             print("Running brain.begin() while power loop")
             try:
-                self.__readConsole()
+                #self.__readConsole()
                 self.__report_status()
                 self.__read_motor()
                 self.__read_sensors()
