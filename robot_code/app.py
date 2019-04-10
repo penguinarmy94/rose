@@ -155,7 +155,7 @@ def initialize_threads(db, rob, off = True):
 
             notification_manager_thread = runNotificationManager(rob=rob,config=config,initialized=True)
 
-            speaker_thread = runSpeakerThread()
+            speaker_thread = runSpeakerThread(config = config)
             camera_thread = runCameraThread(pin=12, pos = 7, capture_path = config["capture_path"])
             light_thread = runLightThread(pin=11)
             log_thread = runLoggerThread()

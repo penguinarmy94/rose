@@ -87,7 +87,7 @@ class Brain():
 
         while True:
             #if args.verbose:
-            print("Running app.begin() while TRUE loop")
+            print("Running brain.begin() while TRUE loop")
 
             #self.__write_motor(message_type="calibrate", message="C5-")
             self.__write_speaker(message_type="speaker", message="blah, Robot 1 ready to party")
@@ -95,7 +95,7 @@ class Brain():
             self.__write_camera(message_type="automatic", message="1")
             while self.__robot.power is True:
                 #if args.verbose:
-                print("Running app.begin() while power loop")
+                print("Running brain.begin() while power loop")
                 try:
                     self.__readConsole()
                     self.__report_status()
@@ -110,7 +110,7 @@ class Brain():
                     break
         
             #if args.verbose:
-            print("Exiting app.begin() while root.power is True loop")
+            print("Exiting brain.begin() while root.power is True loop")
 
             self.__write_sensor(message_type="off", message="Powered Off")
             self.__write_motor(message_type="off", message="turn off")
