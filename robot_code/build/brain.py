@@ -95,6 +95,7 @@ class Brain():
 
         while self.__robot.power:
             print("!@#$%")
+            self.__report_status()
 
         print("12345")
 
