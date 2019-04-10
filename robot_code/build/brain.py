@@ -96,6 +96,7 @@ class Brain():
             #if args.verbose:
             print("Running brain.begin() while power loop")
             try:
+                print("1: Power is {}".format(self.__robot.power))
                 #self.__readConsole()
                 self.__report_status()
                 self.__read_motor()
@@ -104,6 +105,7 @@ class Brain():
                 self.__read_camera()
                 self.__update_behaviors()
                 self.__handle_behavior()
+                print("2: Power is {}".format(self.__robot.power))
             except Exception as e:
                 logger.write(str(datetime.datetime.now()) + " - Brain Error: " + str(e))
                 break
