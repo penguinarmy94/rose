@@ -85,28 +85,29 @@ class Brain():
         #if args.verbose:
         print("Entering brain.begin()")
 
-        #if args.verbose:
-        print("Running brain.begin() while TRUE loop")
-
-        #self.__write_motor(message_type="calibrate", message="C5-")
-        self.__write_speaker(message_type="speaker", message="blah, Robot 1 ready to party")
-        #For testing only:
-        self.__write_camera(message_type="automatic", message="1")
-        while self.__robot.power is True:
+        while True:
             #if args.verbose:
-            print("Running brain.begin() while power loop")
-            try:
-                self.__readConsole()
-                self.__report_status()
-                self.__read_motor()
-                self.__read_sensors()
-                self.__read_microphone()
-                self.__read_camera()
-                self.__update_behaviors()
-                self.__handle_behavior()
-            except Exception as e:
-                logger.write(str(datetime.datetime.now()) + " - Brain Error: " + str(e))
-                break
+            print("Running brain.begin() while TRUE loop")
+
+            #self.__write_motor(message_type="calibrate", message="C5-")
+            self.__write_speaker(message_type="speaker", message="blah, Robot 1 ready to party")
+            #For testing only:
+            self.__write_camera(message_type="automatic", message="1")
+            while self.__robot.power is True:
+                #if args.verbose:
+                print("Running brain.begin() while power loop")
+                try:
+                    self.__readConsole()
+                    self.__report_status()
+                    self.__read_motor()
+                    self.__read_sensors()
+                    self.__read_microphone()
+                    self.__read_camera()
+                    self.__update_behaviors()
+                    self.__handle_behavior()
+                except Exception as e:
+                    logger.write(str(datetime.datetime.now()) + " - Brain Error: " + str(e))
+                    break
         
             #if args.verbose:
             print("Exiting brain.begin() while root.power is True loop")
