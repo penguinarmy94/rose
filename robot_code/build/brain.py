@@ -103,7 +103,7 @@ class Brain():
             self.__update_behaviors()
             self.__handle_behavior()
 
-        print("12345")
+        print("123456")
 
         while self.__robot.power:
             #if args.verbose:
