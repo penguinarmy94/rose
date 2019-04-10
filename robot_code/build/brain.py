@@ -97,6 +97,8 @@ class Brain():
             print("!@#$%")
             self.__report_status()
             self.__read_motor()
+            self.__read_sensors()
+            #self.__read_microphone()
 
         print("12345")
 
