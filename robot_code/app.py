@@ -11,6 +11,7 @@ appName = "ROSE Controller"
 appVersion = "1.0"
 logLevels = ["none", "info", "debug"]
 devices = ["mic", "camera", "speaker", "led"]
+configFile = "/home/pi/Desktop/Projects/rose/robot_code/config.json"
 
 parser = argparse.ArgumentParser("app.py")
 parser.add_argument("-v", "--verbose", help = "Print debug info to console", action = "store_true", default = False)
@@ -38,13 +39,13 @@ if (args.skip):
 #config_file = open('config.json')
 #config = json.load(config_file)
 #config_file.close()
-with open('config.json', 'r') as jsonFile:
+with open(configFile, 'r') as jsonFile:
     config = json.load(jsonFile)
 if args.id:
     if args.verbose:
         print("Changing robot id to '{}'...".format(args.id))
     config["robotid"] = args.id
-    with open('config.json', 'w') as jsonFile:
+    with open(configFile, 'w') as jsonFile:
         json.dump(config, jsonFile)
 
 path.insert(0, config["home_path"])
