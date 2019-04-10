@@ -32,6 +32,7 @@ class ProcessQueue():
             self.__queue.get()
 
 
+brain_console_queue = PeekableQueue()
 brain_motor_queue = PeekableQueue()
 brain_microphone_queue = PeekableQueue()
 logger_queue = PeekableQueue()
