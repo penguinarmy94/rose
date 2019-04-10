@@ -76,6 +76,12 @@ from build import light, camera, uploader
 if 'mic' in devices:
     import microphone
 
+def runConsoleThread():
+    console_object = console.Console(queues.brain_console_queue)
+    console_thread = Thread(target=functools.partial(console_object.run))
+    console_thread.start()
+    return console_thread
+
 def runSpeakerThread():
     speaker_object = speaker.Speaker(queues.brain_speaker_queue)
     speaker_thread = Thread(target=functools.partial(speaker_object.run))
@@ -186,6 +192,9 @@ def init():
         print("done!")
 
         #option = input('0 - Start in Mobile Mode\n1 - Start in Single Use Mode\n2 - Start in Command Line Mode\n\nChoice: ')
+        if (args.console):
+            print("\n{} Interactive Shell v{}\n".format(appName, appVersion))
+        
         option = "0"
 
         if option == "0":

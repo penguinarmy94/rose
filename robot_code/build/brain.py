@@ -4,6 +4,7 @@ from threading import Thread
 
 
 class Brain():
+    __consoleQueue = None
     __motorQueue = None
     __notifierQueue = None
     __microphoneQueue = None
@@ -41,6 +42,7 @@ class Brain():
                         path to image directory, path to app.py directory, etc.
     """
     def __init__(self, database = None, robot = None, config = None):
+        self.__consoleQueue = queues.brain_console_queue
         self.__motorQueue = queues.brain_motor_queue
         self.__notifierQueue = queues.brain_notifier_queue
         self.__microphoneQueue = queues.brain_microphone_queue
@@ -84,6 +86,7 @@ class Brain():
         self.__write_camera(message_type="automatic", message="1")
         while self.__robot.power is True:
             try:
+                self.__readConsole()
                 self.__report_status()
                 self.__read_motor()
                 self.__read_sensors()
@@ -214,6 +217,11 @@ class Brain():
         -----------
         None
     """
+
+
+    def __readConsole(self):
+        print("!")
+
     def __read_motor(self):
         try:
             time_stamp = str(datetime.datetime.now())
