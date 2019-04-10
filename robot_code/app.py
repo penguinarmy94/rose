@@ -183,6 +183,7 @@ def initialize_threads(db, rob, off = True):
             # Not sure why this is called here. Called when threads abort?
             if args.verbose:
                 print("goimg to turning off...")
+            
             logger.write("turn off")
             off = True
             print("Turned off!")
