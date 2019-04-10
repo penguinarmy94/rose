@@ -101,6 +101,7 @@ class Brain():
             #self.__read_microphone()
             self.__read_camera()
             self.__update_behaviors()
+            self.__handle_behavior()
 
         print("12345")
 
