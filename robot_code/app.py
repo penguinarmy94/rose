@@ -185,7 +185,7 @@ def init():
             time.sleep(0.2)
 
         #option = input('0 - Start in Mobile Mode\n1 - Start in Single Use Mode\n2 - Start in Command Line Mode\n\nChoice: ')
-        option = 0
+        option = "0"
 
         if option == "0":
             while True:
