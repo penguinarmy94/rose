@@ -229,7 +229,7 @@ def init():
             if rob.battery <= 0:
                 rob.power = False
                 db.update_robot()
-                #off = True
+                off = True
                 
             off = initialize_threads(db,rob,off)
         
