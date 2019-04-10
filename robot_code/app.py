@@ -196,7 +196,7 @@ def initialize_threads(db, rob, off = True):
             print(str(e))
     else:
         if args.verbose:
-        print("Exiting app.initialize_threads() from ELSE clause")
+            print("Exiting app.initialize_threads() from ELSE clause")
 
         return off
 
