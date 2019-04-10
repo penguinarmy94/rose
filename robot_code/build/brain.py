@@ -95,7 +95,9 @@ class Brain():
 
         while True:
             print("!@#$%")
-            
+
+        print("12345")
+        
         while self.__robot.power:
             #if args.verbose:
             print("Running brain.begin() while power loop")
