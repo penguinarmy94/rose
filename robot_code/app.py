@@ -225,7 +225,7 @@ def init():
             print("\n{} Interactive Shell v{}\n".format(appName, appVersion))
         
         while True:
-            if rob.battery == 0:
+            if rob.battery <= 0:
                 rob.power = False
                 db.update_robot()
                 off = True
