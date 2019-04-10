@@ -102,6 +102,10 @@ class Brain():
             self.__read_camera()
             self.__update_behaviors()
             self.__handle_behavior()
+        except Exception as e:
+            print(e)
+            logger.write(str(datetime.datetime.now()) + " - Brain Error: " + str(e))
+            break
 
         print("123456")
 
