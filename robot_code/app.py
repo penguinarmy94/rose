@@ -88,7 +88,7 @@ def runSpeakerThread(config):
     speaker_thread.start()
     return speaker_thread
 
-def runLightThread(pin = 14):
+def runLightThread(pin = 18):
     light_object = light.Light(queues.brain_sensor_queue, pin)
     light_thread = Thread(target=functools.partial(light_object.run))
     light_thread.start()
