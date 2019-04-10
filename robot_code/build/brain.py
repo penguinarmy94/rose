@@ -142,7 +142,7 @@ class Brain():
             success, wifi = status_manager.get_wifi_signal_strength()
             battery = status_manager.get_battery_level()
 
-            if battery == 0:
+            if battery <= 0:
                 self.__robot.power = False
                 self.__robot.battery = battery
                 self.__db.update_robot()
