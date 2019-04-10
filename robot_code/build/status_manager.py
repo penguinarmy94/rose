@@ -56,4 +56,4 @@ def get_battery_level():
         else:
             return battery_level
     else:
-        return 100#battery_level
+        return battery_level

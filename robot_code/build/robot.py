@@ -28,7 +28,7 @@ class Robot():
         if not map["userid"] == None:
             self.userid = map["userid"]
         if not map["battery"] == None:
-            self.battery = map["battery"]
+            self.battery = 100 #map["battery"]
         if not map["connection"] == None:
             self.connection = map["connection"]
         if not map["detect_behavior"] == None:
