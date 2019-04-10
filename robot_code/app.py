@@ -82,7 +82,7 @@ def runConsoleThread():
     console_thread.start()
     return console_thread
 
-def runSpeakerThread():
+def runSpeakerThread(config):
     speaker_object = speaker.Speaker(queues.brain_speaker_queue)
     speaker_thread = Thread(target=functools.partial(speaker_object.run))
     speaker_thread.start()
