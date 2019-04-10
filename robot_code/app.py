@@ -179,12 +179,12 @@ def init():
     if initialized == 1:  
         db.create_subscriber_model()
 
-        print("Robot initializing"),
+        print("Robot initializing", end='')
         while rob.isInitialized() is False:
-            print("."),
+            print(".", end='')
             time.sleep(0.2)
         print("")
-        
+
         #option = input('0 - Start in Mobile Mode\n1 - Start in Single Use Mode\n2 - Start in Command Line Mode\n\nChoice: ')
         option = "0"
 
