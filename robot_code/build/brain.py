@@ -248,6 +248,14 @@ class Brain():
                     logger.write(time_stamp + " - Camera to Brain: Brain Message Received -- " + message_packet["message"])
                 else:
                     return
+            else:
+                return
+        except Exception as e:
+            error_message = "Brain.__read_motor() Error: " + str(e)
+            time_stamp = str(datetime.datetime.now())
+
+            print(time_stamp + ": " + error_message)
+            logger.write(time_stamp + ": " + error_message)
 
     def __read_motor(self):
         try:
