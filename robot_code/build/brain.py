@@ -234,7 +234,7 @@ class Brain():
 
     def __readConsole(self):
         print("Console read")
-         try:
+        try:
             time_stamp = str(datetime.datetime.now())
 
             # Check that queue is not empty
