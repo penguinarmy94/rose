@@ -86,8 +86,8 @@ class Brain():
         print("Entering brain.begin()")
 
         while True:
-            if args.verbose:
-                print("Running app.begin() while TRUE loop")
+            #if args.verbose:
+            print("Running app.begin() while TRUE loop")
 
             #self.__write_motor(message_type="calibrate", message="C5-")
             self.__write_speaker(message_type="speaker", message="blah, Robot 1 ready to party")
