@@ -3,7 +3,7 @@ from . import logger
 
 class Relay():
     __pins = {}
-    __isOn = False
+    __isOn = {}}
     __queue = None
 
     def __init__(self, queue = None, pins = None):
@@ -50,16 +50,16 @@ class Relay():
                 return
         
     # Fix to keep state by device. See where else this is used        
-    def isOn(self):
-        return self.__isOn
+    def isOn(self, device):
+        return self.__isOn[device]
     
     def turnOn(self, device):
-        self.__isOn = True
+        self.__isOn[device] = True
         print(self.__pins[device])
         gpio.output(self.__pins[device], gpio.LOW)
         logger.write(str(datetime.datetime.now()) + " - " + device + ": Turned On")
     
     def turnOff(self, device):
-        self.__isOn = False
+        self.__isOn[device] = False
         gpio.output(self.__pins[device], gpio.HIGH)
         logger.write(str(datetime.datetime.now()) + " - " + device + ": Turned Off")
