@@ -83,8 +83,8 @@ class Brain():
     """
     def begin(self):
 
-            if self.__args.verbose:
-        print("Running brain.begin() while TRUE loop")
+        if self.__args.verbose:
+            print("Running brain.begin() while TRUE loop")
 
         #self.__write_motor(message_type="calibrate", message="C5-")
         self.__write_speaker(message_type="speaker", message="blah, Robot 1 ready to party")
@@ -485,8 +485,8 @@ class Brain():
             elif action_name in mapper["camera"]:
                 if action_name == "Record" and not self.__updated:
                     self.__write_motor(message_type="automatic", message=str(value))
-            elif action_name in mapper["light"]:
-                self.__write_sensor(message_type="light", message=value)
+            elif action_name in mapper["relay"]:
+                self.__write_sensor(message_type="relay", message=value)
             elif action_name in mapper["notification"]:
                 self.__write_notifier(message_type="notification_on", message=value)
             else:
