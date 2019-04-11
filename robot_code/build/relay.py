@@ -15,7 +15,7 @@ class Relay():
 
     def run(self):
         gpio.setmode(gpio.BOARD)
-        for devices, pin in self.__pins.item():
+        for devices, pin in self.__pins.items():
             gpio.setup(pin, gpio.OUT)
         #gpio.setup(self.__pin, gpio.OUT)
         self.turnOff()
