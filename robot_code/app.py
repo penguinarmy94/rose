@@ -148,7 +148,7 @@ def initialize_threads(db, rob, off = True):
         try:
             print(args)
             A=input()
-            brain_thread = runBrainThread(db=db,rob=rob,config=config,args=args)#{"verbose":args.verbose, "loglevel":args.loglevel})
+            brain_thread = runBrainThread(db=db,rob=rob,config=config,args=args)
             #motor_thread = runMotorThread()
 
             if (args.console):
