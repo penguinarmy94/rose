@@ -72,7 +72,7 @@ if args.purge:
 
 from build import brain, motor, robot, database
 from build import queues, logger, speaker, notification_manager
-from build import light, camera, uploader, console
+from build import relay, camera, uploader, console
 
 if 'mic' in devices:
     import microphone
