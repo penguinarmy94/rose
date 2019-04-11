@@ -44,9 +44,9 @@ class Relay():
             logger.write(str(datetime.datetime.now()) + " - Brain to Relay: " + message_packet["type"] + " Message Received -- " + message_packet["message"])
 
             if message_packet["message"] == "turn on":
-                self.turnOn(message_packet["type"])
+                self.turnOn(device = message_packet["type"])
             elif message_packet["message"] == "turn off":
-                self.turnOff(message_packet["type"])
+                self.turnOff(device = message_packet["type"])
             else:
                 return
         
