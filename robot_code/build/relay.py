@@ -15,10 +15,9 @@ class Relay():
 
     def run(self):
         gpio.setmode(gpio.BOARD)
-        for devices, pin in self.__pins.items():
+        for device, pin in self.__pins.items():
             gpio.setup(pin, gpio.OUT)
-        
-        self.turnOff()
+            self.turnOff(device)
 
         while True:
             if not self.__queue.empty():
@@ -30,7 +29,7 @@ class Relay():
                 continue
         
         gpio.cleanup()
-        logger.write(str(datetime.datetime.now()) + " - Light: Powered Off")
+        logger.write(str(datetime.datetime.now()) + " - Relay: Powered Off")
     
     def __read_queue(self):
         message_packet = json.loads(self.__queue.peek())
