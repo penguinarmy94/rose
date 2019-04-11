@@ -55,6 +55,7 @@ class Relay():
     
     def turnOn(self, device):
         self.__isOn = True
+        print((self.__pin[device])
         gpio.output(self.__pin[device], gpio.LOW)
         logger.write(str(datetime.datetime.now()) + " - " + device + ": Turned On")
     
