@@ -17,6 +17,7 @@ class Brain():
     __detect_behavior = None
     __state = None
     __config = {}
+    __args = {}
     __motorBusy = False
     __lightOn = False
     __cameraPosition = 7
