@@ -82,6 +82,9 @@ class Brain():
     """
     def begin(self):
 
+
+        print(self.__args)
+        A=input("A")
         #pass args?
         #if args.verbose:
         print("Entering brain.begin()")

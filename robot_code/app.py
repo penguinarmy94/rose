@@ -53,7 +53,7 @@ if args.id:
         json.dump(config, jsonFile)
 
 print(args)
-a = input("A")
+a = input("hit a key")
 path.insert(0, config["home_path"])
 
 # If --purge is set, delete all logs and capture data
