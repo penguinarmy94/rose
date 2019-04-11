@@ -71,7 +71,7 @@ class Camera():
             logger.write(str(datetime.datetime.now()) + " - Brain to Camera: Camera Message Received -- " + message_packet["message"] + " -- Moving to " + str(pos))
             self.__servo.start(self.__pos)
             #self.__servo.ChangeDutyCycle(pos)
-            sleep(1)
+            sleep(5)
             self.__servo.stop()
            
             return 1
