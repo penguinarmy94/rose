@@ -409,6 +409,7 @@ class Brain():
                     return
                     
                 self.__write_sensor(message_type="light", message=message)
+                self.__write_sensor(message_type="flasher", message=message)
             else:
                 return
         except Exception as e:
