@@ -52,8 +52,6 @@ if args.id:
     with open(configFile, 'w') as jsonFile:
         json.dump(config, jsonFile)
 
-print(args)
-a = input("hit a key")
 path.insert(0, config["home_path"])
 
 # If --purge is set, delete all logs and capture data
@@ -146,8 +144,6 @@ def initialize_threads(db, rob, off = True):
         off = False
         print("Turned on!")
         try:
-            print(args)
-            A=input()
             brain_thread = runBrainThread(db=db,rob=rob,config=config,args=args)
             #motor_thread = runMotorThread()
 

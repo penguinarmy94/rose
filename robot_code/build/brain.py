@@ -82,8 +82,8 @@ class Brain():
         None
     """
     def begin(self):
-        
-            if args.verbose:
+
+            if self.__args.verbose:
         print("Running brain.begin() while TRUE loop")
 
         #self.__write_motor(message_type="calibrate", message="C5-")
