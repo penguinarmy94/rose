@@ -52,6 +52,8 @@ if args.id:
     with open(configFile, 'w') as jsonFile:
         json.dump(config, jsonFile)
 
+print(args)
+a = input("A")
 path.insert(0, config["home_path"])
 
 # If --purge is set, delete all logs and capture data
