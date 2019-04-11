@@ -143,7 +143,7 @@ def initialize_threads(db, rob, off = True):
         off = False
         print("Turned on!")
         try:
-            brain_thread = runBrainThread(db=db,rob=rob,config=config, args = args)
+            brain_thread = runBrainThread(db=db,rob=rob,config=config)
             #motor_thread = runMotorThread()
 
             if (args.console):
@@ -180,7 +180,7 @@ def initialize_threads(db, rob, off = True):
 
             #uploader_thread.join()
 
-            # Not sure why this is called here. Called when threads abort?
+            # Only runs when all trhreads exited?
             if args.verbose:
                 print("goimg to turning off...")
             
