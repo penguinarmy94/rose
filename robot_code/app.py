@@ -143,7 +143,7 @@ def initialize_threads(db, rob, off = True):
         off = False
         print("Turned on!")
         try:
-            brain_thread = runBrainThread(db=db,rob=rob,config=config)
+            brain_thread = runBrainThread(db=db,rob=rob,config=config, args = args)
             #motor_thread = runMotorThread()
 
             if (args.console):

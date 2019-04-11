@@ -41,7 +41,7 @@ class Brain():
                         A dictionary that has all of the constants for the application, such as
                         path to image directory, path to app.py directory, etc.
     """
-    def __init__(self, database = None, robot = None, config = None):
+    def __init__(self, database = None, robot = None, config = None, args = None):
         self.__consoleQueue = queues.brain_console_queue
         self.__motorQueue = queues.brain_motor_queue
         self.__notifierQueue = queues.brain_notifier_queue
@@ -93,8 +93,9 @@ class Brain():
         #For testing only:
         self.__write_camera(message_type="automatic", message="1")
 
-        while self.__robot.power:
-            print("Brain.Begin: Entering WHILE [Power On]")
+        #if args.verbose:
+        print("Brain.Begin: Entering WHILE [Power On]")
+        while self.__robot.power:            
             try:
                 #self.__readConsole()
                 self.__report_status()
