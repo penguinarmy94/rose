@@ -1,7 +1,7 @@
 import json, datetime, RPi.GPIO as gpio
 from . import logger
 
-class Light():
+class Relay():
     __pin = None
     __isOn = False
     __queue = None
