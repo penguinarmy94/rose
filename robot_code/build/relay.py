@@ -2,20 +2,22 @@ import json, datetime, RPi.GPIO as gpio
 from . import logger
 
 class Relay():
-    __pin = None
+    __pins = {}}
     __isOn = False
     __queue = None
 
-    def __init__(self, queue = None, pin = None):
-        if queue and pin:
-            self.__pin = pin
+    def __init__(self, queue = None, pins = None):
+        if queue and pins:
+            self.__pins = pins
             self.__queue = queue
         else:
             raise TypeError("Queue or pin number are not initialized")
 
     def run(self):
         gpio.setmode(gpio.BOARD)
-        gpio.setup(self.__pin, gpio.OUT)
+        for devices,pin in self.__pins:
+            gpio.setup(pin, gpio.OUT)
+        #gpio.setup(self.__pin, gpio.OUT)
         self.turnOff()
 
         while True:

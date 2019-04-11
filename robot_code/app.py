@@ -89,8 +89,8 @@ def runSpeakerThread(config):
     speaker_thread.start()
     return speaker_thread
 
-def runRelayThread(pin = 13):
-    relay_object = relay.Relay(queues.brain_sensor_queue, pin)
+def runRelayThread(pins):
+    relay_object = relay.Relay(queues.brain_sensor_queue, pins)
     relay_thread = Thread(target=functools.partial(relay_object.run))
     relay_thread.start()
     return relay_thread
@@ -158,7 +158,7 @@ def initialize_threads(db, rob, off = True):
 
             speaker_thread = runSpeakerThread(config = config)
             camera_thread = runCameraThread(pin=12, pos = 7, capture_path = config["capture_path"])
-            relay_thread = runRelayThread(pin=13)
+            relay_thread = runRelayThread(pins = relay_pins)
             log_thread = runLoggerThread()
             #uploader_thread = runUploader(config=config, rob=rob)
 
