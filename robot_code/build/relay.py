@@ -3,7 +3,7 @@ from . import logger
 
 class Relay():
     __pins = {}
-    __isOn = {}}
+    __isOn = {}
     __queue = None
 
     def __init__(self, queue = None, pins = None):
