@@ -58,6 +58,7 @@ class Brain():
         self.__robot = robot
         self.__state = "idle"
         self.__config = config
+        self.__args = args
 
         self.__update_behaviors()
 
