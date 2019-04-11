@@ -67,12 +67,11 @@ class Camera():
 
         if message_packet["type"] == "position":
             
-            pos = self.__pos + 2 * float(message_packet["message"])
+            pos = self.__pos + 4 * float(message_packet["message"])
             logger.write(str(datetime.datetime.now()) + " - Brain to Camera: Camera Message Received -- " + message_packet["message"] + " -- Moving to " + str(pos))
    
             self.__servo.ChangeDutyCycle(pos)
-            sleep(2)
-            gpio.output(self.__pin, False)
+            sleep(1)
             self.__servo.ChangeDutyCycle(0)
            
             return 1
