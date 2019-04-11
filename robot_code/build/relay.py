@@ -2,7 +2,7 @@ import json, datetime, RPi.GPIO as gpio
 from . import logger
 
 class Relay():
-    __pins = {}}
+    __pins = {}
     __isOn = False
     __queue = None
 
