@@ -73,7 +73,7 @@ class Camera():
             #self.__servo.ChangeDutyCycle(pos)
 
             self.__servo.start(0)
-            lepp(.5)
+            sleep(.5)
             gpio.output(self.__pin, True)
             self.__servo.ChangeDutyCycle(pos)
             sleep(2)
