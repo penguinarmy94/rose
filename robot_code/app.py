@@ -90,10 +90,10 @@ def runSpeakerThread(config):
     return speaker_thread
 
 def runRelayThread(pin = 13):
-    light_object = light.Light(queues.brain_sensor_queue, pin)
-    light_thread = Thread(target=functools.partial(light_object.run))
-    light_thread.start()
-    return light_thread
+    relay_object = relay.Relay(queues.brain_sensor_queue, pin)
+    relay_thread = Thread(target=functools.partial(relay_object.run))
+    relay_thread.start()
+    return relay_thread
 
 def runCameraThread(pin = 12, pos = 7, capture_path = config["capture_path"]):
     camera_object = camera.Camera(queues.brain_camera_queue, pin, pos, capture_path)
