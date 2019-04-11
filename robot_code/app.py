@@ -11,6 +11,7 @@ appVersion = "1.0"
 logLevels = ["none", "info", "debug"]
 devices = ["mic", "camera", "speaker", "led"]
 configFile = "/home/pi/Desktop/Projects/rose/robot_code/config.json"
+relay_pins = {"flasher":11, "light":13}
 
 parser = argparse.ArgumentParser("app.py")
 parser.add_argument("-v", "--verbose", help = "Print debug info to console", action = "store_true", default = False)
@@ -88,7 +89,7 @@ def runSpeakerThread(config):
     speaker_thread.start()
     return speaker_thread
 
-def runLightThread(pin = 13):
+def runRelayThread(pin = 13):
     light_object = light.Light(queues.brain_sensor_queue, pin)
     light_thread = Thread(target=functools.partial(light_object.run))
     light_thread.start()
@@ -157,7 +158,7 @@ def initialize_threads(db, rob, off = True):
 
             speaker_thread = runSpeakerThread(config = config)
             camera_thread = runCameraThread(pin=12, pos = 7, capture_path = config["capture_path"])
-            light_thread = runLightThread(pin=13)
+            relay_thread = runRelayThread(pin=13)
             log_thread = runLoggerThread()
             #uploader_thread = runUploader(config=config, rob=rob)
 
@@ -176,7 +177,7 @@ def initialize_threads(db, rob, off = True):
             camera_thread.join()
             if args.verbose:
                 print("light_thread joined...")
-            light_thread.join()
+            relay_thread.join()
 
             #uploader_thread.join()
 

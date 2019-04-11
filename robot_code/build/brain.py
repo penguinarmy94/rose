@@ -94,8 +94,8 @@ class Brain():
         #For testing only:
         self.__write_camera(message_type="automatic", message="1")
 
-        #if args.verbose:
-        print("Brain.Begin: Entering WHILE [Power On]")
+        if args.verbose:
+            print("Brain.Begin: Entering WHILE [Power On]")
         while self.__robot.power:            
             try:
                 #self.__readConsole()
@@ -111,11 +111,8 @@ class Brain():
                 logger.write(str(datetime.datetime.now()) + " - Brain Error: " + str(e))
                 break
 
-        print("123456")
-
-        
-        #if args.verbose:
-        print("Brain.Begin: Exiting WHILE [Power Off]")
+        if args.verbose:
+            print("Brain.Begin: Exiting WHILE [Power Off]")
 
         self.__write_sensor(message_type="off", message="Powered Off")
         self.__write_motor(message_type="off", message="turn off")
