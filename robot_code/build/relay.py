@@ -11,13 +11,13 @@ class Relay():
             self.__pins = pins
             self.__queue = queue
         else:
-            raise TypeError("Queue or pin number are not initialized")
+            raise TypeError("Queue or pins are not initialized")
 
     def run(self):
         gpio.setmode(gpio.BOARD)
         for devices, pin in self.__pins.items():
             gpio.setup(pin, gpio.OUT)
-        #gpio.setup(self.__pin, gpio.OUT)
+        
         self.turnOff()
 
         while True:
@@ -35,30 +35,31 @@ class Relay():
     def __read_queue(self):
         message_packet = json.loads(self.__queue.peek())
 
-        if message_packet["type"] == "light":
+        if message_packet["type"] == "off":
             message_packet = json.loads(self.__queue.get())
-            logger.write(str(datetime.datetime.now()) + " - Brain to Light: Message Received -- " + message_packet["message"])
+            logger.write(str(datetime.datetime.now()) + " - Brain to Relay: Off Message Received -- " + message_packet["message"])
+            return 2
+        elif message_packet["type"] in self.__pins:
+            message_packet = json.loads(self.__queue.get())
+            logger.write(str(datetime.datetime.now()) + " - Brain to Relay: " + message_packet["type"] + " Message Received -- " + message_packet["message"])
 
             if message_packet["message"] == "turn on":
-                self.turnOn()
+                self.turnOn(message_packet["type"])
             elif message_packet["message"] == "turn off":
-                self.turnOff()
+                self.turnOff(message_packet["type"])
             else:
                 return
-        elif message_packet["type"] == "off":
-            message_packet = json.loads(self.__queue.get())
-            logger.write(str(datetime.datetime.now()) + " - Brain to Light: Off Message Received -- " + message_packet["message"])
-            return 2
-    
+        
+    # Fix to keep state by device. See where else this is used        
     def isOn(self):
         return self.__isOn
     
-    def turnOn(self):
+    def turnOn(self, device):
         self.__isOn = True
-        gpio.output(self.__pin, gpio.LOW)
-        logger.write(str(datetime.datetime.now()) + " - Light: Turned On")
+        gpio.output(self.__pin[device], gpio.LOW)
+        logger.write(str(datetime.datetime.now()) + " - " + device +": Turned On")
     
-    def turnOff(self):
+    def turnOff(self, device):
         self.__isOn = False
-        gpio.output(self.__pin, gpio.HIGH)
-        logger.write(str(datetime.datetime.now()) + " - Light: Turned Off")
+        gpio.output(self.__pin[device], gpio.HIGH)
+        logger.write(str(datetime.datetime.now()) + " - " + device + : Turned Off")
