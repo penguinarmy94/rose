@@ -116,7 +116,7 @@ def runMicrophoneThread(config):
     return microphone_thread
 
 def runBrainThread(db, rob, config, args):
-    brain_object = brain.Brain(db, rob, config)
+    brain_object = brain.Brain(db, rob, config, args)
     brain_thread = Thread(target=functools.partial(brain_object.begin))
     brain_thread.start()
     return brain_thread
@@ -148,7 +148,7 @@ def initialize_threads(db, rob, off = True):
         try:
             print(args)
             A=input()
-            brain_thread = runBrainThread(db=db,rob=rob,config=config,args=config)#{"verbose":args.verbose, "loglevel":args.loglevel})
+            brain_thread = runBrainThread(db=db,rob=rob,config=config,args=args)#{"verbose":args.verbose, "loglevel":args.loglevel})
             #motor_thread = runMotorThread()
 
             if (args.console):
