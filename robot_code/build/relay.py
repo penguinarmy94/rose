@@ -57,9 +57,9 @@ class Relay():
     def turnOn(self, device):
         self.__isOn = True
         gpio.output(self.__pin[device], gpio.LOW)
-        logger.write(str(datetime.datetime.now()) + " - " + device +": Turned On")
+        logger.write(str(datetime.datetime.now()) + " - " + device + ": Turned On")
     
     def turnOff(self, device):
         self.__isOn = False
         gpio.output(self.__pin[device], gpio.HIGH)
-        logger.write(str(datetime.datetime.now()) + " - " + device + : Turned Off")
+        logger.write(str(datetime.datetime.now()) + " - " + device + ": Turned Off")
