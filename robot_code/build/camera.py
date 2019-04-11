@@ -30,7 +30,7 @@ class Camera():
         gpio.setmode(gpio.BOARD)
         gpio.setup(self.__pin, gpio.OUT)
         self.__servo = gpio.PWM(self.__pin, 50)
-        #self.__servo.start(self.__pos)
+        self.__servo.start(0) #self.__pos)
         self.__camera = PiCamera()
         self.__camera.start_preview(fullscreen = False, window = (100, 20, 640, 480))
         
@@ -69,10 +69,14 @@ class Camera():
             
             pos = self.__pos + 3 * float(message_packet["message"])
             logger.write(str(datetime.datetime.now()) + " - Brain to Camera: Camera Message Received -- " + message_packet["message"] + " -- Moving to " + str(pos))
-            self.__servo.start(self.__pos)
+            #self.__servo.start(self.__pos)
             #self.__servo.ChangeDutyCycle(pos)
-            sleep(5)
-            self.__servo.stop()
+
+            gpio.output(self.__pin, True)
+            self.__servo.ChangeDutyCycle(pos)
+            sleep(2)
+            gpio.output(self.__pin, False)
+            self.__servo.ChangeDutyCycle(pos)
            
             return 1
 
