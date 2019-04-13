@@ -11,6 +11,7 @@ import io.invertase.firebase.storage.RNFirebaseStoragePackage;
 import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
 import io.invertase.firebase.auth.RNFirebaseAuthPackage;
 import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
+import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -33,7 +34,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-              new SplashScreenReactPackage(),
+          new SplashScreenReactPackage(),
           new VectorIconsPackage(),
           new RNFirebasePackage(),
           new RNFirebaseFirestorePackage(),
@@ -42,7 +43,8 @@ public class MainApplication extends Application implements ReactApplication {
           new RNFirebaseMessagingPackage(),
           new RNFirebaseNotificationsPackage(),
           new RNFirebaseAuthPackage(),
-          new ReactVideoPackage()
+          new ReactVideoPackage(),
+          new AsyncStoragePackage()
       );
     }
 

@@ -163,6 +163,7 @@ dependencies {
     implementation "com.google.firebase:firebase-firestore:17.1.5"
     implementation "com.google.firebase:firebase-auth:16.1.0"
     implementation "com.google.firebase:firebase-storage:16.0.5"
+    implementation project(':@react-native-community_async-storage')
     implementation project(':react-native-video')
 }
 

@@ -12,6 +12,7 @@ import Session from '../controllers/Session';
 import {config} from '../assets/config/config';
 import User from '../controllers/User';
 import Loader from '../helpers/Loader';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const logo = require("../assets/images/logo.png");
 const title = "R.O.S.E";
@@ -24,8 +25,30 @@ export default class LoginScreen extends Component {
     this.state = { 
       username: "", 
       password: "",
-      authenticating: false
+      authenticating: false,
+      cache: true
     };
+
+    this.getData = async () => {
+      try {
+        const value = await AsyncStorage.getItem('@username')
+        if(value !== null) {
+          this.setState({username: value});
+        }
+      } catch(e) {
+        alert(e);
+      }
+    }
+
+    this.storeData = async () => {
+      try {
+        await AsyncStorage.setItem('@username', this.state.username);
+      } catch (e) {
+        alert(e)
+      }
+    }
+
+    this.getData();
 
     this.errorCodes = config.errorCodes;
 
@@ -51,6 +74,7 @@ export default class LoginScreen extends Component {
 
     this.authState = firebase.auth().onAuthStateChanged((user) => {
       if(user) {
+        this.storeData();
         let session = new Session(this.state.username);
     
         session.createUser().then((user) => {
@@ -146,7 +170,7 @@ export default class LoginScreen extends Component {
               <Image source={logo} />
             </View>
             <Text style={styles.title}>{title}</Text>
-            <FormInput placeholder="Email" 
+            <FormInput placeholder={this.state.username? this.state.username : "Email"}
                 ref={input => this.usernameField = input}
                 onChangeText={this.usernameChange} 
                 value={this.state.username} 
