@@ -1,7 +1,7 @@
 import Database from './Database';
 import User from './User';
 
-class Session {
+export default class Session {
 
     constructor(user_id) {
         this._db = new Database();
@@ -103,5 +103,3 @@ class Session {
         return this._db.updateUser(ref, obj);
     }
 }
-
-export default Session;

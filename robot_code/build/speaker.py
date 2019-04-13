@@ -9,6 +9,7 @@ class Speaker():
     __isInMoodState = False
 
     def __init__(self, queue = None, config = None):
+        random.seed(datetime.datetime.now().second)
         self.__spQueue = queue
         self.__config = config
         self.__player = pyttsx3.init()

@@ -15,6 +15,15 @@
     "capture_path": "/home/pi/Desktop/Projects/rose/captures/",
     "detect_interval": 2,
     "moods": {
-         "happy": ["I hope you are having a nice day", "Hooray!", "If you are happy and you know it clap your hands"]
+         "happy": [
+             "I hope you are having a nice day", 
+             "Hooray!", 
+             "If you are happy and you know it clap your hands"
+        ],
+        "sad": [
+            "This day is making me sad",
+            "I feel like crying",
+            "I hope I feel better soon"
+        ]
     }
 }
