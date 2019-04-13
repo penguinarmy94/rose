@@ -23,7 +23,9 @@ class Microphone():
                 if result == 2:
                     break
                 else:
-                    continue
+                    file_path = self.__record()
+            
+                    self.__classify(file_path)
             else:
                 #run the rest of the logic
                 #start microphone, record()
