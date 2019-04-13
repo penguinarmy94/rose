@@ -75,7 +75,7 @@ from build import queues, logger, speaker, notification_manager
 from build import relay, camera, uploader, console
 
 if 'mic' in devices:
-    import microphone
+    from build import microphone
 
 def runConsoleThread():
     console_object = console.Console(queues.brain_console_queue)
@@ -113,9 +113,9 @@ def runMicrophoneThread(config):
     microphone_thread.start()
     return microphone_thread
 
-def runBrainThread(db, rob, config, args):
+def runBrainThread(db, rob, config):
     brain_object = brain.Brain(db, rob, config, args)
-    brain_thread = Thread(target=functools.partial(brain_object.begin))
+    brain_thread = Thread(target=functools.partial(brain_object.begin), args=(args.verbose))
     brain_thread.start()
     return brain_thread
 
@@ -153,33 +153,44 @@ def initialize_threads(db, rob, off = True):
             if 'mic' in devices:
                 microphone_thread = runMicrophoneThread(config)
                 print("Microphone")
-
-            notification_manager_thread = runNotificationManager(rob=rob,config=config,initialized=True)
-
-            speaker_thread = runSpeakerThread(config = config)
-            camera_thread = runCameraThread(pin=13, pos = 7, capture_path = config["capture_path"])
-            relay_thread = runRelayThread(pins = relay_pins)
+            if 'motor' in devices:
+                motor_thread = runMotorThread()
+            if 'notifier' in devices:
+                notification_manager_thread = runNotificationManager(rob=rob,config=config,initialized=True)
+            if 'speaker' in devices:
+                speaker_thread = runSpeakerThread(config = config)
+            if 'cam' in devices:
+                camera_thread = runCameraThread(pin=13, pos = 7, capture_path = config["capture_path"])
+            if 'relay' in devices:
+                relay_thread = runRelayThread(pins = relay_pins)
+            if 'uploader' in devices:
+                uploader_thread = runUploader(config=config, rob=rob)
+            
             log_thread = runLoggerThread()
-            #uploader_thread = runUploader(config=config, rob=rob)
 
             brain_thread.join()
-            #motor_thread.join()
 
             if 'mic' in devices:
                 microphone_thread.join()
-
-            notification_manager_thread.join()
+                print("Microphone")
+            if 'motor' in devices:
+                motor_thread.join()
+            if 'notifier' in devices:
+                notification_manager_thread.join()
+            if 'speaker' in devices:
+                speaker_thread.join()
+            if 'cam' in devices:
+                camera_thread.join()
+            if 'relay' in devices:
+                relay_thread.join()
+            if 'uploader' in devices:
+                uploader_thread.join()
             
             if (args.console):
                 console_thread.join()
             
-            speaker_thread.join()
-            camera_thread.join()
             if args.verbose:
                 print("light_thread joined...")
-            relay_thread.join()
-
-            #uploader_thread.join()
 
             # Only runs when all trhreads exited?
             if args.verbose:
