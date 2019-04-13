@@ -102,6 +102,7 @@ def setCMD():
     parser.add_argument("-a","--all", help="Set all of the modules", action="store_true")
     parser.add_argument("-q","--no_log", help="Remove all file logging", action="store_true")
     parser.add_argument("-v", "--verbose", help="Print Statements Activated")
+    parser.add_argument("-M", "--mobile", help="Continues to run in a loop while powered on/off", action="store_true")
 
     args = parser.parse_args()
     
