@@ -11,7 +11,7 @@ appVersion = "1.0"
 logLevels = ["none", "info", "debug"]
 devices = ["mic", "camera", "speaker", "led"]
 configFile = "/home/pi/Desktop/Projects/rose/robot_code/config.json"
-relay_pins = {"flasher":11, "light":13}
+relay_pins = {"flasher":11, "light":15}
 
 parser = argparse.ArgumentParser("app.py")
 parser.add_argument("-v", "--verbose", help = "Print debug info to console", action = "store_true", default = False)
