@@ -47,9 +47,9 @@ def runMicrophoneThread(config):
     microphone_thread.start()
     return microphone_thread
 
-def runBrainThread(db, rob, config):
+def runBrainThread(db, rob, config, args):
     from build import brain
-    brain_object = brain.Brain(db, rob, config)
+    brain_object = brain.Brain(db, rob, config, args)
     brain_thread = Thread(target=functools.partial(brain_object.begin))
     brain_thread.start()
     return brain_thread
@@ -101,6 +101,7 @@ def setCMD():
     parser.add_argument("-l","--light", help="Set the light module", action="store_true")
     parser.add_argument("-a","--all", help="Set all of the modules", action="store_true")
     parser.add_argument("-q","--no_log", help="Remove all file logging", action="store_true")
+    parser.add_argument("-v", "--verbose", help="Print Statements Activated")
 
     args = parser.parse_args()
     
@@ -121,7 +122,7 @@ def parseArgs(args, db, rob, config):
                 runLoggerThread()
         else:   
             threads = []
-            threads.append(runBrainThread(db=db, rob=rob, config=config))
+            threads.append(runBrainThread(db=db, rob=rob, config=config, args=args))
 
             if args.motor:
                 threads.append(runMotorThread())
