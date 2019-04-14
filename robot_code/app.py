@@ -356,13 +356,20 @@ def initialize_threads2(db, rob, off = True):
             command = command.strip()
 
             if (command == "help"):
-                print("Available commands:")
+                print("Available commands:\n")
                 print("help         : This help screen")
                 print("stop         : Turn off the ROSEbot")
                 print("start        : Turn on the ROSEbot")
+                print("command=DEVICE.TYPE.MESSAGE:")
+                print("               Send a message to a device. Valid options are:")
+                print("               - camera.[position|manual|automatic|off].[123||interval|]")
                 print("status       : Display ROSEbot status")
+                print("config [value=VALUE]:")
+                print("               Show or set config value.")
+                print("log [filter=VALUE]:")
+                print("               Show the log. Filter options: [HEAD|TAIL]:#, FILTER:TEXT")
                 print("prompt=VALUE : Define a new command line prompt using text and placeholders.")
-                print("              Valid placeholders are: [ID],[STATUS],[YEAR],[MONTH],[DAY],[HOUR],[MINUTE]")
+                print("               Valid placeholders are: [ID],[STATUS],[YEAR],[MONTH],[DAY],[HOUR],[MINUTE]")
                 print("exit         : Stop ROSE controller")
                     
             if (command == "stop"):
