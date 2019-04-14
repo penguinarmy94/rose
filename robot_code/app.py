@@ -226,12 +226,15 @@ def init():
     if initialized == 1:  
         db.create_subscriber_model()
 
-        print("Robot initializing", end='', flush = True)
+        #print("Robot initializing", end='', flush = True)
+        #while rob.isInitialized() is False:
+        #    print(".", end='', flush = True)
+        #    time.sleep(0.2)
+        #print("done!")
+        iCounter = 0
         while rob.isInitialized() is False:
-            print(".", end='', flush = True)
-            time.sleep(0.2)
-        print("done!")
-        
+            print"Robot initializing", end='\r', flush = True)
+
         while True:
             if rob.battery <= 0:
                 rob.power = False
