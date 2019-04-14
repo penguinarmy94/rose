@@ -404,7 +404,7 @@ def initialize_threads2(db, rob, off = True):
                     json.dump(tmpConfig, jsonFile)
 
             if (command == 'config'):
-                for key, value in config.iteritems():
+                for key, value in config.items():
                     print(key + " : " + value)
                 
             if (command == "exit"):
