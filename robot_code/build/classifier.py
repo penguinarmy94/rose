@@ -5,7 +5,8 @@ from pyAudioAnalysis import audioTrainTest as aT
 class Classifier:
     __threshold = 0.70
     __config = None
-    __model = "randomforestModel"
+    __model = "svmModel"
+    __type = "svm"
 
     def __init__(self, config = None):
         try:
@@ -18,7 +19,7 @@ class Classifier:
 
     #Train and Test Split here
     def classify(self, file_path):
-        result =  aT.fileClassification(file_path , self.__model,"randomforest")
+        result =  aT.fileClassification(file_path , self.__model,self.__type)
         print("Classification Success")
     
         #check the gunshot by parsing the result tuple
