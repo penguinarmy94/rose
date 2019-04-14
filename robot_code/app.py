@@ -349,7 +349,7 @@ def initialize_threads2(db, rob, off = True):
 
             command = input(curr_prompt).strip()
             value = ""
-            #arglist = []
+            arglist = []
             try:
                 command, value = command.split("=")
             except ValueError:
@@ -360,7 +360,7 @@ def initialize_threads2(db, rob, off = True):
             except ValueError:
                 pass
 
-            print("{}\n{}\n{}\n".format(command,arglist,value))
+            print("Command: {}\nrgs: {}\nValue: {}\n".format(command,arglist,value))
 
             if (command == "help"):
                 print("\nAvailable commands:\n")
