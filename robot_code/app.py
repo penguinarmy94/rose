@@ -229,7 +229,7 @@ def init():
 
         iCounter = 0
         iMaxCounter = 4
-        iTimeoutCounter = 10
+        iTimeoutCounter = 100
 
         while iCounter < iTimeoutCounter:
 	        print("Robot initializing" + "." * (iCounter % iMaxCounter) + " " * iMaxCounter, end='\r', flush = True)
