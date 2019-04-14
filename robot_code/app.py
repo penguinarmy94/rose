@@ -364,7 +364,7 @@ def initialize_threads2(db, rob, off = True):
                 print("               Send a message to a device. Valid options are:")
                 print("               - camera.[position|manual|automatic|off].[123||interval|]")
                 print("status       : Display ROSEbot status")
-                print("config [value=VALUE]:")
+                print("config=KEY,VALUE:")
                 print("               Show or set config value.")
                 print("log YYYY-MM-DD [filter=VALUE]:")
                 print("               Show the log. Filter options: [HEAD|TAIL]:#, FILTER:TEXT")
@@ -404,9 +404,28 @@ def initialize_threads2(db, rob, off = True):
                     json.dump(tmpConfig, jsonFile)
 
             if (command == 'config'):
-                for key, value in config.items():
-                    print("{} : {}".format(key, value))
-                
+                if value == "":
+                    int iCounter = 1
+                    for key, value in config.items():
+                        print("[{}] {} : {}".format(iCounter, key, value))
+                        iCounter += 1
+                else:
+                    try:
+                        key,value = value.split(',')
+                        
+                        with open(configFile, 'r') as jsonFile:
+                        tmpConfig = json.load(jsonFile)
+
+                        config[key] = value                
+                        tmpConfig[key] = value
+
+                        with open(configFile, 'w') as jsonFile:
+                            json.dump(tmpConfig, jsonFile)
+
+                    except ValueError:
+                        print("Missing VALUE for {}.".format(key))
+
+ 
             if (command == "exit"):
                 if rob.power:
                     print("Please stop robot before exiting.")
