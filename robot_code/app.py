@@ -356,8 +356,8 @@ def initialize_threads2(db, rob, off = True):
             command = command.strip()
 
             if (command == "help"):
-                print("Available commands:\n")
-                print("help         : This help screen")
+                print("\nAvailable commands:\n")
+                print("help [TOPIC] : This help screen or detailed help on a specific command")
                 print("stop         : Turn off the ROSEbot")
                 print("start        : Turn on the ROSEbot")
                 print("command=DEVICE.TYPE.MESSAGE:")
@@ -366,11 +366,11 @@ def initialize_threads2(db, rob, off = True):
                 print("status       : Display ROSEbot status")
                 print("config [value=VALUE]:")
                 print("               Show or set config value.")
-                print("log [filter=VALUE]:")
+                print("log YYYY-MM-DD [filter=VALUE]:")
                 print("               Show the log. Filter options: [HEAD|TAIL]:#, FILTER:TEXT")
                 print("prompt=VALUE : Define a new command line prompt using text and placeholders.")
                 print("               Valid placeholders are: [ID],[STATUS],[YEAR],[MONTH],[DAY],[HOUR],[MINUTE]")
-                print("exit         : Stop ROSE controller")
+                print("exit         : Stop ROSE controller\n")
                     
             if (command == "stop"):
                 if not rob.power:
@@ -403,6 +403,9 @@ def initialize_threads2(db, rob, off = True):
                 with open(configFile, 'w') as jsonFile:
                     json.dump(tmpConfig, jsonFile)
 
+            if (command == 'config'):
+                for key, value in config:
+                    print(key + " : " + value)
                 
             if (command == "exit"):
                 if rob.power:
