@@ -4,7 +4,6 @@ from threading import Thread
 
 
 class Brain():
-    __consoleQueue = None
     __motorQueue = None
     __notifierQueue = None
     __microphoneQueue = None
@@ -43,7 +42,6 @@ class Brain():
                         path to image directory, path to app.py directory, etc.
     """
     def __init__(self, database = None, robot = None, config = None, args = None):
-        self.__consoleQueue = queues.brain_console_queue
         self.__motorQueue = queues.brain_motor_queue
         self.__notifierQueue = queues.brain_notifier_queue
         self.__microphoneQueue = queues.brain_microphone_queue
