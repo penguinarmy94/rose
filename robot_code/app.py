@@ -347,7 +347,8 @@ def initialize_threads2(db, rob, off = True):
             curr_prompt = prompt.replace('[HOUR]', '{0:%H}'.format(datetime.datetime.now()))
             curr_prompt = prompt.replace('[MINUTE]', '{0:%M}'.format(datetime.datetime.now())
 
-            command = input('>') #curr_prompt).strip()
+            print(curr_prompt)
+            command = 'help' #input('>') #curr_prompt).strip()
             value = ""
             try:
                 command, value = command.split("=")
