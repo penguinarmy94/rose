@@ -340,7 +340,7 @@ def initialize_threads2(db, rob, off = True):
             print("Robot has been turned off.")
               
         if args.console:
-            curr_prompt = prompt #.replace('[STATUS]', 'ON' if rob.power else 'OFF')
+            curr_prompt = prompt.replace('[STATUS]', 'ON' if rob.power else 'OFF')
             #curr_prompt = prompt.replace('[YEAR]', '{0:%Y}'.format(datetime.datetime.now()))
             #curr_prompt = prompt.replace('[MONTH]', '{0:%m}'.format(datetime.datetime.now()))
             #curr_prompt = prompt.replace('[DAY]', '{0:%d}'.format(datetime.datetime.now()))
