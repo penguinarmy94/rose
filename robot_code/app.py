@@ -6,6 +6,7 @@ from time import sleep
 from threading import Thread
 from sys import path
 from multiprocessing import Process
+import datetime
 
 appName = "ROSE Controller"
 appVersion = "1.0"
@@ -339,8 +340,11 @@ def initialize_threads2(db, rob, off = True):
             print("Robot has been turned off.")
               
         if args.console:
-            #prompt=
-            command = input(prompt)
+            curr_prompt = prompt.replace("[STATUS]", 'ON' if rob.power else 'OFF')
+            curr_prompt = prompt.replace("[DATE]", datatime.date)
+            curr_prompt = prompt.replace("[TIME]", datetime.time)
+
+            command = input(curr_prompt)
 
             if (command == "help"):
                 print("Available commands:")
