@@ -250,7 +250,7 @@ def initialize_threads2(db, rob, off = True):
     if (args.console):
         print("\n{} Interactive Shell v{}\n".format(appName, appVersion))
 
-    exit_to_OS = False        
+    exit_to_OS = False         
     while True:
 
         iCounter = 0
@@ -341,6 +341,7 @@ def initialize_threads2(db, rob, off = True):
                     print("Robot already off")
                 else:
                     rob.power = False
+                    off = False
                     db.update_robot()
 
             if (command == "start"):
@@ -348,13 +349,15 @@ def initialize_threads2(db, rob, off = True):
                     print("Robot already on")
                 else:
                     rob.power = True
-                db.update_robot()
+                    off = True
+                    db.update_robot()
 
             if (command == "status"):
                 print("Power:   {}".format(rob.power))
 
             if (command == "exit"):
                 rob.power = False
+                off = False
                 db.update_robot()
                 exit_to_OS = True
     
