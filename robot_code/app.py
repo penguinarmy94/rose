@@ -340,19 +340,30 @@ def initialize_threads2(db, rob, off = True):
             print("Robot has been turned off.")
               
         if args.console:
-            curr_prompt = prompt.replace("[STATUS]", 'ON' if rob.power else 'OFF')
-            curr_prompt = prompt.replace("[DATE]", datetime.date)
-            curr_prompt = prompt.replace("[TIME]", datetime.time)
+            curr_prompt = prompt.replace('[STATUS]', 'ON' if rob.power else 'OFF')
+            curr_prompt = prompt.replace('[YEAR]', '{0:%Y}'.format(datetime.datetime.now())
+            curr_prompt = prompt.replace('[MONTH]', '{0:%m}'.format(datetime.datetime.now())
+            curr_prompt = prompt.replace('[DAY]', '{0:%d}'.format(datetime.datetime.now())
+            curr_prompt = prompt.replace('[HOUR]', '{0:%H}'.format(datetime.datetime.now())
+            curr_prompt = prompt.replace('[MINUTE]', '{0:%M}'.format(datetime.datetime.now())
 
             command = input(curr_prompt)
+            value = ""
+            try:
+                command, value = command.split("=")
+            except ValueError:
+                pass
+            command = command.strip()
 
             if (command == "help"):
                 print("Available commands:")
-                print("help:    This help screen")
-                print("stop:    Turn off the ROSEbot")
-                print("start:   Turn on the ROSEbot")
-                print("status:  Display ROSEbot status")
-                print("exit:    Stop ROSE controller")
+                print("help         : This help screen")
+                print("stop         : Turn off the ROSEbot")
+                print("start        : Turn on the ROSEbot")
+                print("status       : Display ROSEbot status")
+                print("prompt=VALUE : Define a new command line prompt using text and placeholders.")
+                print("              Valid placeholders are: [ID],[STATUS],[YEAR],[MONTH],[DAY],[HOUR],[MINUTE]")
+                print("exit         : Stop ROSE controller")
                     
             if (command == "stop"):
                 if not rob.power:
@@ -374,6 +385,18 @@ def initialize_threads2(db, rob, off = True):
             if (command == "status"):
                 print("Power:   {}".format(rob.power))
 
+            if (command == 'prompt'):
+               prompt = value
+                prompt = prompt.replace('[ID]', config['robotid'])
+
+                with open(configFile, 'r') as jsonFile:
+                    tmpConfig = json.load(jsonFile)
+
+                 tmpConfig["prompt"] = value
+                 with open(configFile, 'w') as jsonFile:
+                    json.dump(config, jsonFile)
+
+                
             if (command == "exit"):
                 if rob.power:
                     print("Please stop robot before exiting.")
