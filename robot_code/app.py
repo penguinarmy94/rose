@@ -173,6 +173,16 @@ def initialize_threads(db, rob, off = True):
                     prompt = config["prompt"]
                     command = input(prompt)
 
+                    if (command == "help"):
+                        print("Available commands:")
+                        print("help:    This help screen")
+                        print("exit:    Stop ROSE controller")
+                    
+                    if (command == "exit"):
+                        off = True
+
+
+
                     
 
                     
