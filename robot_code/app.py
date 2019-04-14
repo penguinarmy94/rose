@@ -340,12 +340,12 @@ def initialize_threads2(db, rob, off = True):
             print("Robot has been turned off.")
               
         if args.console:
-            curr_prompt = prompt.replace('[STATUS]', 'ON' if rob.power else 'OFF')
-            curr_prompt = prompt.replace('[YEAR]', '{0:%Y}'.format(datetime.datetime.now()))
-            curr_prompt = prompt.replace('[MONTH]', '{0:%m}'.format(datetime.datetime.now()))
-            curr_prompt = prompt.replace('[DAY]', '{0:%d}'.format(datetime.datetime.now()))
-            curr_prompt = prompt.replace('[HOUR]', '{0:%H}'.format(datetime.datetime.now()))
-            curr_prompt = prompt.replace('[MINUTE]', '{0:%M}'.format(datetime.datetime.now())
+            curr_prompt = prompt #.replace('[STATUS]', 'ON' if rob.power else 'OFF')
+            #curr_prompt = prompt.replace('[YEAR]', '{0:%Y}'.format(datetime.datetime.now()))
+            #curr_prompt = prompt.replace('[MONTH]', '{0:%m}'.format(datetime.datetime.now()))
+            #curr_prompt = prompt.replace('[DAY]', '{0:%d}'.format(datetime.datetime.now()))
+            #curr_prompt = prompt.replace('[HOUR]', '{0:%H}'.format(datetime.datetime.now()))
+            #curr_prompt = prompt.replace('[MINUTE]', '{0:%M}'.format(datetime.datetime.now())
 
             print(curr_prompt)
             command = 'help' #input('>') #curr_prompt).strip()
