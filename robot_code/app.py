@@ -317,8 +317,9 @@ def initialize_threads2(db, rob, off = True):
                 print("Turned off!")
 
                 if exit_to_OS:
+                    print("app.initialzer(): call to sys.exit()")
                     sys.exit()
-                    
+
                 if args.verbose:
                     print("Exiting app.initialize_threads() from IF clause")
 
