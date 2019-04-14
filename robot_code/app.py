@@ -378,9 +378,9 @@ def initialize_threads2(db, rob, off = True):
                         for key, value in help.items():
                             key = key + " " + value['args']
                             if len(key) < 10: 
-                                print("\n{}\t: {}".format(key, value['default']))
+                                print("{}\t: {}".format(key, value['default']))
                             else:	
-                                print("\n{}:\n\t  {}".format(key, value['default']))
+                                print("{}:\n\t  {}".format(key, value['default']))
                         print("\n")
 
                     except KeyError:
