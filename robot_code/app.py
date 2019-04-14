@@ -135,9 +135,16 @@ def initialize_threads(db, rob, off = True):
     if args.verbose:
         print("Entering app.initialize_threads()")
 
+    iCounter = 0
+    iMaxCounter = 4
+    while not rob.power and not args.console:
+	        print("Waiting for robot to turn on" + "." * (iCounter % iMaxCounter) + " " * iMaxCounter, end='\r', flush = True)
+	        iCounter += 1
+	        sleep(.2)
+
     if rob.power is True and off == True:
         off = False
-        print("Turned on!")
+        print("Robot has been turned on.")
         try:
             brain_thread = runBrainThread(db=db,rob=rob,config=config,args=args)
             #motor_thread = runMotorThread()
@@ -230,7 +237,6 @@ def init():
         iCounter = 0
         iMaxCounter = 4
         iTimeoutCounter = 100
-
         while not rob.isInitialized() and iCounter < iTimeoutCounter:
 	        print("Robot initializing" + "." * (iCounter % iMaxCounter) + " " * iMaxCounter, end='\r', flush = True)
 	        iCounter += 1
@@ -248,6 +254,7 @@ def init():
                 off = True
                 
             off = initialize_threads(db,rob,off)
+
         
 if __name__ == "__main__":
     init()
