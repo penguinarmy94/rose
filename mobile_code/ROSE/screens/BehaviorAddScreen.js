@@ -250,7 +250,7 @@ export default class BehaviorAddScreen extends Component {
 
     render() {
         return(
-            <ScrollView style={styles.container}>
+            <ScrollView style={styles.container} keyboardShouldPersistTaps={'handled'}>
                 <View style={[styles.block, styles.spacing]}>
                     <View style={[styles.dropdown, styles.padding]}>
                         <FormLabel>Name: </FormLabel>

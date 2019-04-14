@@ -5,7 +5,7 @@
  */
 
 import React, {Component} from 'react';
-import {StyleSheet, Text, View, ScrollView, Image, Button, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, View, ScrollView, Image, Content, Button, TouchableOpacity} from 'react-native';
 import {FormInput} from 'react-native-elements';
 import firebase from 'react-native-firebase';
 import Session from '../controllers/Session';
@@ -164,7 +164,7 @@ export default class LoginScreen extends Component {
   render() {
     if(!this.state.authenticating) {
       return(
-        <ScrollView contentContainerStyle={[styles.container, styles.rose_background]}>
+        <ScrollView contentContainerStyle={[styles.container, styles.rose_background]} keyboardShouldPersistTaps={'handled'}>
           <View style={styles.login_container}>
             <View style={styles.logo_container}>
               <Image source={logo} />
@@ -199,7 +199,7 @@ export default class LoginScreen extends Component {
     }
     else {
       return(
-        <ScrollView contentContainerStyle={[styles.container, styles.rose_background]}>
+        <ScrollView contentContainerStyle={[styles.container, styles.rose_background]} keyboardShouldPersistTaps={'handled'}>
           <View style={styles.login_container}>
             <View style={styles.logo_container}>
               <Image source={logo} />

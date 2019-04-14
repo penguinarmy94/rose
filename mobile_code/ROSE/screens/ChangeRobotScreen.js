@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ScrollView, Text, StyleSheet, Alert, Button} from 'react-native';
+import { View, ScrollView, Text, StyleSheet, Alert, Button, TouchableOpacity} from 'react-native';
 import { Icon } from 'react-native-elements';
 import { config } from "../assets/config/config";
 import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
@@ -46,7 +46,7 @@ export default class ChangeRobotScreen extends Component {
     renderBlock = (key, robots, selected, changeFunction) => {
         if(this.state.index > -1) {
             return(
-                <View key={key} style={{margin: 20}}>
+                <View key={key} style={styles.robot}>
                     <RadioForm
                         formHorizontal={false}
                         animation={true}
@@ -81,17 +81,22 @@ export default class ChangeRobotScreen extends Component {
 
     render() {
         return(
-            <View style={styles.container}>
-                <ScrollView>
-                    {
-                        this.renderBlock(0, this.state.robots, this.state.selected, (value, index) => {
-                            this.setState({selected: value});
-                        })
-                    }
-                </ScrollView>
-                <View style={styles.buttonContainer}>
-                    <Button title="Confim" onPress={this.confirm} />
-                    <Button title="Cancel" onPress={this.cancel} />
+            <View style={[styles.container, styles.rose_background]}>
+                <View style={styles.robot_container}>
+                    <Text style={[{fontSize: 25, fontWeight: "bold", borderBottomWidth: 1, magin: 20}]}>Robots</Text>
+                    <ScrollView contentContainerStyle={styles.scroll_view}>
+                        {
+                            this.renderBlock(0, this.state.robots, this.state.selected, (value, index) => {
+                                this.setState({selected: value});
+                            })
+                        }
+                    </ScrollView>
+                    <TouchableOpacity style={styles.submit_button} onPress={this.confirm}>
+                        <Text style={styles.button_text}>Confirm</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.cancel_button} onPress={this.cancel}>
+                        <Text style={styles.button_text}>Cancel</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         );
@@ -101,23 +106,51 @@ export default class ChangeRobotScreen extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        margin: 15,
-        flexDirection: "column",
-        justifyContent: "space-between"
+        justifyContent: "center",
+        alignItems: "center"
     },
-    buttonContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-evenly'
-    },  
-    spacing: {
-        margin: 15
+    scroll_view: {
+        justifyContent: "center", 
+        alignItems: "center", 
+        marginTop: 30, 
+        marginLeft: 15, 
+        borderWidth: 1
     },
-    delete: {
-        flex: 1,
-        justifyContent: 'flex-end',
+    robot_container: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: "white",
+        borderWidth: 1,
+        borderRadius: 50,
+        paddingLeft: 10,
+        paddingRight: 10
     },
-    dropdown: {
-        flexDirection: 'row',
-        justifyContent: 'space-between'
+    robot: {
+        width: 300
+    },
+    rose_background: {
+        backgroundColor: "#000000"
+    },
+    text_input: {
+        width: 300, 
+        borderBottomWidth: 1
+    },
+    button_text: {
+        color: "white", 
+        margin: 10, 
+        fontWeight: "bold"
+    },
+    submit_button: {
+        width: 300, 
+        backgroundColor: "#64a2b7", 
+        alignItems: "center", 
+        marginTop: 100
+    },
+    cancel_button: {
+        width: 300, 
+        backgroundColor: "black", 
+        alignItems: "center", 
+        marginTop: 15,
+        marginBottom: 25
     }
 });
