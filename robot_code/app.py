@@ -251,7 +251,7 @@ def initialize_threads2(db, rob, off = True):
         print("\n{} Interactive Shell v{}\n".format(appName, appVersion))
 
 
-    action = 'none'            
+    #action = 'none'            
     
     while True:
 
@@ -290,39 +290,39 @@ def initialize_threads2(db, rob, off = True):
                 print(str(e))
 
 
-            if action == 'stop': #not (rob.power or off):
+        if not (rob.power or off):
                  
-                print("1")
-                brain_thread.join()
-                print("2")
-                if 'mic' in devices:
-                    microphone_thread.join()
-                if 'motor' in devices:
-                    motor_thread.join()
-                if 'notifier' in devices:
-                    notification_manager_thread.join()
-                if 'speaker' in devices:
-                    speaker_thread.join()
-                if 'camera' in devices:
-                    camera_thread.join()
-                if 'led' in devices:
-                    relay_thread.join()
-                if 'uploader' in devices:
-                    uploader_thread.join()
-                print("3")
-                # Only runs when all trhreads exited?
-                if args.verbose:
-                    print("goimg to turning off...")
+            print("1")
+            brain_thread.join()
+            print("2")
+            if 'mic' in devices:
+                microphone_thread.join()
+            if 'motor' in devices:
+                motor_thread.join()
+            if 'notifier' in devices:
+                notification_manager_thread.join()
+            if 'speaker' in devices:
+                speaker_thread.join()
+            if 'camera' in devices:
+                camera_thread.join()
+            if 'led' in devices:
+                relay_thread.join()
+            if 'uploader' in devices:
+                uploader_thread.join()
+            print("3")
+            # Only runs when all trhreads exited?
+            if args.verbose:
+                print("goimg to turning off...")
             
-                logger.write("turn off")
-                off = True
-                print("Turned off!")
-                print("4")
+            logger.write("turn off")
+            off = True
+            print("Turned off!")
+            print("4")
               
 
-                print("6")
-                if args.verbose:
-                    print("Exiting app.initialize_threads() from IF clause")
+            print("6")
+            if args.verbose:
+                print("Exiting app.initialize_threads() from IF clause")
 
             
         if args.console:
@@ -341,10 +341,10 @@ def initialize_threads2(db, rob, off = True):
                 if not rob.power:
                     print("Robot already off")
                 else:
-                    #rob.power = False
-                    #off = False
-                    #db.update_robot()
-                    action = "stop"
+                    rob.power = False
+                    off = False
+                    db.update_robot()
+                    #action = "stop"
 
             if (command == "start"):
                 if rob.power:
