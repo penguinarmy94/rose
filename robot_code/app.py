@@ -414,7 +414,7 @@ def initialize_threads2(db, rob, off = True):
                         key,value = value.split(',')
                         
                         with open(configFile, 'r') as jsonFile:
-                        tmpConfig = json.load(jsonFile)
+                            tmpConfig = json.load(jsonFile)
 
                         config[key] = value                
                         tmpConfig[key] = value
