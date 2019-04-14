@@ -415,12 +415,17 @@ def initialize_threads2(db, rob, off = True):
                         
                         with open(configFile, 'r') as jsonFile:
                             tmpConfig = json.load(jsonFile)
-
-                        config[key] = value                
+             
                         tmpConfig[key] = value
 
                         with open(configFile, 'w') as jsonFile:
                             json.dump(tmpConfig, jsonFile)
+
+                        # Make functions to avoid duplication
+                        config[key] = value   
+                        if key='prompt':
+                            prompt = value
+                            prompt = prompt.replace('[ID]', config['robotid'])
 
                     except ValueError:
                         print("Missing VALUE for {}.".format(key))
