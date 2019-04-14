@@ -236,7 +236,7 @@ def init():
 	        iCounter += 1
 	        sleep(.2)
 
-        if iCounter < iTimeOutCounter:
+        if iCounter < iTimeoutCounter:
             print("Robot initializing completed.")
         else:
             print("Robot initializing failed with timeout [Possible connection problem].")
