@@ -190,7 +190,7 @@ def initialize_threads(db, rob, off = True):
                         db.update_robot()
 
                     if (command == "status"):
-                        print("Power:   " + rob.power)
+                        print("Power:   {}".format(rob.power))
 
                     if (command == "stop"):
                         rob.power = False
