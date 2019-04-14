@@ -176,16 +176,30 @@ def initialize_threads(db, rob, off = True):
                     if (command == "help"):
                         print("Available commands:")
                         print("help:    This help screen")
+                        print("stop:    Turn off the ROSEbot")
+                        print("start:   Turn on the ROSEbot")
+                        print("status:  Display ROSEbot status")
                         print("exit:    Stop ROSE controller")
                     
-                    if (command == "exit"):
+                    if (command == "stop"):
                         rob.power = False
                         db.update_robot()
 
+                    if (command == "start"):
+                        rob.power = True
+                        db.update_robot()
 
+                    if (command == "status"):
+                        print("Power:   " + rob.power)
 
-                    
+                    if (command == "stop"):
+                        rob.power = False
+                        db.update_robot()
 
+                    if (command == "stop"):
+                        rob.power = False
+                        db.update_robot()
+                        sys.exit()
                     
 
             brain_thread.join()
