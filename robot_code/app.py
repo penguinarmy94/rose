@@ -370,22 +370,22 @@ def initialize_threads2(db, rob, off = True):
                 pass
 
             if command == 'help':
-	            if (help):
-		            try:
-			            detail = arglist[0]	
-			            print("\nCommand: {} {}\n\nDescription:\n\n{}\n".format(detail, help[detail]['args'], help[detail]['details']))
-                except IndexError:
-			        for key, value in help.items():
-				        key = key + " " + value['args']
-				        if len(key) < 10: 
-					        print("{}\t: {}".format(key, value['default']))
-				        else:	
-					        print("{}:\n\t  {}".format(key, value['default']))
+                if (help):
+                    try:
+                        detail = arglist[0]	
+                        print("\nCommand: {} {}\n\nDescription:\n\n{}\n".format(detail, help[detail]['args'], help[detail]['details']))
+                    except IndexError:
+                        for key, value in help.items():
+                            key = key + " " + value['args']
+                            if len(key) < 10: 
+                                print("{}\t: {}".format(key, value['default']))
+                            else:	
+                                print("{}:\n\t  {}".format(key, value['default']))
 
-                except KeyError:
-                    print("Invalid command. No help available.")
-            else:
-                print("Missing help file. No help available.")            
+                    except KeyError:
+                        print("Invalid command. No help available.")
+                else:
+                    print("Missing help file. No help available.")            
                     
             if (command == "stop"):
                 if not rob.power:
