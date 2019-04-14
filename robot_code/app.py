@@ -251,7 +251,7 @@ def initialize_threads2(db, rob, off = True):
         print("\n{} Interactive Shell v{}\n".format(appName, appVersion))
             
     while True:
-
+        print("...")
         iCounter = 0
         iMaxCounter = 4
         while not rob.power and not args.console:
@@ -288,6 +288,8 @@ def initialize_threads2(db, rob, off = True):
 
 
             if rob.power is False and off == False:
+                off = True
+
                 brain_thread.join()
 
                 if 'mic' in devices:
