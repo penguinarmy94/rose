@@ -249,6 +249,8 @@ def initialize_threads2(db, rob, off = True):
 
     if (args.console):
         print("\n{} Interactive Shell v{}\n".format(appName, appVersion))
+        prompt = config["prompt"]
+        prompt.replace("[ID]", config["robotid"])
 
 
     #action = 'none'            
@@ -292,41 +294,52 @@ def initialize_threads2(db, rob, off = True):
 
         if not (rob.power or off):
                  
-            print("1")
-            brain_thread.join()
-            print("2")
-            if 'mic' in devices:
-                microphone_thread.join()
-            if 'motor' in devices:
-                motor_thread.join()
-            if 'notifier' in devices:
-                notification_manager_thread.join()
-            if 'speaker' in devices:
-                speaker_thread.join()
-            if 'camera' in devices:
-                camera_thread.join()
-            if 'led' in devices:
-                relay_thread.join()
-            if 'uploader' in devices:
-                uploader_thread.join()
-            print("3")
-            # Only runs when all trhreads exited?
             if args.verbose:
-                print("goimg to turning off...")
-            
+                print("Stopping brain thread...")
+            brain_thread.join()
+
+            if 'mic' in devices:
+                if args.verbose:
+                    print("Stopping mic thread...")
+                microphone_thread.join()
+                
+            if 'motor' in devices:
+                if args.verbose:
+                    print("Stopping motor thread...")
+                motor_thread.join()
+  
+            if 'notifier' in devices:
+                if args.verbose:
+                    print("Stopping notifier thread...")              
+                notification_manager_thread.join()
+
+            if 'speaker' in devices:
+                if args.verbose:
+                    print("Stopping speaker thread...")
+                speaker_thread.join()
+
+            if 'camera' in devices:
+                if args.verbose:
+                    print("Stopping camera thread...")              
+                camera_thread.join()
+
+            # change to relay
+            if 'led' in devices:
+                if args.verbose:
+                    print("Stopping relay thread...")              
+                relay_thread.join()
+
+            if 'uploader' in devices:
+                if args.verbose:
+                    print("Stopping uploader thread...")              
+                uploader_thread.join()
+                
             logger.write("turn off")
             off = True
-            print("Turned off!")
-            print("4")
+            print("Robot has been turned off.")
               
-
-            print("6")
-            if args.verbose:
-                print("Exiting app.initialize_threads() from IF clause")
-
-            
         if args.console:
-            prompt = config["prompt"]
+            #prompt=
             command = input(prompt)
 
             if (command == "help"):
