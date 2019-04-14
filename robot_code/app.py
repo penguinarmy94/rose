@@ -231,7 +231,7 @@ def init():
         iMaxCounter = 4
         iTimeoutCounter = 100
 
-        while iCounter < iTimeoutCounter:
+        while not rob.isInitialized() and iCounter < iTimeoutCounter:
 	        print("Robot initializing" + "." * (iCounter % iMaxCounter) + " " * iMaxCounter, end='\r', flush = True)
 	        iCounter += 1
 	        sleep(.2)
