@@ -226,14 +226,19 @@ def init():
     if initialized == 1:  
         db.create_subscriber_model()
 
-        #print("Robot initializing", end='', flush = True)
-        #while rob.isInitialized() is False:
-        #    print(".", end='', flush = True)
-        #    time.sleep(0.2)
-        #print("done!")
         iCounter = 0
-        while rob.isInitialized() is False:
-            print("Robot initializing", end='\r', flush = True)
+        iMaxCounter = 4
+        iTimeoutCounter = 10
+
+        while iCounter < iTimeoutCounter:
+	        print("Robot initializing" + "." * (iCounter % iMaxCounter) + " " * iMaxCounter, end='\r', flush = True)
+	        iCounter += 1
+	        sleep(.2)
+
+        if iCounter < iTimeOutCounter:
+            print("Robot initializing completed.")
+        else:
+            print("Robot initializing failed with timeout [Possible connection problem].")
 
         while True:
             if rob.battery <= 0:
