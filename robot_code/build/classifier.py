@@ -10,9 +10,6 @@ class Classifier:
     def __init__(self, config = None):
         try:
             self.__config = config
-            #positiveData = self.__config["home_path"] + "/assets/gun_shot"
-            #negativeData = self.__config["home_path"] + "/assets/car_horn"
-            #aT.featureAndTrain([positiveData, negativeData], 1.0, 1.0, aT.shortTermWindow, aT.shortTermStep, "svm", "svmSMtemp", False)
         except Exception as e:
             print("Classifier Init Error: " + str(e))
 

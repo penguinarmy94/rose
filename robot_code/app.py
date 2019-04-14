@@ -9,7 +9,7 @@ from multiprocessing import Process
 appName = "ROSE Controller"
 appVersion = "1.0"
 logLevels = ["none", "info", "debug"]
-devices = ["mic", "camera", "speaker", "led"]
+devices = ["mic", "camera", "speaker", "led", "uploader", "notifier", "motor"]
 configFile = "/home/pi/Desktop/Projects/rose/robot_code/config.json"
 relay_pins = {"flasher":11, "light":15}
 
@@ -152,16 +152,15 @@ def initialize_threads(db, rob, off = True):
                 
             if 'mic' in devices:
                 microphone_thread = runMicrophoneThread(config)
-                print("Microphone")
             if 'motor' in devices:
                 motor_thread = runMotorThread()
             if 'notifier' in devices:
                 notification_manager_thread = runNotificationManager(rob=rob,config=config,initialized=True)
             if 'speaker' in devices:
                 speaker_thread = runSpeakerThread(config = config)
-            if 'cam' in devices:
+            if 'camera' in devices:
                 camera_thread = runCameraThread(pin=13, pos = 7, capture_path = config["capture_path"])
-            if 'relay' in devices:
+            if 'led' in devices:
                 relay_thread = runRelayThread(pins = relay_pins)
             if 'uploader' in devices:
                 uploader_thread = runUploader(config=config, rob=rob)
@@ -179,9 +178,9 @@ def initialize_threads(db, rob, off = True):
                 notification_manager_thread.join()
             if 'speaker' in devices:
                 speaker_thread.join()
-            if 'cam' in devices:
+            if 'camera' in devices:
                 camera_thread.join()
-            if 'relay' in devices:
+            if 'led' in devices:
                 relay_thread.join()
             if 'uploader' in devices:
                 uploader_thread.join()
@@ -237,7 +236,6 @@ def init():
             print("\n{} Interactive Shell v{}\n".format(appName, appVersion))
         
         while True:
-            print(rob.battery)
             if rob.battery <= 0:
                 rob.power = False
                 db.update_robot()

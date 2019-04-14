@@ -1,6 +1,9 @@
 import datetime, time, threading
 from . import queues
 
+logLevels = ["none", "info", "debug"]
+level = 0
+
 def write(message):
     queues.logger_queue.put(message)
 
@@ -16,13 +19,18 @@ def runLogger():
         else:
             continue
 
-def writeFile(file_name = None, message = None):
-    if not file_name is None and not message is None:
-         with open(file_name + ".txt", "a") as fileObj:
-                fileObj.write(message)
-                fileObj.write("\n")
+def writeFile(file_name = None, message = None, level = None):
+    global logLevels
+    global level
+
+    index = logLevels.index(level)
+
+    if index >= level:
+        if not file_name is None and not message is None:
+            with open(file_name + ".txt", "a") as fileObj:
+                    fileObj.write(message)
+                    fileObj.write("\n")
 
 def writeEnd():
-    print("Went in here")
     queues.logger_queue.put("turn off")
         
