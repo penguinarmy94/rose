@@ -249,6 +249,9 @@ def initialize_threads2(db, rob, off = True):
 
     if (args.console):
         print("\n{} Interactive Shell v{}\n".format(appName, appVersion))
+
+
+    action = 'none'            
     
     while True:
 
@@ -287,8 +290,8 @@ def initialize_threads2(db, rob, off = True):
                 print(str(e))
 
 
-            if not (rob.power or off):
-                off = True
+            if action == 'stop': #not (rob.power or off):
+                 
                 print("1")
                 brain_thread.join()
                 print("2")
@@ -338,9 +341,10 @@ def initialize_threads2(db, rob, off = True):
                 if not rob.power:
                     print("Robot already off")
                 else:
-                    rob.power = False
-                    off = False
-                    db.update_robot()
+                    #rob.power = False
+                    #off = False
+                    #db.update_robot()
+                    action = "stop"
 
             if (command == "start"):
                 if rob.power:
