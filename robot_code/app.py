@@ -356,6 +356,7 @@ def initialize_threads2(db, rob, off = True):
             curr_prompt = curr_prompt.replace('[MINUTE]', '{0:%M}'.format(datetime.datetime.now()))
 
             command = input(curr_prompt).strip()
+
             value = arglist = ''
             try:
                 command, value = command.split("=")
@@ -364,7 +365,7 @@ def initialize_threads2(db, rob, off = True):
 
             try:
                 command, arglist = command.split(None, 1)
-	            arglist = arglist.split()
+                arglist = arglist.split()
             except ValueError:
                 pass
 
