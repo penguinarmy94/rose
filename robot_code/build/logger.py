@@ -19,13 +19,18 @@ def runLogger():
         else:
             continue
 
-def writeFile(file_name = None, message = None, level = None):
+def writeFile(file_name = None, message = None, lvl = "none"):
     global logLevels
     global level
 
     index = logLevels.index(level)
 
-    if index >= level:
+    if lvl in logLevels:
+        lvlIndex = logLevels.index(lvl)
+    else:
+        lvlIndex = 0
+
+    if index >= lvlIndex:
         if not file_name is None and not message is None:
             with open(file_name + ".txt", "a") as fileObj:
                     fileObj.write(message)
