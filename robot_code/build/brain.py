@@ -93,7 +93,6 @@ class Brain():
             print("Brain.Begin: Entering WHILE [Power On]")
         while self.__robot.power:            
             try:
-                #self.__readConsole()
                 self.__report_status()
                 self.__read_motor()
                 self.__read_sensors()
@@ -230,34 +229,7 @@ class Brain():
         None
     """
 
-
-    def __readConsole(self):
-        print("Console read")
-        """
-        try:
-            time_stamp = str(datetime.datetime.now())
-
-            # Check that queue is not empty
-            if not self.__consoleQueue.empty():
-                # Read first item in the queue
-                message_packet = json.loads(self.__consoleQueue.peek())
-
-                # Message incoming from camera
-                if message_packet["type"] == "brain":
-                    message_packet = json.loads(self.__consoleQueue.get())
-                    logger.write(time_stamp + " - Camera to Brain: Brain Message Received -- " + message_packet["message"])
-                else:
-                    return
-            else:
-                return
-        except Exception as e:
-            error_message = "Brain.__read_motor() Error: " + str(e)
-            time_stamp = str(datetime.datetime.now())
-
-            print(time_stamp + ": " + error_message)
-            logger.write(time_stamp + ": " + error_message)
-        """
-
+   
     def __read_motor(self):
         try:
             time_stamp = str(datetime.datetime.now())

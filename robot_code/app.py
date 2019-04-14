@@ -77,12 +77,6 @@ from build import relay, camera, uploader, console
 if 'mic' in devices:
     from build import microphone
 
-def runConsoleThread():
-    console_object = console.Console(queues.brain_console_queue)
-    console_thread = Thread(target=functools.partial(console_object.run))
-    console_thread.start()
-    return console_thread
-
 def runSpeakerThread(config):
     speaker_object = speaker.Speaker(queues.brain_speaker_queue)
     speaker_thread = Thread(target=functools.partial(speaker_object.run))
@@ -147,9 +141,6 @@ def initialize_threads(db, rob, off = True):
             brain_thread = runBrainThread(db=db,rob=rob,config=config,args=args)
             #motor_thread = runMotorThread()
 
-            if (args.console):
-                console_thread = runConsoleThread(config = config)
-                
             if 'mic' in devices:
                 microphone_thread = runMicrophoneThread(config)
             if 'motor' in devices:
@@ -166,6 +157,17 @@ def initialize_threads(db, rob, off = True):
                 uploader_thread = runUploader(config=config, rob=rob)
             
             log_thread = runLoggerThread()
+
+            if (args.console):
+                print("\n{} Interactive Shell v{}\n".format(appName, appVersion))
+                    
+                while rob.power:
+                    prompt = config["prompt"]
+                    command = input(prompt)
+
+                    
+
+                    
 
             brain_thread.join()
 
@@ -184,9 +186,7 @@ def initialize_threads(db, rob, off = True):
                 relay_thread.join()
             if 'uploader' in devices:
                 uploader_thread.join()
-            
-            if (args.console):
-                console_thread.join()
+
             
             if args.verbose:
                 print("light_thread joined...")
@@ -231,9 +231,6 @@ def init():
             print(".", end='', flush = True)
             time.sleep(0.2)
         print("done!")
-
-        if (args.console):
-            print("\n{} Interactive Shell v{}\n".format(appName, appVersion))
         
         while True:
             if rob.battery <= 0:
