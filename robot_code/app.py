@@ -332,21 +332,23 @@ def initialize_threads2(db, rob, off = True):
                 print("exit:    Stop ROSE controller")
                     
             if (command == "stop"):
-                rob.power = False
-                db.update_robot()
+                if not rob.power:
+                    print("Robot already off")
+                else:
+                    rob.power = False
+                    db.update_robot()
 
             if (command == "start"):
-                rob.power = True
+                if rob.power:
+                    print("Robot already on")
+                else:
+                    rob.power = True
                 db.update_robot()
 
             if (command == "status"):
                 print("Power:   {}".format(rob.power))
 
-            if (command == "stop"):
-                rob.power = False
-                db.update_robot()
-
-            if (command == "stop"):
+            if (command == "exit"):
                 rob.power = False
                 db.update_robot()
                 sys.exit()
