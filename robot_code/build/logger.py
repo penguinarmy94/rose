@@ -2,7 +2,7 @@ import datetime, time, threading
 from . import queues
 
 logLevels = ["none", "info", "debug"]
-level = 0
+level = "none"
 
 def write(message):
     queues.logger_queue.put(message)
