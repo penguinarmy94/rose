@@ -287,7 +287,7 @@ def initialize_threads2(db, rob, off = True):
                 print(str(e))
 
 
-            if rob.power is False and off == False:
+            if not (rob.power or off):
                 off = True
                 print("1")
                 brain_thread.join()
