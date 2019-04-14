@@ -249,8 +249,7 @@ def initialize_threads2(db, rob, off = True):
 
     if (args.console):
         print("\n{} Interactive Shell v{}\n".format(appName, appVersion))
-
-    exit_to_OS = False         
+    
     while True:
 
         iCounter = 0
@@ -316,10 +315,7 @@ def initialize_threads2(db, rob, off = True):
                 off = True
                 print("Turned off!")
                 print("4")
-                if exit_to_OS:
-                    print("5")                        
-                    print("app.initialzer(): call to sys.exit()")
-                    sys.exit()
+              
 
                 print("6")
                 if args.verbose:
@@ -358,10 +354,10 @@ def initialize_threads2(db, rob, off = True):
                 print("Power:   {}".format(rob.power))
 
             if (command == "exit"):
-                rob.power = False
-                off = False
-                db.update_robot()
-                exit_to_OS = True
+                if rob.power:
+                    print("Please stop robot before exiting.")
+                else: 
+                    sys.exit()
     
 
 def init():
