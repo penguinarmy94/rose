@@ -387,7 +387,7 @@ def initialize_threads2(db, rob, off = True):
                 print("Power:   {}".format(rob.power))
 
             if (command == 'prompt'):
-               prompt = value
+                prompt = value
                 prompt = prompt.replace('[ID]', config['robotid'])
 
                 with open(configFile, 'r') as jsonFile:
