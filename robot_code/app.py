@@ -249,8 +249,8 @@ def initialize_threads2(db, rob, off = True):
 
     if (args.console):
         print("\n{} Interactive Shell v{}\n".format(appName, appVersion))
-        prompt = config["prompt"] + "..."
-        prompt.replace('[ID]', config['robotid'])
+        prompt = config["prompt"]
+        prompt = prompt.replace('[ID]', config['robotid'])
 
 
     #action = 'none'            
