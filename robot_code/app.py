@@ -290,9 +290,9 @@ def initialize_threads2(db, rob, off = True):
 
             if rob.power is False and off == False:
                 off = True
-
+                print("1")
                 brain_thread.join()
-
+                print("2")
                 if 'mic' in devices:
                     microphone_thread.join()
                 if 'motor' in devices:
@@ -307,7 +307,7 @@ def initialize_threads2(db, rob, off = True):
                     relay_thread.join()
                 if 'uploader' in devices:
                     uploader_thread.join()
-
+                print("3")
                 # Only runs when all trhreads exited?
                 if args.verbose:
                     print("goimg to turning off...")
@@ -315,11 +315,13 @@ def initialize_threads2(db, rob, off = True):
                 logger.write("turn off")
                 off = True
                 print("Turned off!")
-
+                print("4")
                 if exit_to_OS:
+                    print("5")                        
                     print("app.initialzer(): call to sys.exit()")
                     sys.exit()
 
+                print("6")
                 if args.verbose:
                     print("Exiting app.initialize_threads() from IF clause")
 
