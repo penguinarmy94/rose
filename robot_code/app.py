@@ -318,39 +318,38 @@ def initialize_threads2(db, rob, off = True):
                 if args.verbose:
                     print("Exiting app.initialize_threads() from IF clause")
 
-            print(".....")
-            if args.console:
-                print(":::::")
-                prompt = config["prompt"]
-                command = input(prompt)
+            
+        if args.console:
+            prompt = config["prompt"]
+            command = input(prompt)
 
-                if (command == "help"):
-                    print("Available commands:")
-                    print("help:    This help screen")
-                    print("stop:    Turn off the ROSEbot")
-                    print("start:   Turn on the ROSEbot")
-                    print("status:  Display ROSEbot status")
-                    print("exit:    Stop ROSE controller")
+            if (command == "help"):
+                print("Available commands:")
+                print("help:    This help screen")
+                print("stop:    Turn off the ROSEbot")
+                print("start:   Turn on the ROSEbot")
+                print("status:  Display ROSEbot status")
+                print("exit:    Stop ROSE controller")
                     
-                if (command == "stop"):
-                    rob.power = False
-                    db.update_robot()
+            if (command == "stop"):
+                rob.power = False
+                db.update_robot()
 
-                if (command == "start"):
-                    rob.power = True
-                    db.update_robot()
+            if (command == "start"):
+                rob.power = True
+                db.update_robot()
 
-                if (command == "status"):
-                    print("Power:   {}".format(rob.power))
+            if (command == "status"):
+                print("Power:   {}".format(rob.power))
 
-                if (command == "stop"):
-                    rob.power = False
-                    db.update_robot()
+            if (command == "stop"):
+                rob.power = False
+                db.update_robot()
 
-                if (command == "stop"):
-                    rob.power = False
-                    db.update_robot()
-                    sys.exit()
+            if (command == "stop"):
+                rob.power = False
+                db.update_robot()
+                sys.exit()
     
 
 def init():
