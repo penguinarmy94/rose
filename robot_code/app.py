@@ -169,7 +169,7 @@ def initialize_threads(db, rob, off = True):
             if (args.console):
                 print("\n{} Interactive Shell v{}\n".format(appName, appVersion))
                     
-                while rob.power:
+                while not off:
                     prompt = config["prompt"]
                     command = input(prompt)
 
