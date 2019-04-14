@@ -288,7 +288,7 @@ def initialize_threads2(db, rob, off = True):
 
 
             if rob.power is False and off == False:
-                  brain_thread.join()
+                brain_thread.join()
 
                 if 'mic' in devices:
                     microphone_thread.join()
