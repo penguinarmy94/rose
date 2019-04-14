@@ -347,7 +347,6 @@ def initialize_threads2(db, rob, off = True):
             curr_prompt = curr_prompt.replace('[HOUR]', '{0:%H}'.format(datetime.datetime.now()))
             curr_prompt = curr_prompt.replace('[MINUTE]', '{0:%M}'.format(datetime.datetime.now()))
 
-            print(curr_prompt)
             command = input(curr_prompt).strip()
             value = ""
             try:
@@ -395,7 +394,7 @@ def initialize_threads2(db, rob, off = True):
 
                 tmpConfig["prompt"] = value
                 with open(configFile, 'w') as jsonFile:
-                    json.dump(config, jsonFile)
+                    json.dump(tmpConfig, jsonFile)
 
                 
             if (command == "exit"):
