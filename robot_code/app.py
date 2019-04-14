@@ -393,7 +393,7 @@ def initialize_threads2(db, rob, off = True):
                 with open(configFile, 'r') as jsonFile:
                     tmpConfig = json.load(jsonFile)
 
-                 tmpConfig["prompt"] = value
+                tmpConfig["prompt"] = value
                  with open(configFile, 'w') as jsonFile:
                     json.dump(config, jsonFile)
 
