@@ -76,6 +76,13 @@ from build import brain, motor, robot, database
 from build import queues, logger, speaker, notification_manager
 from build import relay, camera, uploader
 
+help =""
+try:
+    with open(config["help_file"], 'r') as jsonFile:
+        help = json.load(jsonFile)
+except:
+    pass
+
 if 'mic' in devices:
     from build import microphone
 
@@ -340,6 +347,7 @@ def initialize_threads2(db, rob, off = True):
             print("Robot has been turned off.")
               
         if args.console:
+            # Put help in def and return on/off value
             curr_prompt = prompt.replace('[STATUS]', 'ON' if rob.power else 'OFF')
             curr_prompt = curr_prompt.replace('[YEAR]', '{0:%Y}'.format(datetime.datetime.now()))
             curr_prompt = curr_prompt.replace('[MONTH]', '{0:%m}'.format(datetime.datetime.now()))
@@ -348,38 +356,35 @@ def initialize_threads2(db, rob, off = True):
             curr_prompt = curr_prompt.replace('[MINUTE]', '{0:%M}'.format(datetime.datetime.now()))
 
             command = input(curr_prompt).strip()
-            value = ""
-            arglist = []
+            value = arglist = ''
             try:
                 command, value = command.split("=")
             except ValueError:
                 pass
 
             try:
-                command, arglist = command.split()
+                command, arglist = command.split(None, 1)
+	            arglist = arglist.split()
             except ValueError:
                 pass
 
-            print("Command: {}\nrgs: {}\nValue: {}\n".format(command,arglist,value))
+            if command == 'help':
+	            if (help):
+		            try:
+			            detail = arglist[0]	
+			            print("\nCommand: {} {}\n\nDescription:\n\n{}\n".format(detail, help[detail]['args'], help[detail]['details']))
+                except IndexError:
+			        for key, value in help.items():
+				        key = key + " " + value['args']
+				        if len(key) < 10: 
+					        print("{}\t: {}".format(key, value['default']))
+				        else:	
+					        print("{}:\n\t  {}".format(key, value['default']))
 
-            if (command == "help"):
-                print("\nAvailable commands:\n")
-                print("help [TOPIC] : This help screen or detailed help on a specific command")
-                print("stop         : Turn off the ROSEbot")
-                print("start        : Turn on the ROSEbot")
-                print("command=DEVICE.TYPE.MESSAGE:")
-                print("               Send a message to a device. Valid options are:")
-                print("               - camera.[position|manual|automatic|off].[123||interval|]")
-                print("status       : Display ROSEbot status")
-                print("config=KEY,VALUE:")
-                print("               Show or set config value.")
-                # Change to one logs with args
-                print("logs [DELETE]: List/delete all logs.")
-                print("log YYYY-MM-DD [filter=VALUE]:")
-                print("               Show the log. Filter options: [HEAD|TAIL]:#, FILTER:TEXT")
-                print("prompt=VALUE : Define a new command line prompt using text and placeholders.")
-                print("               Valid placeholders are: [ID],[STATUS],[YEAR],[MONTH],[DAY],[HOUR],[MINUTE]")
-                print("exit         : Stop ROSE controller\n")
+                except KeyError:
+                    print("Invalid command. No help available.")
+            else:
+                print("Missing help file. No help available.")            
                     
             if (command == "stop"):
                 if not rob.power:

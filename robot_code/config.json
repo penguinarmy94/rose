@@ -13,6 +13,7 @@
     "bucket": "rose-9876.appspot.com",
     "log_path": "/home/pi/Desktop/Projects/rose/robot_code/logs",
     "capture_path": "/home/pi/Desktop/Projects/rose/captures/",
+    "help_file" : "/home/pi/Desktop/Projects/rose/robot_code/help.json",
     "detect_interval": 2,
     "moods": {
          "happy": [
