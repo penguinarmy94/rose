@@ -405,7 +405,7 @@ def initialize_threads2(db, rob, off = True):
 
             if (command == 'config'):
                 if value == "":
-                    int iCounter = 1
+                    iCounter = 1
                     for key, value in config.items():
                         print("[{}] {} : {}".format(iCounter, key, value))
                         iCounter += 1
