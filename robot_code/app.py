@@ -251,7 +251,7 @@ def initialize_threads2(db, rob, off = True):
         print("\n{} Interactive Shell v{}\n".format(appName, appVersion))
             
     while True:
-        print("...")
+        print(".....")
         iCounter = 0
         iMaxCounter = 4
         while not rob.power and not args.console:
