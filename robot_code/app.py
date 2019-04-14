@@ -220,9 +220,6 @@ def initialize_threads(db, rob, off = True):
             if 'uploader' in devices:
                 uploader_thread.join()
 
-            
-            if args.verbose:
-                print("light_thread joined...")
 
             # Only runs when all trhreads exited?
             if args.verbose:
@@ -244,6 +241,112 @@ def initialize_threads(db, rob, off = True):
 
         return off
 
+
+def initialize_threads2(db, rob, off = True):
+
+    if args.verbose:
+        print("Entering app.initialize_threads2()")
+
+    if (args.console):
+        print("\n{} Interactive Shell v{}\n".format(appName, appVersion))
+            
+    while True:
+
+        iCounter = 0
+        iMaxCounter = 4
+        while not rob.power and not args.console:
+	        print("Waiting for robot to turn on" + "." * (iCounter % iMaxCounter) + " " * iMaxCounter, end='\r', flush = True)
+	        iCounter += 1
+	        sleep(.2)
+
+        if rob.power is True and off == True:
+            off = False
+            print("Robot has been turned on.")
+            try:
+                brain_thread = runBrainThread(db=db,rob=rob,config=config,args=args)
+                #motor_thread = runMotorThread()
+
+                if 'mic' in devices:
+                    microphone_thread = runMicrophoneThread(config)
+                if 'motor' in devices:
+                    motor_thread = runMotorThread()
+                if 'notifier' in devices:
+                    notification_manager_thread = runNotificationManager(rob=rob,config=config,initialized=True)
+                if 'speaker' in devices:
+                    speaker_thread = runSpeakerThread(config = config)
+                if 'camera' in devices:
+                    camera_thread = runCameraThread(pin=13, pos = 7, capture_path = config["capture_path"])
+                if 'led' in devices:
+                    relay_thread = runRelayThread(pins = relay_pins)
+                if 'uploader' in devices:
+                    uploader_thread = runUploader(config=config, rob=rob)
+            
+                log_thread = runLoggerThread()
+            
+            except Exception as e:
+                print(str(e))
+
+
+            if rob.power is False and off == False:
+                  brain_thread.join()
+
+                if 'mic' in devices:
+                    microphone_thread.join()
+                if 'motor' in devices:
+                    motor_thread.join()
+                if 'notifier' in devices:
+                    notification_manager_thread.join()
+                if 'speaker' in devices:
+                    speaker_thread.join()
+                if 'camera' in devices:
+                    camera_thread.join()
+                if 'led' in devices:
+                    relay_thread.join()
+                if 'uploader' in devices:
+                    uploader_thread.join()
+
+                # Only runs when all trhreads exited?
+                if args.verbose:
+                    print("goimg to turning off...")
+            
+                logger.write("turn off")
+                off = True
+                print("Turned off!")
+
+                if args.verbose:
+                    print("Exiting app.initialize_threads() from IF clause")
+
+            
+            prompt = config["prompt"]
+            command = input(prompt)
+
+            if (command == "help"):
+                print("Available commands:")
+                print("help:    This help screen")
+                print("stop:    Turn off the ROSEbot")
+                print("start:   Turn on the ROSEbot")
+                print("status:  Display ROSEbot status")
+                print("exit:    Stop ROSE controller")
+                    
+            if (command == "stop"):
+                rob.power = False
+                db.update_robot()
+
+            if (command == "start"):
+                rob.power = True
+                db.update_robot()
+
+            if (command == "status"):
+                print("Power:   {}".format(rob.power))
+
+            if (command == "stop"):
+                rob.power = False
+                db.update_robot()
+
+            if (command == "stop"):
+                rob.power = False
+                db.update_robot()
+                sys.exit()
     
 
 def init():
@@ -278,7 +381,7 @@ def init():
                 db.update_robot()
                 off = True
                 
-            off = initialize_threads(db,rob,off)
+            off = initialize_threads2(db,rob,off)
 
         
 if __name__ == "__main__":
