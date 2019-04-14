@@ -1,7 +1,8 @@
 #!/usr/bin/python3
 import argparse
 import os
-import json, functools, time, sys
+import json, functools, sys
+from time import sleep
 from threading import Thread
 from sys import path
 from multiprocessing import Process
