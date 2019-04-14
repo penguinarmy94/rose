@@ -9,9 +9,39 @@
         "default" : "Starts the ROSEbot",
         "details" : "Starts the ROSEbot"
     },
+    "stop": {
+        "args" : "",
+        "default" : "Stops the ROSEbot",
+        "details" : "Stops the ROSEbot"
+    },
+    "status": {
+        "args" : "",
+        "default" : "Provides status of the ROSEbot",
+        "details" : "Provides status of the ROSEbot"
+    },
+    "command": {
+        "args" : " DEVICE TYPE=MESSAGE",
+        "default" : "Sends a queue message to a ROSEbot hardware device",
+        "details" : "Devices: camera, speaker, relay, ...\nType:    Device Dependent\nType:    Device Dependent\n\nCamera options: ..."
+    },
+    "config" : {
+        "args" : " [KEY=VALUE]",
+        "default" : "Show config or set a config value",
+        "details" : "Shows all config values from config.json. If a key/value pair is provided, it will change that key to the new value."
+    },
+    "prompt" : {
+        "args" : " =VALUE",
+        "default" : "Set a new ROSE Console command line prompt using text and placeholders",
+        "details" : "Valid placeholders are: [ID],[STATUS],[YEAR],[MONTH],[DAY],[HOUR],[MINUTE]."
+    },
     "log" : {
         "args" : "[list|delete|show [head|tail [NUMBER]]] [filer=FILTER]",
         "default" : "List, delete or display logs",
         "details" : "list:   Shows a list of logs in the logs folder\ndelete: Delete logs in the logs folder\nshow:   Prints logs in the logs folder\n"
+    },
+    "exit": {
+        "args" : "",
+        "default" : "Stops the ROSEbot controller",
+        "details" : "Stopping the controller requires that the robot is currently stopped. If not, issue a stop command first."
     }
 }  
