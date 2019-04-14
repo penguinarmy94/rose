@@ -405,7 +405,7 @@ def initialize_threads2(db, rob, off = True):
 
             if (command == 'config'):
                 for key, value in config.items():
-                    print("{} : {}".format(key, value)
+                    print("{} : {}".format(key, value))
                 
             if (command == "exit"):
                 if rob.power:
