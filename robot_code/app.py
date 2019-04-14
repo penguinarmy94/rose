@@ -423,7 +423,7 @@ def initialize_threads2(db, rob, off = True):
 
                         # Make functions to avoid duplication
                         config[key] = value   
-                        if key='prompt':
+                        if key == 'prompt':
                             prompt = value
                             prompt = prompt.replace('[ID]', config['robotid'])
 
