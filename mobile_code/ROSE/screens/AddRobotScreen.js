@@ -106,6 +106,7 @@ export default class AddRobotScreen extends Component {
         return(
             <View style={[styles.container, styles.rose_background]}>
                 <View style={[styles.formBlock]}>
+                    <Text style={[{fontWeight: "bold", borderBottomWidth: 1, margin: 20, fontSize: 25}]}>New Robot</Text>
                     <FormInput 
                         placeholder="Robot Name"
                         ref={input => this.state.input.nameRef = input}
@@ -116,7 +117,7 @@ export default class AddRobotScreen extends Component {
                             this.setState({robot: robot});
                         }}
                         value={this.state.robot.name}
-                        style={styles.text_input}
+                        containerStyle={styles.text_input}
                     />
                     <FormInput 
                         placeholder="Robot ID"
@@ -128,7 +129,7 @@ export default class AddRobotScreen extends Component {
                             this.setState({robot: robot});
                         }}
                         value={this.state.robot.id}
-                        style={styles.text_input}
+                        containerStyle={styles.text_input}
                     />
                     <TouchableOpacity style={[styles.submit_button]} onPress={this.createRobot}>
                         <Text style={styles.button_text}>Submit</Text>
