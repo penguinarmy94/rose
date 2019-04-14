@@ -179,7 +179,8 @@ def initialize_threads(db, rob, off = True):
                         print("exit:    Stop ROSE controller")
                     
                     if (command == "exit"):
-                        off = True
+                        rob.power = False
+                        db.update_robot()
 
 
 
