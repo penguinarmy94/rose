@@ -233,7 +233,7 @@ def init():
         #print("done!")
         iCounter = 0
         while rob.isInitialized() is False:
-            print"Robot initializing", end='\r', flush = True)
+            print("Robot initializing", end='\r', flush = True)
 
         while True:
             if rob.battery <= 0:
