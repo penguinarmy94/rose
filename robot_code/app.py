@@ -446,7 +446,7 @@ def initialize_threads2(db, rob, off = True):
                         iCounter += 1
                         if True:    # Make LIST
                             print("[{}] {}".format(iCounter, aFile))
-                        else: DELETE
+                        else: #DELETE
                             aFilePath = os.path.join(config['log_path'], aFile)
             
                             if os.path.isfile(aFilePath):
