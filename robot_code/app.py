@@ -251,7 +251,6 @@ def initialize_threads2(db, rob, off = True):
         print("\n{} Interactive Shell v{}\n".format(appName, appVersion))
             
     while True:
-        print(".....")
 
         iCounter = 0
         iMaxCounter = 4
@@ -319,8 +318,9 @@ def initialize_threads2(db, rob, off = True):
                 if args.verbose:
                     print("Exiting app.initialize_threads() from IF clause")
 
-            
+            print(".....")
             if args.console:
+                print(":::::")
                 prompt = config["prompt"]
                 command = input(prompt)
 
