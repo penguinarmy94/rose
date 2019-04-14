@@ -1,7 +1,8 @@
 #!/usr/bin/python3
 import argparse
 import os
-import json, functools, time, sys
+import json, functools, sys
+from time import sleep
 from threading import Thread
 from sys import path
 from multiprocessing import Process
@@ -72,16 +73,10 @@ if args.purge:
 
 from build import brain, motor, robot, database
 from build import queues, logger, speaker, notification_manager
-from build import relay, camera, uploader, console
+from build import relay, camera, uploader
 
 if 'mic' in devices:
     from build import microphone
-
-def runConsoleThread():
-    console_object = console.Console(queues.brain_console_queue)
-    console_thread = Thread(target=functools.partial(console_object.run))
-    console_thread.start()
-    return console_thread
 
 def runSpeakerThread(config):
     speaker_object = speaker.Speaker(queues.brain_speaker_queue)
@@ -115,7 +110,7 @@ def runMicrophoneThread(config):
 
 def runBrainThread(db, rob, config):
     brain_object = brain.Brain(db, rob, config, args)
-    brain_thread = Thread(target=functools.partial(brain_object.begin), args=(args.verbose))
+    brain_thread = Thread(target=functools.partial(brain_object.begin))
     brain_thread.start()
     return brain_thread
 
@@ -147,9 +142,6 @@ def initialize_threads(db, rob, off = True):
             brain_thread = runBrainThread(db=db,rob=rob,config=config,args=args)
             #motor_thread = runMotorThread()
 
-            if (args.console):
-                console_thread = runConsoleThread(config = config)
-                
             if 'mic' in devices:
                 microphone_thread = runMicrophoneThread(config)
             if 'motor' in devices:
@@ -166,6 +158,17 @@ def initialize_threads(db, rob, off = True):
                 uploader_thread = runUploader(config=config, rob=rob)
             
             log_thread = runLoggerThread()
+
+            if (args.console):
+                print("\n{} Interactive Shell v{}\n".format(appName, appVersion))
+                    
+                while rob.power:
+                    prompt = config["prompt"]
+                    command = input(prompt)
+
+                    
+
+                    
 
             brain_thread.join()
 
@@ -184,9 +187,7 @@ def initialize_threads(db, rob, off = True):
                 relay_thread.join()
             if 'uploader' in devices:
                 uploader_thread.join()
-            
-            if (args.console):
-                console_thread.join()
+
             
             if args.verbose:
                 print("light_thread joined...")
@@ -226,15 +227,20 @@ def init():
     if initialized == 1:  
         db.create_subscriber_model()
 
-        print("Robot initializing", end='', flush = True)
-        while rob.isInitialized() is False:
-            print(".", end='', flush = True)
-            time.sleep(0.2)
-        print("done!")
+        iCounter = 0
+        iMaxCounter = 4
+        iTimeoutCounter = 100
 
-        if (args.console):
-            print("\n{} Interactive Shell v{}\n".format(appName, appVersion))
-        
+        while not rob.isInitialized() and iCounter < iTimeoutCounter:
+	        print("Robot initializing" + "." * (iCounter % iMaxCounter) + " " * iMaxCounter, end='\r', flush = True)
+	        iCounter += 1
+	        sleep(.2)
+
+        if iCounter < iTimeoutCounter:
+            print("Robot initializing completed.")
+        else:
+            print("Robot initializing failed with timeout [Possible connection problem].")
+
         while True:
             if rob.battery <= 0:
                 rob.power = False
