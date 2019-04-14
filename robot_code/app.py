@@ -341,7 +341,7 @@ def initialize_threads2(db, rob, off = True):
               
         if args.console:
             curr_prompt = prompt.replace("[STATUS]", 'ON' if rob.power else 'OFF')
-            curr_prompt = prompt.replace("[DATE]", datatime.date)
+            curr_prompt = prompt.replace("[DATE]", datetime.date)
             curr_prompt = prompt.replace("[TIME]", datetime.time)
 
             command = input(curr_prompt)
