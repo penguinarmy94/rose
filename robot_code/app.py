@@ -110,7 +110,7 @@ def runMicrophoneThread(config):
 
 def runBrainThread(db, rob, config):
     brain_object = brain.Brain(db, rob, config, args)
-    brain_thread = Thread(target=functools.partial(brain_object.begin), args=(args.verbose))
+    brain_thread = Thread(target=functools.partial(brain_object.begin))
     brain_thread.start()
     return brain_thread
 
