@@ -349,7 +349,7 @@ def initialize_threads2(db, rob, off = True):
 
             command = input(curr_prompt).strip()
             value = ""
-            arglist = []
+            #arglist = []
             try:
                 command, value = command.split("=")
             except ValueError:
