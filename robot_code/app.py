@@ -349,11 +349,18 @@ def initialize_threads2(db, rob, off = True):
 
             command = input(curr_prompt).strip()
             value = ""
+            arglist = []]
             try:
                 command, value = command.split("=")
             except ValueError:
                 pass
-            command = command.strip()
+
+            try:
+                command, arglist = command.split()
+            except ValueError:
+                pass
+
+            print("{}\n{}\n{}\n".format(command,arglist,value))
 
             if (command == "help"):
                 print("\nAvailable commands:\n")
@@ -366,6 +373,8 @@ def initialize_threads2(db, rob, off = True):
                 print("status       : Display ROSEbot status")
                 print("config=KEY,VALUE:")
                 print("               Show or set config value.")
+                # Change to one logs with args
+                print("logs [DELETE]: List/delete all logs.")
                 print("log YYYY-MM-DD [filter=VALUE]:")
                 print("               Show the log. Filter options: [HEAD|TAIL]:#, FILTER:TEXT")
                 print("prompt=VALUE : Define a new command line prompt using text and placeholders.")
@@ -429,8 +438,28 @@ def initialize_threads2(db, rob, off = True):
 
                     except ValueError:
                         print("Missing VALUE for {}.".format(key))
+            
+            if (command == "logs"):
+                try:
+                    iCounter = 0
+                    for aFile in os.listdir(config['log_path']):
+                        iCounter += 1
+                        if True:    # Make LIST
+                            print("[{}] {}".format(iCounter, aFile))
+                        else: DELETE
+                            aFilePath = os.path.join(config['log_path'], aFile)
+            
+                            if os.path.isfile(aFilePath):
+                            if args.verbose:
+                                print("Deleting {}...".format(aFilePath))
+                            
+                            try:
+                                os.unlink(aFilePath)
+                            except Exception as e:
+                                print("Error Deleting {}.".format(aFilePath))
+                except Exception as e:
+                    print("Error accessing {}.".format(config['log_path']))
 
- 
             if (command == "exit"):
                 if rob.power:
                     print("Please stop robot before exiting.")
