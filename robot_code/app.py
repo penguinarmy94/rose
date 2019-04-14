@@ -373,15 +373,21 @@ def initialize_threads2(db, rob, off = True):
                 if (help):
                     try:
                         detail = arglist[0]	
-                        print("\nCommand:\t{} {}\nDescription:\t{}\n\nDetails:\n--------\n{}\n".format(detail, help[detail]['args'], help[detail]['default'], help[detail]['details']))
+                        print("\nCommand:\t{} {}\nDescription:\t{}\n\nDetails:\n--------\n{}".format(detail, help[detail]['args'], help[detail]['default'], help[detail]['details']))
                     except IndexError:
+                        firstLine = True
                         for key, value in help.items():
+
+                            if firstLine:
+                                print()
+                                firstLine = False
+
                             key = key + " " + value['args']
                             if len(key) < 10: 
                                 print("{}\t: {}".format(key, value['default']))
                             else:	
                                 print("{}:\n\t  {}".format(key, value['default']))
-                        print("\n")
+                        print()
 
                     except KeyError:
                         print("Invalid command. No help available.")
