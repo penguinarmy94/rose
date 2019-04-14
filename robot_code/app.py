@@ -450,13 +450,14 @@ def initialize_threads2(db, rob, off = True):
                             aFilePath = os.path.join(config['log_path'], aFile)
             
                             if os.path.isfile(aFilePath):
-                            if args.verbose:
-                                print("Deleting {}...".format(aFilePath))
+                                if args.verbose:
+                                    print("Deleting {}...".format(aFilePath))
                             
-                            try:
-                                os.unlink(aFilePath)
-                            except Exception as e:
-                                print("Error Deleting {}.".format(aFilePath))
+                                try:
+                                    os.unlink(aFilePath)
+                                except Exception as e:
+                                    print("Error Deleting {}.".format(aFilePath))
+                
                 except Exception as e:
                     print("Error accessing {}.".format(config['log_path']))
 
