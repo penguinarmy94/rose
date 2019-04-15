@@ -465,7 +465,7 @@ def initialize_threads2(db, rob, off = True):
                     #run command
                     errpr = ''
             
-                elifif command == 'help' and len(arglist) < 2:
+                elif command == 'help' and len(arglist) < 2:
                     if (help):
                         try:
                             detail = arglist[0]	
