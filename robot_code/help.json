@@ -37,7 +37,7 @@
     "log" : {
         "args" : "[list|delete|show [head|tail [NUMBER]]] [filer=FILTER]",
         "default" : "List, delete or display logs",
-        "details" : "list:   Shows a list of logs in the logs folder\ndelete: Delete logs in the logs folder\nshow:   Prints logs in the logs folder\n"
+        "details" : "list:   Shows a list of logs in the logs folder\ndelete: Delete logs in the logs folder\nshow:   Prints logs in the logs folder"
     },
     "exit": {
         "args" : "",

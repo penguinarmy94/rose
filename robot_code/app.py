@@ -473,7 +473,7 @@ def initialize_threads2(db, rob, off = True):
                         try:
                             detail = arglist[0]	
                             if help[detail]['details']:
-                                print("\nCommand:\t{} {}\nDescription:\t{}\n\nDetails:\n--------\n{}".format(detail, help[detail]['args'], help[detail]['default'], help[detail]['details']))
+                                print("\nCommand:\t{} {}\nDescription:\t{}\n\nDetails:\n--------\n{}\n".format(detail, help[detail]['args'], help[detail]['default'], help[detail]['details']))
                             else:
                                 print("There's nothing more to say...\n")
                             error = ''
