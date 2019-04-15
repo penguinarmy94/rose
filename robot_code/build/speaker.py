@@ -1,7 +1,7 @@
 from . import logger
 from threading import Thread, Timer
 import json, datetime, time, pyttsx3, functools, subprocess, random, signal
-import sys
+import os, sys
 
 class Speaker():
     __spQueue = None
@@ -10,11 +10,14 @@ class Speaker():
     __isInMoodState = False
 
     def __init__(self, queue = None, config = None):
-        sys.stderr = open(config['log_path'] + 'stderr.log', 'w')
         random.seed(datetime.datetime.now().second)
         self.__spQueue = queue
         self.__config = config
+        # Bypass annoying jack server error. Drive bug.
+        stderr = sys.stderr
+        sys.stderr = open(os.devnull, 'w')
         self.__player = pyttsx3.init()
+        sys.stderr = stderr
         self.__player.setProperty("rate", 100)
 
     def run(self):
