@@ -17,7 +17,7 @@ class Speaker():
         stderr = sys.stderr
         sys.stderr = open(os.devnull, 'w')
         self.__player = pyttsx3.init()
-        sys.stderr = stderr
+        #sys.stderr = stderr
         self.__player.setProperty("rate", 100)
 
     def run(self):
