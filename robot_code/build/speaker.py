@@ -1,6 +1,7 @@
 from . import logger
 from threading import Thread, Timer
 import json, datetime, time, pyttsx3, functools, subprocess, random, signal
+import sys
 
 class Speaker():
     __spQueue = None
@@ -9,6 +10,7 @@ class Speaker():
     __isInMoodState = False
 
     def __init__(self, queue = None, config = None):
+        sys.stderr = open(config['log_path'] + 'stderr.log', 'w')
         random.seed(datetime.datetime.now().second)
         self.__spQueue = queue
         self.__config = config

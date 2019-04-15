@@ -260,9 +260,6 @@ def initialize_threads2(db, rob, off = True):
         prompt = config["prompt"]
         prompt = prompt.replace('[ID]', config['robotid'])
 
-
-    #action = 'none'            
-    
     while True:
 
         iCounter = 0
@@ -274,7 +271,7 @@ def initialize_threads2(db, rob, off = True):
 
         if rob.power is True and off == True:
             off = False
-            print("Robot has been turned on.     ")
+            print("Robot has been turned on.   " + " " * iMaxCounter)
             try:
                 brain_thread = runBrainThread(db=db,rob=rob,config=config,args=args)
                 #motor_thread = runMotorThread()
