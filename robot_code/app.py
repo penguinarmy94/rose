@@ -498,8 +498,8 @@ def initialize_threads2(db, rob, off = True):
                     else:
                         error = "Missing help file. No help available."       
 
-        if error:
-            print(error)     
+            if error:
+                print(error)     
                     
 
 def init():
