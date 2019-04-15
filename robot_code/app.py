@@ -475,7 +475,7 @@ def initialize_threads2(db, rob, off = True):
                             if help[detail]['details']:
                                 print("\nCommand:\t{} {}\nDescription:\t{}\n\nDetails:\n--------\n{}\n".format(detail, help[detail]['args'], help[detail]['default'], help[detail]['details']))
                             else:
-                                print("There's nothing more to say...\n")
+                                print("There's nothing more to say...")
                             error = ''
                         except IndexError:
                             firstLine = True
