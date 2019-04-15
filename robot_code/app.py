@@ -411,7 +411,7 @@ def initialize_threads2(db, rob, off = True):
                     if value == "":
                         if arglist[0]:
                             try:
-                                print("{} : {}".format(comfig[arglist[0]))
+                                print("{} : {}".format(config[arglist[0]))
                                 isError = ''
                             except:
                                 error = "Invalid config value. Type 'config' for a lst of all values."
@@ -494,7 +494,7 @@ def initialize_threads2(db, rob, off = True):
 
         print(error)     
                     
-                    
+
 def init():
     if args.verbose:
         print("Entering app.init()")
