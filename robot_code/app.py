@@ -359,7 +359,10 @@ def initialize_threads2(db, rob, off = True):
             error = "Invalid command. Type 'help' for a list of valid commands."
 
             # Process single-word commands first
-            if (command == "start"):
+            if not command:
+                error = ''
+
+            elif command == "start":
                 error = ''
                 if rob.power:
                     print("Robot already on")
@@ -368,7 +371,7 @@ def initialize_threads2(db, rob, off = True):
                     off = True
                     db.update_robot()
 
-            elif (command == "stop"):
+            elif command == "stop":
                 error = ''
                 if not rob.power:
                     print("Robot already off")
@@ -377,11 +380,11 @@ def initialize_threads2(db, rob, off = True):
                     off = False
                     db.update_robot()
 
-            elif (command == "status"):
+            elif command == "status":
                 error = ''
                 print("Power:   {}".format(rob.power))
 
-            elif (command == "exit"):
+            elif command == "exit":
                 error = ''
                 if rob.power:
                     print("Please stop robot before exiting.")
@@ -469,7 +472,10 @@ def initialize_threads2(db, rob, off = True):
                     if (help):
                         try:
                             detail = arglist[0]	
-                            print("\nCommand:\t{} {}\nDescription:\t{}\n\nDetails:\n--------\n{}".format(detail, help[detail]['args'], help[detail]['default'], help[detail]['details']))
+                            if help[detail]['details']:
+                                print("\nCommand:\t{} {}\nDescription:\t{}\n\nDetails:\n--------\n{}".format(detail, help[detail]['args'], help[detail]['default'], help[detail]['details']))
+                            else:
+                                print("There's nothing more to say...\n")
                             error = ''
                         except IndexError:
                             firstLine = True

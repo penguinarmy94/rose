@@ -2,22 +2,22 @@
     "help": {
         "args" : "[COMMAND]",
         "default" : "This help screen",
-        "details" : "There's nothing more to say..."
+        "details" : ""
     },
     "start": {
         "args" : "",
         "default" : "Starts the ROSEbot",
-        "details" : "Starts the ROSEbot"
+        "details" : ""
     },
     "stop": {
         "args" : "",
         "default" : "Stops the ROSEbot",
-        "details" : "Stops the ROSEbot"
+        "details" : ""
     },
     "status": {
         "args" : "",
         "default" : "Provides status of the ROSEbot",
-        "details" : "Provides status of the ROSEbot"
+        "details" : ""
     },
     "command": {
         "args" : " DEVICE TYPE=MESSAGE",
@@ -41,7 +41,7 @@
     },
     "exit": {
         "args" : "",
-        "default" : "Stops the ROSEbot controller",
-        "details" : "Stopping the controller requires that the robot is currently stopped. If not, issue a stop command first."
+        "default" : "Stops the ROSEbot controller. Requires robot is currently stopped.",
+        "details" : ""
     }
 }  
