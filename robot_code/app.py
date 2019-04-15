@@ -356,54 +356,11 @@ def initialize_threads2(db, rob, off = True):
             curr_prompt = curr_prompt.replace('[MINUTE]', '{0:%M}'.format(datetime.datetime.now()))
 
             command = input(curr_prompt).strip()
+            error = "Invalid command. Type 'help' for a list of valid commands."
 
-            value = arglist = ''
-            try:
-                command, value = command.split("=")
-            except ValueError:
-                pass
-
-            try:
-                command, arglist = command.split(None, 1)
-                arglist = arglist.split()
-            except ValueError:
-                pass
-
-            if command == 'help':
-                if (help):
-                    try:
-                        detail = arglist[0]	
-                        print("\nCommand:\t{} {}\nDescription:\t{}\n\nDetails:\n--------\n{}".format(detail, help[detail]['args'], help[detail]['default'], help[detail]['details']))
-                    except IndexError:
-                        firstLine = True
-                        for key, value in help.items():
-
-                            if firstLine:
-                                print()
-                                firstLine = False
-
-                            key = key + " " + value['args']
-                            if len(key) < 10: 
-                                print("{}\t: {}".format(key, value['default']))
-                            else:	
-                                print("{}:\n\t  {}".format(key, value['default']))
-                        print()
-
-                    except KeyError:
-                        print("Invalid command. No help available.")
-                else:
-                    print("Missing help file. No help available.")            
-                    
-            if (command == "stop"):
-                if not rob.power:
-                    print("Robot already off")
-                else:
-                    rob.power = False
-                    off = False
-                    db.update_robot()
-                    #action = "stop"
-
+            # Process single-word commands first
             if (command == "start"):
+                error = ''
                 if rob.power:
                     print("Robot already on")
                 else:
@@ -411,76 +368,133 @@ def initialize_threads2(db, rob, off = True):
                     off = True
                     db.update_robot()
 
-            if (command == "status"):
+            elif (command == "stop"):
+                error = ''
+                if not rob.power:
+                    print("Robot already off")
+                else:
+                    rob.power = False
+                    off = False
+                    db.update_robot()
+
+            elif (command == "status"):
+                error = ''
                 print("Power:   {}".format(rob.power))
 
-            if (command == 'prompt'):
-                prompt = value
-                prompt = prompt.replace('[ID]', config['robotid'])
-
-                with open(configFile, 'r') as jsonFile:
-                    tmpConfig = json.load(jsonFile)
-
-                tmpConfig["prompt"] = value
-                with open(configFile, 'w') as jsonFile:
-                    json.dump(tmpConfig, jsonFile)
-
-            if (command == 'config'):
-                if value == "":
-                    iCounter = 1
-                    for key, value in config.items():
-                        print("[{}] {} : {}".format(iCounter, key, value))
-                        iCounter += 1
-                else:
-                    try:
-                        key,value = value.split(',')
-                        
-                        with open(configFile, 'r') as jsonFile:
-                            tmpConfig = json.load(jsonFile)
-             
-                        tmpConfig[key] = value
-
-                        with open(configFile, 'w') as jsonFile:
-                            json.dump(tmpConfig, jsonFile)
-
-                        # Make functions to avoid duplication
-                        config[key] = value   
-                        if key == 'prompt':
-                            prompt = value
-                            prompt = prompt.replace('[ID]', config['robotid'])
-
-                    except ValueError:
-                        print("Missing VALUE for {}.".format(key))
-            
-            if (command == "logs"):
-                try:
-                    iCounter = 0
-                    for aFile in os.listdir(config['log_path']):
-                        iCounter += 1
-                        if True:    # Make LIST
-                            print("[{}] {}".format(iCounter, aFile))
-                        else: #DELETE
-                            aFilePath = os.path.join(config['log_path'], aFile)
-            
-                            if os.path.isfile(aFilePath):
-                                if args.verbose:
-                                    print("Deleting {}...".format(aFilePath))
-                            
-                                try:
-                                    os.unlink(aFilePath)
-                                except Exception as e:
-                                    print("Error Deleting {}.".format(aFilePath))
-                
-                except Exception as e:
-                    print("Error accessing {}.".format(config['log_path']))
-
-            if (command == "exit"):
+            elif (command == "exit"):
+                error = ''
                 if rob.power:
                     print("Please stop robot before exiting.")
                 else: 
                     sys.exit()
-    
+                    
+            else:
+                # Now parse input for complex commands          
+                value = arglist = ''
 
+                try:
+                    command, value = command.split("=")
+                except ValueError:
+                    pass
+
+                if command == 'prompt' and value:
+                    command = 'config prompt'
+                    prompt = prompt.replace('[ID]', config['robotid'])
+            
+                try:
+                    command, arglist = command.split(None, 1)
+                    arglist = arglist.split()
+                except ValueError:
+                    pass
+
+                if command == 'config':
+                    if value == "":
+                        if arglist[0]:
+                            try:
+                                print("{} : {}".format(comfig[arglist[0]))
+                                isError = ''
+                            except:
+                                error = "Invalid config value. Type 'config' for a lst of all values."
+                        else:
+                            iCounter = 1
+                            for key, value in config.items():
+                                print("[{}] {} : {}".format(iCounter, key, value))
+                                iCounter += 1
+                            error = ''
+                    else:
+                        try:
+                            with open(configFile, 'r') as jsonFile:
+                                tmpConfig = json.load(jsonFile)
+             
+                            tmpConfig[arglist[0]] = value
+
+                            with open(configFile, 'w') as jsonFile:
+                                json.dump(tmpConfig, jsonFile)
+
+                            config[arglist[0]] = value
+                            if arglist[0] == 'prompt':
+                                prompt = value
+                                prompt = prompt.replace('[ID]', config['robotid'])    
+                            
+                            error = ''
+                        except:
+                            error = 'Error chagning config value'
+
+                elif command == "log":
+                    try:
+                        iCounter = 0
+                        for aFile in os.listdir(config['log_path']):
+                            iCounter += 1
+                            if True:    # Make LIST
+                                print("[{}] {}".format(iCounter, aFile))
+                                error = ''
+                            else: #DELETE
+                                aFilePath = os.path.join(config['log_path'], aFile)
+                                error = ''
+            
+                                if os.path.isfile(aFilePath):
+                                    try:
+                                        os.unlink(aFilePath)
+                                    except Exception as e:
+                                        error = 'Failed to delete some files'
+                
+                    except Exception as e:
+                        error = 'Error accessing log path'            
+
+                elif command == 'command' and len(arglist) == 2 and value:
+                    #run command
+                    errpr = ''
+            
+                elifif command == 'help' and len(arglist) < 2:
+                    if (help):
+                        try:
+                            detail = arglist[0]	
+                            print("\nCommand:\t{} {}\nDescription:\t{}\n\nDetails:\n--------\n{}".format(detail, help[detail]['args'], help[detail]['default'], help[detail]['details']))
+                            error = ''
+                        except IndexError:
+                            firstLine = True
+                            for key, value in help.items():
+
+                                if firstLine:
+                                    print()
+                                    firstLine = False
+
+                                key = key + " " + value['args']
+                                if len(key) < 10: 
+                                    print("{}\t: {}".format(key, value['default']))
+                                else:	
+                                    print("{}:\n\t  {}".format(key, value['default']))
+                            print()
+                            error = ''
+                        except KeyError:
+                            # Invalid command
+                            pass
+                    else:
+                        error = "Missing help file. No help available."       
+
+        print(error)     
+                    
+                    
 def init():
     if args.verbose:
         print("Entering app.init()")

@@ -1,6 +1,6 @@
 {
     "help": {
-        "args" : "",
+        "args" : "[COMMAND]",
         "default" : "This help screen",
         "details" : "There's nothing more to say..."
     },
