@@ -30,7 +30,7 @@ class Uploader():
                         A robot reference that this module will need to send notifications to the user
                         via the cloud messaging manager
     """
-    def __init__(self, queue = None, config = None, robot = None):
+    def __init__(self, queue = None, robot = None, config = None):
         try:
             if not queue:
                 raise TypeError("Queue parameter not set")

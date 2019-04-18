@@ -1,15 +1,22 @@
-import datetime, time, threading
+import datetime, time, threading, os
 from . import queues
 
 logLevels = ["none", "info", "debug"]
-level = 0
+level = "none"
 
 def write(message):
     queues.logger_queue.put(message)
 
 def runLogger():
     while True:
-        file_name = "logs/Logs-" + str(datetime.date.today())
+        # The log path should be read from config. Pass into logger?
+        log_path = "/home/pi/Desktop/Projects/rose/robot_code/logs/"
+        try:
+            os.makedirs(log_path)
+        except FileExistsError:
+            pass
+
+        file_name = log_path + "Logs-" + str(datetime.date.today())
         if not queues.logger_queue.empty():
             message = queues.logger_queue.get()
             if message == "turn off":
