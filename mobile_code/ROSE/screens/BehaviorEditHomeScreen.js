@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Picker, Alert } from 'react-native';
+import { View, Text, StyleSheet, Picker, Alert, ScrollView } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { config } from "../assets/config/config";
 import { NavigationActions, StackActions } from 'react-navigation';
@@ -8,7 +8,7 @@ import User from '../controllers/User';
 export default class BehaviorEditHomeScreen extends Component {
     static navigationOptions = ({navigation}) => {
         return{
-            headerLeft: <Icon style={{marginLeft: 15}} type="material-community" name="arrow-left" onPress={() => {navigation.getParam("rootNav", "null").navigate("SettingsHome")} } />
+            headerLeft: <Icon iconStyle={{marginLeft: 20}} type="material-community" name="arrow-left" onPress={() => {navigation.getParam("rootNav", "null").navigate("SettingsHome")} } />
         };
     };
 
@@ -37,9 +37,17 @@ export default class BehaviorEditHomeScreen extends Component {
         this.state.behaviors.forEach((elementValue, index) => {
             elementValue.get().then((behavior) => {
                 if(behavior.exists) {
-                    behaviorList.push(behavior.data());
-                    behaviorComponents = this._addComponent(index, behavior, behaviorComponents);
-                    behaviorPickerItems.push({name: behavior.data().name, element: index, ref: behavior});
+                    if(behavior.data().name == "default") {
+                        behaviorList.unshift(behavior.data());
+                        behaviorComponents = this._addComponent(index, behavior, behaviorComponents);
+                        behaviorPickerItems.unshift({name: behavior.data().name, element: index, ref: behavior});
+
+                    }
+                    else {
+                        behaviorList.push(behavior.data());
+                        behaviorComponents = this._addComponent(index, behavior, behaviorComponents);
+                        behaviorPickerItems.push({name: behavior.data().name, element: index, ref: behavior});
+                    }
 
                     this.setState({
                         behaviorList: behaviorList, 
@@ -67,22 +75,22 @@ export default class BehaviorEditHomeScreen extends Component {
 
     _addComponent = (index, behavior, behaviorComponents) => {
         if(behavior.data().name == "default") {
-            behaviorComponents.push(
-                <View key={index} style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+            behaviorComponents.unshift(
+                <View key={index} style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
                     <Text style={[{flex: 0}, styles.spacing]}>{behavior.data().name}</Text>
                 </View>
             );
         }
         else {
             behaviorComponents.push(
-                <View key={index} style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                <View key={index} style={{flexDirection: 'row', justifyContent: 'space-between', paddingRight: 15}}>
+                    <Text style={[{flex: 0}, styles.spacing]}>{behavior.data().name}</Text>
                     <Icon 
                         type="material-community" 
                         name="minus-circle" 
-                        color="red" 
+                        color="pink" 
                         onPress={() => this.deleteBehavior(behavior.data(), behavior)}
                     />
-                    <Text style={[{flex: 0}, styles.spacing]}>{behavior.data().name}</Text>
                 </View>
             );
         }
@@ -290,16 +298,19 @@ export default class BehaviorEditHomeScreen extends Component {
 
     render() {
         return(
-            <View style={styles.container}>
-                <View>
-                    {this.state.defaultPickers.map((picker, index) => {
-                        return this.renderBlock(picker.key, picker.text, picker.selected, picker.changeFunction);
-                    })}
-                </View>
-                <View>
-                    <Text style={[styles.spacing, styles.sectionSpacing]}>All Behaviors:</Text>
-                    <View style={styles.spacing}>{this.state.behaviorComponents}</View>
-                    <View style={styles.spacing}><Icon type="material-community" name="plus-circle" color="green" onPress={this.addBehavior}/></View>
+            <View style={[styles.container, styles.rose_background]}>
+                <View style={[styles.behavior_container]}>
+                    <Text style={styles.label}>Current Behaviors:</Text>
+                    <View>
+                        {this.state.defaultPickers.map((picker, index) => {
+                            return this.renderBlock(picker.key, picker.text, picker.selected, picker.changeFunction);
+                        })}
+                    </View>
+                    <Text style={[styles.label]}>All Behaviors:</Text>
+                    <View style={{maxHeight: 200, width: 300}}>
+                        <ScrollView contentContainerstyle={styles.spacing}>{this.state.behaviorComponents}</ScrollView>
+                    </View>
+                    <View style={styles.add}><Icon size={30} type="material-community" name="plus-circle" color="#64a2b7" onPress={this.addBehavior}/></View>
                 </View>
             </View>
         );
@@ -308,12 +319,34 @@ export default class BehaviorEditHomeScreen extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 0,
-        flexDirection: 'column',
-        justifyContent: 'space-between',
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    rose_background: {
+        backgroundColor: "#000000"
+    },
+    behavior_container: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: "white",
+        borderWidth: 1,
+        borderRadius: 50,
+        paddingLeft: 10,
+        paddingRight: 10
+    },
+    label: {
+        marginTop: 20,
+        marginBottom: 20,
+        fontSize: 20,
+        borderBottomWidth: 1,
+        color: "black"
     },
     spacing: {
         margin: 15
+    },
+    add: {
+        margin: 30
     },
     delete: {
         flex: 1,

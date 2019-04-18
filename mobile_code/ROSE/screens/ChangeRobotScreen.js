@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { View, ScrollView, Text, StyleSheet, Alert, Button, TouchableOpacity} from 'react-native';
 import { Icon } from 'react-native-elements';
 import { config } from "../assets/config/config";
-import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
+import {RadioButton} from 'react-native-paper';
+import RadioForm, { RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
 
 export default class ChangeRobotScreen extends Component {
     static navigationOptions = {
@@ -43,22 +44,17 @@ export default class ChangeRobotScreen extends Component {
         });
     }
 
-    renderBlock = (key, robots, selected, changeFunction) => {
+    renderBlock = (key, robot, changeFunction) => {
         if(this.state.index > -1) {
             return(
                 <View key={key} style={styles.robot}>
-                    <RadioForm
-                        formHorizontal={false}
-                        animation={true}
-                        onPress={changeFunction}
-                        initial={this.state.index}
-                        radio_props={robots}
-                        buttonColor={"#64a2b7"}
-                        labelColor={"#000"}
-                        selectedButtonColor={"#64a2b7"}
-                        selectedLabelColor={"#000"}
-                        buttonSize={15}
+                    <RadioButton
+                        value={robot.label}
+                        color="black"
+                        status={this.state.selected === robot.value ? "checked" : "unchecked"}
+                        onPress={() => changeFunction(robot.value)}
                     />
+                    <Text style={styles.text_input}>{robot.label}</Text>
                 </View>
             );
         }
@@ -83,14 +79,18 @@ export default class ChangeRobotScreen extends Component {
         return(
             <View style={[styles.container, styles.rose_background]}>
                 <View style={styles.robot_container}>
-                    <Text style={[{fontSize: 25, fontWeight: "bold", borderBottomWidth: 1, magin: 20}]}>Robots</Text>
-                    <ScrollView contentContainerStyle={styles.scroll_view}>
-                        {
-                            this.renderBlock(0, this.state.robots, this.state.selected, (value, index) => {
-                                this.setState({selected: value});
-                            })
-                        }
-                    </ScrollView>
+                    <Text style={[{fontSize: 25, fontWeight: "bold", borderBottomWidth: 1, margin: 20}]}>Robots</Text>
+                    <View style={styles.scroll_view}>
+                        <ScrollView>
+                            {
+                                this.state.robots.map((robot, index) => {
+                                    return(this.renderBlock(index, robot, (value) => {
+                                        this.setState({selected: value});
+                                    }));
+                                })
+                            }
+                        </ScrollView>
+                    </View>
                     <TouchableOpacity style={styles.submit_button} onPress={this.confirm}>
                         <Text style={styles.button_text}>Confirm</Text>
                     </TouchableOpacity>
@@ -109,12 +109,10 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center"
     },
-    scroll_view: {
-        justifyContent: "center", 
-        alignItems: "center", 
+    scroll_view: { 
+        maxHeight: 200,
         marginTop: 30, 
-        marginLeft: 15, 
-        borderWidth: 1
+        marginLeft: 15
     },
     robot_container: {
         justifyContent: 'center',
@@ -125,15 +123,17 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         paddingRight: 10
     },
+    text_input: {
+        fontWeight: "bold",
+        borderBottomWidth: 1
+    },  
     robot: {
+        flexDirection: "row",
+        alignItems: "center",
         width: 300
     },
     rose_background: {
         backgroundColor: "#000000"
-    },
-    text_input: {
-        width: 300, 
-        borderBottomWidth: 1
     },
     button_text: {
         color: "white", 

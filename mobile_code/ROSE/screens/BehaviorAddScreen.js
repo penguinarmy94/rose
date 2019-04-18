@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text, Picker, StyleSheet, ScrollView, Alert, Button } from 'react-native';
+import { View, Text, Picker, StyleSheet, ScrollView, Alert, Button, TouchableOpacity } from 'react-native';
 import { Icon, FormLabel, FormInput } from 'react-native-elements';
 import { config } from '../assets/config/config';
 import uuid from 'react-native-uuid';
 import { NavigationActions, StackActions } from 'react-navigation';
+import Collapsible from 'react-native-collapsible';
 
 export default class BehaviorAddScreen extends Component {
     static navigationOptions = {
@@ -24,7 +25,7 @@ export default class BehaviorAddScreen extends Component {
             actions: [],
             actionBlocks: [],
             actionSelection: {},
-            behavior: {name: "", description: "", actions: []}
+            behavior: {name: "", description: "", actions: []},
         };
 
         config.session.getActionList().get().then((selection) => {
@@ -54,7 +55,9 @@ export default class BehaviorAddScreen extends Component {
             action: this.state.actions[0].data.name,
             desc: this.state.actions[0].data.description,
             type: this.types[this.state.actions[0].data.type], 
-            value: ""};
+            value: "",
+            collapsed: true
+        };
 
         this.values.push("");
 
@@ -83,7 +86,12 @@ export default class BehaviorAddScreen extends Component {
     renderBlock = (key, index, changeFunction) => {
         return(
             <View key={key} style={styles.block}>
-                <View key={key} style={[styles.dropdown, {borderBottomWidth: 0.5, borderColor: "black"}]}>
+                <TouchableOpacity key={key} onPress={() => {
+                        actions = this.state.actionSelection; 
+                        actions[key].collapsed = actions[key].collapsed? false: true;
+                        this.setState({actionSelection: actions});
+                    }} 
+                    style={[styles.dropdown, {borderBottomWidth: 0.5, borderColor: "black"}]}>
                     <FormLabel style={styles.spacing}>Action: </FormLabel>
                     <Picker
                         selectedValue={this.state.actionSelection[key].action}
@@ -97,7 +105,8 @@ export default class BehaviorAddScreen extends Component {
                             })
                         }
                     </Picker>
-                </View>
+                </TouchableOpacity>
+                <Collapsible collapsedHeight={0} collapsed={this.state.actionSelection[key].collapsed}>
                 <View style={styles.valueParam}>
                     <FormLabel style={{}}>Value: </FormLabel>
                     <FormInput placeholder="0"
@@ -130,11 +139,13 @@ export default class BehaviorAddScreen extends Component {
                 <View style={styles.dropdown}>
                     <Text style={styles.spacing}>Description:  {this.state.actionSelection[key].desc}</Text>
                 </View>
-                <View style={styles.spacing}>
+                </Collapsible>
+                <View style={[styles.spacing]}>
                     <Icon 
                         type="material-community" 
                         name="minus-circle" 
-                        color="red" 
+                        color="pink"
+                        containerStyle={{justifyContent: "flex-end", alignItems: "flex-end"}} 
                         onPress={() => this.deleteBlock(index, key)}
                     />
                 </View>
@@ -183,7 +194,7 @@ export default class BehaviorAddScreen extends Component {
         let behaviors = this.state.behaviorObjects;
         let behaviorToBeCreated = this.state.behavior;
 
-        if(behaviors && behaviorToBeCreated.name != "") {
+        if(behaviors && behaviorToBeCreated.name != "" && behaviorToBeCreated.description != "") {
 
             for (i = 0; i < behaviors.length; i++) {
                 if (behaviorToBeCreated.name === behaviors[i].name) {
@@ -237,7 +248,10 @@ export default class BehaviorAddScreen extends Component {
             })
         }
         else if(behaviorToBeCreated.name == "") {
-            alert("behavlor name cannot be blank");
+            alert("Behavior name cannot be blank");
+        }
+        else if(behaviorToBeCreated.description == "") {
+            alert("Behavior description cannot be blank");
         }
         else {
             return;
@@ -250,16 +264,18 @@ export default class BehaviorAddScreen extends Component {
 
     render() {
         return(
-            <ScrollView style={styles.container} keyboardShouldPersistTaps={'handled'}>
-                <View style={[styles.block, styles.spacing]}>
+            <View style={[styles.container, styles.rose_background]} keyboardShouldPersistTaps={'handled'}>
+                <View style={[styles.name_block, styles.spacing]}>
                     <View style={[styles.dropdown, styles.padding]}>
                         <FormLabel>Name: </FormLabel>
                         <FormInput placeholder=""
                             ref={input => this.behaviorNameRef = input}
                             onChangeText={(text) => {
                                     let state = this.state;
-                                    state.behavior.name = text;
-                                    this.setState(state);
+                                    if (text.length <= 25) {
+                                        state.behavior.name = text;
+                                        this.setState(state);
+                                    }
                             }
                             }
                             value={this.state.behavior.name}
@@ -281,24 +297,29 @@ export default class BehaviorAddScreen extends Component {
                         />
                     </View>
                 </View>
-                <View>
-                    {this.state.actionBlocks.map((value, index) => {
-                        return (this.renderBlock(value.key, index, value.changeFunction));
-                    })}
-                </View>
-                <View style={styles.endButtons}>
-                    <Button title="Create" onPress={this.createBehavior} />
+                <View style={{height: 350, marginLeft: 15, marginRight: 15, paddingTop: 10, backgroundColor: "white"}}>
+                    <ScrollView ref={(scroll) => this.scrollBar = scroll}>
+                        {this.state.actionBlocks.map((value, index) => {
+                            return (this.renderBlock(value.key, index, value.changeFunction));
+                        })}
+                    </ScrollView>
                     <View style={styles.spacing}>
-                        <Icon 
+                        <Icon
+                            size={30}
                             type="material-community" 
                             name="plus-circle" 
-                            color="green" 
-                            onPress={this.addBlock}
+                            color="#64a2b7" 
+                            onPress={() => {
+                                this.addBlock();
+                                this.scrollBar.scrollToEnd();
+                            }}
                         />
                     </View>
-                    <Button title="Cancel" onPress={this.cancelCreation} />
                 </View>
-            </ScrollView>
+                <TouchableOpacity style={styles.submit_button} onPress={this.createBehavior}>
+                    <Text style={styles.button_text}>Create</Text>
+                </TouchableOpacity>
+            </View>
         );
     }
 }
@@ -309,14 +330,14 @@ const styles = StyleSheet.create({
     container: {
         flex: 1
     },
+    rose_background: {
+        backgroundColor: "black"
+    },
     spacing: {
         margin: 15
     },
     row: {
         flexDirection: 'row'
-    },
-    padding: {
-        padding: 15
     },
     delete: {
         flex: 1,
@@ -325,14 +346,26 @@ const styles = StyleSheet.create({
     dropdown: {
         flexDirection: 'row',
         justifyContent: 'space-between',
+        alignItems: "center",
+        marginTop: 15,
+        marginBottom: 15
     },
     valueParam: {
         flexDirection: "row",
         justifyContent: "flex-start"
     },
+    name_block: {
+        borderWidth: 1,
+        backgroundColor: "white",
+        borderRadius: 10
+    },
     block: {
         borderWidth: 1,
-        borderColor: 'black'
+        backgroundColor: "white",
+        borderRadius: 10,
+        marginLeft: 15,
+        marginRight: 15,
+        marginTop: 5
     },
     endButtons: {
         justifyContent: "center",
@@ -344,5 +377,18 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         borderBottomColor: 'black', 
         borderBottomWidth: 1
+    },
+    button_text: {
+        color: "white", 
+        margin: 10, 
+        fontWeight: "bold"
+    },
+    submit_button: {
+        marginLeft: 15,
+        marginRight: 15,
+        marginTop: 10,
+        backgroundColor: "#64a2b7",
+        justifyContent: "center",
+        alignItems: "center"
     }
 });

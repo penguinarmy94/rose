@@ -187,7 +187,7 @@ export default class LoginScreen extends Component {
             <TouchableOpacity onPress={this.register} style={{marginTop: 15, width: 300}}>
               <Text style={[styles.hyperlink]}>Register ></Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => alert("not yet")} style={{marginTop: 5, width: 300}}>
+            <TouchableOpacity onPress={this.passwordRecovery} style={{marginTop: 5, width: 300}}>
               <Text style={[styles.hyperlink]}>Recover Password ></Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={this.aboutPage} style={{marginTop: 5, marginBottom: 15, width: 300}}>

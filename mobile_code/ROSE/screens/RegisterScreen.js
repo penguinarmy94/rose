@@ -46,7 +46,7 @@ export default class LoginScreen extends Component {
     }
 
     let success = true;
-    firebase.auth().createUserWithEmailAndPassword(this.state.username, this.state.password).catch((error) => {
+    firebase.auth().createUserWithEmailAndPassword(this.state.username.toLowerCase(), this.state.password.toLowerCase()).catch((error) => {
       alert(error.message);
       success = false;
       this.setState({"registering": false});
@@ -211,12 +211,12 @@ export default class LoginScreen extends Component {
       }
       else {
         return(
-          <ScrollView contentContainerStyle={[styles.loadingcontainer, styles.rose_background]}>
+          <View style={[styles.container, styles.rose_background]}>
             <View style={styles.loading_container}>
               <Text style={styles.title}>{title}</Text>
               <Loader text="Creating New Account..." />
             </View>
-          </ScrollView>
+          </View>
         );
       }
   }
@@ -229,8 +229,8 @@ const styles = StyleSheet.create({
       alignItems: 'center',
     },
     loading_container: {
-      width: 200,
-      height: 200,
+      width: 350,
+      height: 500,
       justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: "white",
