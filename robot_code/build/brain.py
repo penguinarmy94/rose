@@ -98,6 +98,7 @@ class Brain():
                 self.__read_sensors()
                 self.__read_microphone()
                 self.__read_camera()
+                self.__read_uploader()
                 self.__update_behaviors()
                 self.__handle_behavior()
             except Exception as e:
@@ -227,9 +228,7 @@ class Brain():
         Parameters:
         -----------
         None
-    """
-
-   
+    """  
     def __read_motor(self):
         try:
             time_stamp = str(datetime.datetime.now())
@@ -292,6 +291,45 @@ class Brain():
 
             print(time_stamp + ": " + error_message)
             logger.write(time_stamp + ": " + error_message)
+    
+
+    """
+        Description: This is the function to check whether the uploader has uploaded
+        new images to the cloud storage system.
+
+        The brain reads the queue that is the data structure serving as the middle man
+        between the uploader and brain functionalities. It then unpacks the message and
+        updates the robot with the new images uploaded
+
+        Parameters:
+        -----------
+        None
+    """
+    def __read_uploader(self):
+        try:
+            time_stamp = str(datetime.datetime.now())
+
+            # Check that queue is not empty
+            if not self.__uploaderQueue.empty():
+                # Read first item in the queue
+                message_packet = json.loads(self.__uploaderQueue.peek())
+
+                # Message incoming from uploader
+                if message_packet["type"] == "brain":
+                    message_packet = json.loads(self.__uploaderQueue.get())
+                    self.__db.update_robot()
+                    logger.write(time_stamp + " - Uploader to Brain: Brain Message Received -- " + message_packet["message"])
+                else:
+                    return
+            else:
+                return
+        except Exception as e:
+            error_message = "Brain.__read_uploader() Error: " + str(e)
+            time_stamp = str(datetime.datetime.now())
+
+            print(time_stamp + ": " + error_message)
+            logger.write(time_stamp + ": " + error_message)
+
 
     """
         Description: This is the function to check whether the camera has sent

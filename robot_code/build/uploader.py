@@ -147,6 +147,11 @@ class Uploader():
                 if file_path.endswith('.jpeg') or file_path.endswith('.jpg'):
                     self.__robot.videos.append(storage_path)
                     self.__robot.num_of_videos += 1
+                    self.__write_queue(message_type="brain", message="upload complete")
                 os.remove(file_path)
         except Exception as e:
             print(str(e))
+    
+
+    def __write_queue(self, message_type = "brain", message = "upload complete"):
+        self.__queue.put(json.dumps({ "type" : message_type, "message" : message}))
