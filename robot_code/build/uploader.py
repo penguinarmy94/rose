@@ -157,7 +157,7 @@ class Uploader():
                     self.__write_queue(message_type="brain", message="upload complete")
                 
                 dir_items = file_path.split("/")
-                dir_items[-1:] = "x_" + dir_items[-1:]
+                dir_items[-1:] = "x_" + str(dir_items[-1:])
                 new_path = "/".join(dir_items)
                 os.rename(file_path, new_path)
         except Exception as e:
