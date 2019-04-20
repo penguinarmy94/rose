@@ -1,6 +1,6 @@
 from . import logger
 from threading import Thread, Timer
-import json, datetime, time, pyttsx3, functools, subprocess, random, signal
+import json, datetime, time, pyttsx3, functools, subprocess, signal
 import os, sys
 
 class Speaker():
@@ -10,7 +10,6 @@ class Speaker():
     __isInMoodState = False
 
     def __init__(self, queue = None, config = None):
-        random.seed(datetime.datetime.now().second)
         self.__spQueue = queue
         self.__config = config
         # Bypass annoying jack server error. Drive bug.
@@ -66,7 +65,9 @@ class Speaker():
     
     def __setMood(self):    
         if self.__mood in self.__config["moods"]:
-            choice = random.choice(self.__config["moods"][self.__mood])
+            date = datetime.datetime.now()
+            index = (date.hour + date.minute + date.second)%len(self._config["moods"][self.__mood])
+            choice = self.__config["moods"][self.__mood][index]
             self.say(choice)
         
         self.__isInMoodState = False

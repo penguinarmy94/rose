@@ -125,7 +125,6 @@ class Uploader():
         for file in listdir(self.__config["capture_path"]):
             tempFile = join(self.__config["capture_path"], file)
             if isfile(tempFile):
-                print(tempFile)
                 if file.startswith("x_"):
                     continue
                 if tempFile.endswith(".jpeg") or tempFile.endswith(".jpg") or tempFile.endswith(".wav"):
@@ -148,17 +147,14 @@ class Uploader():
         try:
             storage_path = self.__root + "/" + self.__robot.id + "/" + aFile
 
-            print(storage_path)
-
             with open(file_path) as file:
                 blob = self.__bucket.blob(storage_path)
                 blob.upload_from_filename(filename=file_path)
                 if file_path.endswith('.jpeg') or file_path.endswith('.jpg'):
-                    self.__robot.videos.append(storage_path)
+                    self.__robot.videos.append(aFile)
                     self.__robot.num_of_videos += 1
                     self.__write_queue(message_type="brain", message="upload complete")
-                
-    
+                    print(storage_path)
         except Exception as e:
             print(str(e))
     
