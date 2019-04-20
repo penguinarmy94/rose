@@ -142,9 +142,9 @@ class Uploader():
                         The file path of the file that is going to be uploaded to the
                         cloud storage server
     """
-    def __upload(self, file, file_path):
+    def __upload(self, aFile, file_path):
         try:
-            storage_path = self.__root + "/" + self.__robot.id + "/" + file
+            storage_path = self.__root + "/" + self.__robot.id + "/" + aFile
 
             print(storage_path)
 
@@ -157,7 +157,7 @@ class Uploader():
                     self.__write_queue(message_type="brain", message="upload complete")
                 
                 
-            os.rename(file_path, self.__config["capture_path"] + "x_" + file)
+            os.rename(file_path, self.__config["capture_path"] + "x_" + aFile)
         except Exception as e:
             print(str(e))
     
