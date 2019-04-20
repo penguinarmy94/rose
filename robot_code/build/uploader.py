@@ -60,7 +60,7 @@ class Uploader():
     """
     def __activateClient(self, token):
         try:
-            print("Uploadr:)
+            print("Uploadr:")
             self.__client = storage.Client.from_service_account_json(token)
             print(self.__client)
             self.__bucket = self.__client.bucket(self.__config["bucket"])
