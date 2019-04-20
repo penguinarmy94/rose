@@ -39,10 +39,10 @@
         "default" : "List, delete or display logs",
         "details" : "list:   Shows a list of logs in the logs folder\ndelete: Delete logs in the logs folder\nshow:   Prints logs in the logs folder"
     },
-    "images" :  {
-        "args" : "[list|delete|show [head|tail [NUMBER]]] [filer=FILTER]",
-        "default" : "List, delete or display logs",
-        "details" : "list:   Shows a list of logs in the logs folder\ndelete: Delete logs in the logs folder\nshow:   Prints logs in the logs folder"
+    "files" :  {
+        "args" : "[logs|images] [filer=FILTER] [list|delete|show [head|tail [NUMBER]]]",
+        "default" : "List, delete or display files",
+        "details" : "list:   Shows a list of files in the  folder\ndelete: Delete logs in the logs folder\nshow:   Prints logs in the logs folder"
     },
     "exit": {
         "args" : "",
