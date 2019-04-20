@@ -123,6 +123,7 @@ class Uploader():
         for file in listdir(self.__config["capture_path"]):
             tempFile = join(self.__config["capture_path"], file)
             if isfile(tempFile):
+                print(tempFile)
                 if tempFile.endswith(".jpeg") or tempFile.endswith(".jpg") or tempFile.endswith(".wav"):
                     self.__upload(tempFile)
 
@@ -140,6 +141,8 @@ class Uploader():
     def __upload(self, file_path):
         try:
             storage_path = self.__root + "/" + self.__robot.id + "/" + file_path
+
+            print(storage_path)
 
             with open(file_path) as file:
                 blob = self.__bucket.blob(storage_path)
