@@ -42,7 +42,7 @@ class Uploader():
             self.__config = config
             self.__robot = robot
             self.__queue = queue
-            self.__activateClient(self, self.__config["token_pi"])
+            self.__activateClient(self.__config["token_pi"])
         except Exception as e:
             print(str(e))
 
@@ -61,6 +61,7 @@ class Uploader():
     def __activateClient(self, token):
         try:
             self.__client = storage.Client.from_service_account_json(token)
+            print(self.__client)
             self.__bucket = self.__client.bucket(self.__config["bucket"])
         except Exception as e:
             print(str(e))
@@ -124,7 +125,7 @@ class Uploader():
             if isfile(tempFile):
                 print(tempFile)
                 if tempFile.endswith(".jpeg") or tempFile.endswith(".jpg") or tempFile.endswith(".wav"):
-                    self.__upload(tempFile)
+                    self.__upload(file, tempFile)
 
     """
         Description: This function is used for uploading files (given its file path) to 
@@ -137,9 +138,9 @@ class Uploader():
                         The file path of the file that is going to be uploaded to the
                         cloud storage server
     """
-    def __upload(self, file_path):
+    def __upload(self, file, file_path):
         try:
-            storage_path = self.__root + "/" + self.__robot.id + "/" + file_path
+            storage_path = self.__root + "/" + self.__robot.id + "/" + file
 
             print(storage_path)
 
