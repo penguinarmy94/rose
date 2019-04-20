@@ -34,7 +34,12 @@
         "default" : "Set a new ROSE Console command line prompt using text and placeholders",
         "details" : "Valid placeholders are: [ID],[STATUS],[YEAR],[MONTH],[DAY],[HOUR],[MINUTE]."
     },
-    "log" : {
+    "logs" : {
+        "args" : "[list|delete|show [head|tail [NUMBER]]] [filer=FILTER]",
+        "default" : "List, delete or display logs",
+        "details" : "list:   Shows a list of logs in the logs folder\ndelete: Delete logs in the logs folder\nshow:   Prints logs in the logs folder"
+    },
+    "images" :  {
         "args" : "[list|delete|show [head|tail [NUMBER]]] [filer=FILTER]",
         "default" : "List, delete or display logs",
         "details" : "list:   Shows a list of logs in the logs folder\ndelete: Delete logs in the logs folder\nshow:   Prints logs in the logs folder"
