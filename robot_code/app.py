@@ -134,6 +134,7 @@ def runNotificationManager(rob, config, initialized = False):
     return notifier_thread
 
 def runUploader(rob, config):
+    print("Entering runUploader.")
     uploader_object = uploader.Uploader(queues.brain_uploader_queue, rob, config)
     uploader_thread = Thread(target=functools.partial(uploader_object.run))
     uploader_thread.start()
@@ -170,6 +171,7 @@ def initialize_threads(db, rob, off = True):
             if 'led' in devices:
                 relay_thread = runRelayThread(pins = relay_pins)
             if 'uploader' in devices:
+                print("Uploader")
                 uploader_thread = runUploader(rob=rob, config=config)
             
             log_thread = runLoggerThread()
@@ -226,6 +228,7 @@ def initialize_threads(db, rob, off = True):
             if 'led' in devices:
                 relay_thread.join()
             if 'uploader' in devices:
+                print("uploader joined")
                 uploader_thread.join()
 
 
@@ -289,6 +292,7 @@ def initialize_threads2(db, rob, off = True):
                 if 'led' in devices:
                     relay_thread = runRelayThread(pins = relay_pins)
                 if 'uploader' in devices:
+                    print("Run uploader thread")
                     uploader_thread = runUploader(config=config, rob=rob)
             
                 log_thread = runLoggerThread()
