@@ -123,7 +123,8 @@ class Brain():
 
     def __reset(self):
         self.__write_sensor(message_type="light", message="turn off")
-        self.__write_motor(message_type="motor", message="S5-")
+        self.__write_sensor(message_type="flasher", message="turn off")
+        #self.__write_motor(message_type="motor", message="S5-")
         self.__write_speaker(message_type="automatic", message="neutral")
         self.__write_camera(message_type="automatic", message="0")
         self.__write_notifier(message_type="notification_off", message="Reset")
@@ -418,7 +419,6 @@ class Brain():
                     return
                     
                 self.__write_sensor(message_type="light", message=message)
-                self.__write_sensor(message_type="flasher", message=message)
             else:
                 return
         except Exception as e:
@@ -496,7 +496,10 @@ class Brain():
                 if action_name == "Record" and not self.__updated:
                     self.__write_motor(message_type="automatic", message=str(value))
             elif action_name in mapper["relay"]:
-                self.__write_sensor(message_type="relay", message=value)
+                if action_name = "Emergency Light":
+                    self.__write_sensor(message_type="flasher", message="turn on")
+                elif action_name = "Light":
+                    self.__write_sensor(message_type="light", message="turn on")
             elif action_name in mapper["notification"]:
                 self.__write_notifier(message_type="notification_on", message=value)
             else:
@@ -756,12 +759,12 @@ class Brain():
     def __handle_behavior(self):
         try:
             if self.__state == "idle" and not self.__behaviorSet:
-                #self.__reset()
+                self.__reset()
                 for action in self.__idle_behavior:
                     self.__action_map(action)
                 self.__behaviorSet = True
             elif self.__state == "detect":
-                #self.__reset()
+                self.__reset()
                 for action in self.__detect_behavior and not self.__behaviorSet:
                     self.__action_map(action)
                 

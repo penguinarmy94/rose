@@ -5,10 +5,11 @@
     "windows_home_path": "C:/Users/Luis/Documents/Projects/ROSE/robot_code",
     "home_path": "/home/pi/Desktop/Projects/rose/robot_code",
     "functions": {
-        "motor": ["Roaming"],
-        "camera": ["Record"],
+        "motor": ["Roaming", "Move Towards Sound"],
+        "camera": ["Take Picture"],
         "notification": ["Alert"],
-        "light": ["Blink", "Turn On", "Turn Off"]
+        "relay": ["Emergency Light", "Light"],
+        "emotion": ["Emotion"]
     },
     "bucket": "rose-9876.appspot.com",
     "log_path": "/home/pi/Desktop/Projects/rose/robot_code/logs/",
