@@ -1,6 +1,6 @@
 from . import logger
 from threading import Thread
-import json, datetime, time, subprocess
+import json, datetime, time, subprocess, os
 from . import classifier
 
 class Microphone():
@@ -8,12 +8,15 @@ class Microphone():
     __config = None
     __classifier = None
     __interval = "15"
+    __currentTime = None
+    __uploadInterval = 30
     
     def __init__(self,queue = None, config = None):
         try:
             self.__queue = queue
             self.__config = config
             self.__classifier = classifier.Classifier(config)
+            self.__currentTime = datetime.datetime.now()
         except Exception as e:
             print("Microphone Init Error: " + str(e))
         
@@ -49,7 +52,14 @@ class Microphone():
 
     def __record(self):
         try:
-            file_path = self.__config["capture_path"] + "image_" + datetime.datetime.now().strftime("%Y%m%d.%H:%M:%S") + ".wav"
+            now = datetime.datetime.now()
+            no_use = ""
+
+            if self.__currentTime.minute == now.minute and self.__currentTime.second >= self.__uploadInterval:
+                self.__currentTime = now + datetime.timedelta(minute=1)
+                no_use = "x_"
+
+            file_path = self.__config["capture_path"] + no_use + "audio_" + datetime.datetime.now().strftime("%Y%m%d.%H:%M:%S") + ".wav"
             subprocess.check_output("arecord -D plughw:1 -c2 -r 48000 -d " + self.__interval + " -f S32_LE -t wav -q " + file_path, shell=True)
             print("microphone done recording")
             return file_path
@@ -62,6 +72,9 @@ class Microphone():
     def __classify(self, file_path):
         #call classify
         isThreat,percentage = self.__classifier.classify(file_path)
+        if "x_" in file_path:
+            os.remove(file_path)
+
         
         # if true, send a message to the the brain saying it is a threat 
         if isThreat:
