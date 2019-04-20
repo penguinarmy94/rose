@@ -157,7 +157,7 @@ class Uploader():
                     self.__write_queue(message_type="brain", message="upload complete")
                 
                 
-            os.rename(file_path, file_path + "_x")
+            os.rename(file_path, self.__config["capture_path"] + "x_" + file)
         except Exception as e:
             print(str(e))
     
