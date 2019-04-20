@@ -134,6 +134,7 @@ def runNotificationManager(rob, config, initialized = False):
     return notifier_thread
 
 def runUploader(rob, config):
+    print("Entering runUploader.")
     uploader_object = uploader.Uploader(queues.brain_uploader_queue, rob, config)
     uploader_thread = Thread(target=functools.partial(uploader_object.run))
     uploader_thread.start()
