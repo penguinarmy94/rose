@@ -130,7 +130,7 @@ class Uploader():
                     continue
                 if tempFile.endswith(".jpeg") or tempFile.endswith(".jpg") or tempFile.endswith(".wav"):
                     new_path = self.__config["capture_path"] + "x_" + file
-                    os.rename(file_path, new_path)
+                    os.rename(tempFile, new_path)
                     self.__upload(file, new_path)
 
     """
