@@ -496,9 +496,9 @@ class Brain():
                 if action_name == "Record" and not self.__updated:
                     self.__write_motor(message_type="automatic", message=str(value))
             elif action_name in mapper["relay"]:
-                if action_name = "Emergency Light":
+                if action_name == "Emergency Light":
                     self.__write_sensor(message_type="flasher", message="turn on")
-                elif action_name = "Light":
+                elif action_name == "Light":
                     self.__write_sensor(message_type="light", message="turn on")
             elif action_name in mapper["notification"]:
                 self.__write_notifier(message_type="notification_on", message=value)
