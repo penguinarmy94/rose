@@ -126,7 +126,7 @@ class Uploader():
             tempFile = join(self.__config["capture_path"], file)
             if isfile(tempFile):
                 print(tempFile)
-                if tempFile.endswith("_x"):
+                if file.startswith("x_"):
                     continue
                 if tempFile.endswith(".jpeg") or tempFile.endswith(".jpg") or tempFile.endswith(".wav"):
                     self.__upload(file, tempFile)
