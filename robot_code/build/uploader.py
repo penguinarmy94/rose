@@ -126,7 +126,7 @@ class Uploader():
             tempFile = join(self.__config["capture_path"], file)
             if isfile(tempFile):
                 print(tempFile)
-                if tempFile.startswith("x_"):
+                if tempFile.endswith("_x"):
                     continue
                 if tempFile.endswith(".jpeg") or tempFile.endswith(".jpg") or tempFile.endswith(".wav"):
                     self.__upload(file, tempFile)
@@ -156,10 +156,8 @@ class Uploader():
                     self.__robot.num_of_videos += 1
                     self.__write_queue(message_type="brain", message="upload complete")
                 
-                dir_items = file_path.split("/")
-                dir_items[-1:] = "x_" + str(dir_items[-1:])
-                new_path = "/".join(dir_items)
-                os.rename(file_path, new_path)
+                
+            os.rename(file_path, file_path + "_x")
         except Exception as e:
             print(str(e))
     
