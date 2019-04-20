@@ -85,6 +85,7 @@ class Uploader():
                 if self.__read_queue() == 2:
                     break
                 else:
+                    self.__read_directory()
                     continue
             else:
                 self.__read_directory()
