@@ -38,8 +38,6 @@ class Uploader():
                 raise TypeError("Config parameter not set")
             if not robot:
                 raise TypeError("Robot parameter is not set")
-            if not token:
-                raise TypeError("Token parameter is not set")
 
             self.__config = config
             self.__robot = robot
