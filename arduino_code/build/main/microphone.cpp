@@ -4,7 +4,7 @@
 Microphone::Microphone(int Input)
 {
 	kInputPin = Input;
-	kCounter = 0;
+  kMax = 0;
   kCalibrationValue = 0;
   resetAmplitude();
 }
@@ -16,21 +16,11 @@ unsigned int Microphone::record()
   if(sample < kLowest) kLowest = sample; //Get lowest value in time period
 }
 
-void Microphone::storeIntoBuffer()
+void Microphone::storeMax()
 {
-  kBuffer[kCounter] = kHighest - kLowest; //Value stored is the difference between the highest value and lowest value of time period
-  //Amplitude of sound is directly proportional to the difference between highest and lowest
-  kCounter = (kCounter == 199) ? 0 : kCounter + 1; //Loop buffer back to 0 when max value is reached
+  unsigned int soundValue = kHighest - kLowest;
+  kMax = (soundValue > kMax) ? soundValue : kMax;
   resetAmplitude();
-}
-
-void Microphone::clearBuffer()
-{
-	for(int i = 0; i < bufferSize; i++)
- {
-  kBuffer[i] = 0;
- }
-	kCounter = 0;
 }
 
 void Microphone::storeCalibrationValue(unsigned int value)
@@ -45,13 +35,10 @@ unsigned int Microphone::getCalibrationValue()
 
 unsigned int Microphone::getMax()
 {
-	int max = 0;
-	for (int i = 0; i < bufferSize; i++)
-	{
-		max = (max > kBuffer[i]) ? max : kBuffer[i];
-	}
+	unsigned int maxSound = kMax;
+  kMax = 0;
   resetAmplitude();
-	return max;
+	return kMax;
 }
 
 void Microphone::resetAmplitude()
@@ -63,5 +50,5 @@ void Microphone::resetAmplitude()
 
 unsigned int Microphone::debugSound()
 {
-  return kBuffer[(kCounter-1)%bufferSize];
+  return kMax;
 }

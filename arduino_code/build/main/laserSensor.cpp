@@ -175,7 +175,10 @@ int LaserSensor::getState() {
 
   for (int i = 0; i < this->number; i++) {
     state <<= 1;
-    if (!sensor[i].timeoutOccurred() && sensor[i].readRangeSingleMillimeters() <= this->stopValue) {
+    if (i == FRONT_SENSOR && !sensor[i].timeoutOccurred() && sensor[i].readRangeSingleMillimeters() + 150 <= this->stopValue) {
+      state |= 1;
+    }
+    else if (!sensor[i].timeoutOccurred() && sensor[i].readRangeSingleMillimeters() <= this->stopValue) {
       state |= 1;
     }
   }
