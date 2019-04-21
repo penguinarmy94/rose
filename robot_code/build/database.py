@@ -111,6 +111,14 @@ class Database():
             })
         else:
             print("Robot has not been set yet")
+    
+     def update_robot_phrase(self):
+        if not self.__robot == None:
+            self.__robotRef.update({
+                u'phrase': self.__robot.phrase
+            })
+        else:
+            print("Robot has not been set yet")
 
     def update_robot(self):
         if not self.__robot == None:
