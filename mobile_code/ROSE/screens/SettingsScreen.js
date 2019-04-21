@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { StyleSheet, View, Text, Switch, TouchableOpacity, Dimensions, Picker, ScrollView } from 'react-native';
-import { Icon, FormInput } from 'react-native-elements';
+import { Icon, FormInput, Tooltip } from 'react-native-elements';
 import { config } from '../assets/config/config';
 import { NavigationEvents } from 'react-navigation';
 
@@ -297,9 +297,10 @@ export default class SettingsScreen extends Component {
                                 }
                         </Picker>
                     </View>
-                    <View style={[{flexDirection: "row", justifyContent: 'space-between'}]}>
+                    <View style={[{flexDirection: "row", justifyContent: 'space-between'}]} keyboardShouldPersistTaps={'handled'}>
                         <FormInput 
                         placeholder="New Phrase"
+                        editable={this.state.power? true: false}
                         ref={input => this.state.phraseInput = input}
                         onChangeText={(text) => {
                             this.setState({newPhrase: text});
@@ -307,7 +308,12 @@ export default class SettingsScreen extends Component {
                         value={this.state.newPhrase}
                         inputStyle={styles.text_input}
                         />
-                        <TouchableOpacity style={{alignItems: "center", justifyContent: "center", backgroundColor: "#64a2b7", height: 40, width: 60, marginRight: 30, borderWidth: 1}} onPress={() => this.speak()}><Text style={{color: "white"}}>Speak</Text></TouchableOpacity>
+                        <TouchableOpacity 
+                            disabled={this.state.power? false : true} 
+                            style={this.state.power? [styles.speak_button_enabled] : [styles.speak_button_disabled]} 
+                            onPress={() => this.speak()}>
+                            <Text style={{color: "white"}}>Speak</Text>
+                        </TouchableOpacity>
                     </View>
                     <TouchableOpacity style={styles.bar} onPress={this.createNewRobot}>
                         <Text style={styles.text}>Add Robot</Text>
@@ -346,6 +352,24 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         marginLeft: 30,
         marginRight: 30
+    },
+    speak_button_enabled: {
+        alignItems: "center", 
+        justifyContent: "center", 
+        backgroundColor: "#64a2b7", 
+        height: 40, 
+        width: 60, 
+        marginRight: 30, 
+        borderWidth: 1
+    },
+    speak_button_disabled: {
+        alignItems: "center", 
+        justifyContent: "center", 
+        backgroundColor: "grey", 
+        height: 40, 
+        width: 60, 
+        marginRight: 30, 
+        borderWidth: 1
     },
     label: {
         borderBottomWidth: 1
