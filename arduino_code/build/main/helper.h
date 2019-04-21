@@ -30,10 +30,15 @@ void sendAck();
 // Microphone Functions //
 void record(Microphone &a, Microphone &b);
 void storeAmplitude(Microphone &a, Microphone &b);
+void getSoundSample(Microphone &a, Microphone &b, unsigned long &micTime, unsigned long sampleWindow);
+extern unsigned long micTime;
+extern Microphone a;
+extern Microphone b;
+const unsigned long sampleTime = 50;
 
 // Parsing Data Functions //
 void commandFromPi(PIData &package, Microphone &a, Microphone &b, Motor left, Motor right);
-void warningDetected(Microphone &a, Microphone &b, Motor left, Motor right);
+void warningDetected(int time, Microphone &a, Microphone &b, Motor left, Motor right);
 void commandForward(PIData package, Motor left, Motor right);
 void commandBackward(PIData package, Motor left, Motor right);
 void commandRight(PIData package, Motor left, Motor right);

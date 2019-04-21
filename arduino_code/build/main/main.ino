@@ -1,4 +1,4 @@
-#include "laserSensor.h"
+ #include "laserSensor.h"
 #include "Wire.h"
 #include "VL53L0X.h"
 #include "helper.h"
@@ -9,8 +9,8 @@
 #define TURNBASED
 //#define STOPPED
   
-Motor left(3, 4, 2); 
-Motor right(5, 6, 7); 
+Motor left(4, 3, 2); 
+Motor right(6, 5, 7); 
 Microphone a(0);
 Microphone b(1);
 LaserSensor lasersensor;
@@ -64,7 +64,7 @@ void loop()
 {
 while (!Serial.available())
 {
-  //readLaser();
+  getSoundSample(a, b, micTime, sampleWindow);
   if(millis() - micTime < sampleWindow)
   {
     record(a, b);

@@ -87,7 +87,7 @@ class Brain():
         #self.__write_motor(message_type="calibrate", message="C5-")
         self.__write_speaker(message_type="speaker", message="blah, Robot 1 ready to party")
         #For testing only:
-        self.__write_camera(message_type="automatic", message="1")
+        #self.__write_camera(message_type="automatic", message="1")
 
         if self.__args.verbose:
             print("Brain.Begin: Entering WHILE [Power On]")
@@ -124,8 +124,8 @@ class Brain():
     def __reset(self):
         self.__write_sensor(message_type="light", message="turn off")
         self.__write_sensor(message_type="flasher", message="turn off")
-        #self.__write_motor(message_type="motor", message="S5-")
-        self.__write_speaker(message_type="automatic", message="neutral")
+        #self.__write_motor(message_type="motor", message="S2-")
+        self.__write_speaker(message_type="automatic", message="happy")
         self.__write_camera(message_type="automatic", message="0")
         self.__write_notifier(message_type="notification_off", message="Reset")
 
@@ -229,7 +229,7 @@ class Brain():
         Parameters:
         -----------
         None
-    """  
+    """
     def __read_motor(self):
         try:
             time_stamp = str(datetime.datetime.now())

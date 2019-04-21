@@ -35,7 +35,7 @@ class Microphone():
                 #start microphone, record()
                 #classify it# 
                 file_path = self.__record()
-            
+                print(file_path)
                 self.__classify(file_path)        
                
         logger.write(str(datetime.datetime.now()) + " - Microphone: Powered Off")
@@ -56,7 +56,7 @@ class Microphone():
             no_use = ""
 
             if self.__currentTime.minute == now.minute and self.__currentTime.second >= self.__uploadInterval:
-                self.__currentTime = now + datetime.timedelta(minute=1)
+                self.__currentTime = now + datetime.timedelta(minutes=1)
                 no_use = "x_"
 
             file_path = self.__config["capture_path"] + no_use + "audio_" + datetime.datetime.now().strftime("%Y%m%d.%H:%M:%S") + ".wav"
@@ -72,10 +72,7 @@ class Microphone():
     def __classify(self, file_path):
         #call classify
         isThreat,percentage = self.__classifier.classify(file_path)
-        if "x_" in file_path:
-            os.remove(file_path)
 
-        
         # if true, send a message to the the brain saying it is a threat 
         if isThreat:
             self.__write_queue("Threat Detected")
