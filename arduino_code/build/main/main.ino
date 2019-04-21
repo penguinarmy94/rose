@@ -23,6 +23,7 @@ int count;
 PIData piCommand;
 int i = 0;
 int turn;
+int debug = True;
 
 LaserSensor laserSensor;
 int waitSensor = 0;
@@ -62,8 +63,9 @@ next = 0;
 
 void loop()
 {
-while (!Serial.available())
+while (debug || !Serial.available())
 {
+
   getSoundSample(a, b, micTime, sampleWindow);
   if(millis() - micTime < sampleWindow)
   {
