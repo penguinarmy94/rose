@@ -56,7 +56,7 @@ class Microphone():
             no_use = ""
 
             if self.__currentTime.minute == now.minute and self.__currentTime.second >= self.__uploadInterval:
-                self.__currentTime = now + datetime.timedelta(minute=1)
+                self.__currentTime = now + datetime.timedelta(minutes=1)
                 no_use = "x_"
 
             file_path = self.__config["capture_path"] + no_use + "audio_" + datetime.datetime.now().strftime("%Y%m%d.%H:%M:%S") + ".wav"

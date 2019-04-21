@@ -6,7 +6,7 @@ import os, sys
 class Speaker():
     __spQueue = None
     __player = None
-    __mood = "neutral"
+    __mood = "happy"
     __isInMoodState = False
 
     def __init__(self, queue = None, config = None):
