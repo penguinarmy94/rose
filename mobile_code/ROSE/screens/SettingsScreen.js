@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { StyleSheet, View, Text, Switch, TouchableOpacity, Dimensions, Picker, ScrollView } from 'react-native';
-import { Icon } from 'react-native-elements';
+import { Icon, FormInput } from 'react-native-elements';
 import { config } from '../assets/config/config';
 import { NavigationEvents } from 'react-navigation';
 
@@ -25,6 +25,10 @@ export default class SettingsScreen extends Component {
             light: config.robotObject.light,
             picture: config.robotObject.manual_picture,
             cameraAngle: config.robotObject.cameraAngle,
+            phrase: config.robotObject.phrases[0],
+            phrases: config.robotObject.phrases,
+            phraseInput: null,
+            newPhrase: "",
             display: "none",
             color: config.robotObject.power ? "#64a2b7" : "#ffffff",
             icon: "camera"
@@ -38,7 +42,8 @@ export default class SettingsScreen extends Component {
                     "power": robot.data().power, 
                     "light": robot.data().light,
                     "picture": robot.data().manual_picture,
-                    "cameraAngle": robot.data().camera_angle
+                    "cameraAngle": robot.data().camera_angle,
+                    "phrases": robot.data().phrases
                 });
 
                 if(!robot.data().manual_picture && this.state.power) {
@@ -171,6 +176,40 @@ export default class SettingsScreen extends Component {
         
     }
 
+    changePhrase = (value) => {
+        let state = this.state;
+
+        state.phrase = value;
+        
+        this.setState(state);
+    }
+
+    speak = () => {
+        let state = this.state;
+        let current = config.robotObject;
+        let phrase = this.state.newPhrase;
+
+        if(state.newPhrase === "") {
+            phrase = state.phrase;
+        }
+
+        current.phrase = phrase;
+        state.newPhrase = "";
+
+        if(!state.phrases.includes(phrase)) {
+            state.phrases.push(phrase);
+            current.phrases = state.phrases;
+        }
+
+        this.state.session.currentRobot().set(current).then(() => {
+            config.robotObject = current;
+            this.setState(state);
+        }).catch((error) => {
+            alert(error);
+        });
+
+    }
+
     createNewRobot = () => {
         this.props.screenProps.rootNav.navigate("AddRobot");
     }
@@ -185,7 +224,7 @@ export default class SettingsScreen extends Component {
 
     render() {
         return(
-            <ScrollView contentContainerStyle={styles.container}>
+            <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps={'handled'}>
                 <View style={styles.settings_container}>
                     <View style={[{flexDirection: "row"}]}>
                         <Text style={[styles.text, styles.label]}>Power:</Text>
@@ -243,6 +282,33 @@ export default class SettingsScreen extends Component {
                                 <Picker.Item label={this.downView} value={2}/>
                         </Picker>
                     </View>
+                    <View style={[{flexDirection: "row", justifyContent: 'space-between'}]}>
+                        <Text style={[styles.text, styles.label]}>Speak:</Text>
+                        <Picker 
+                            selectedValue={this.state.phrase}
+                            onValueChange={(value) => this.changePhrase(value)}
+                            enabled={this.state.power? true: false}
+                            mode="dropdown"
+                            style={{width: 200, marginRight: 15}}>
+                                { 
+                                    this.state.phrases.map((value, index) => {
+                                        return(<Picker.Item key={index} label={value} value={value} />);
+                                    })         
+                                }
+                        </Picker>
+                    </View>
+                    <View style={[{flexDirection: "row", justifyContent: 'space-between'}]}>
+                        <FormInput 
+                        placeholder="New Phrase"
+                        ref={input => this.state.phraseInput = input}
+                        onChangeText={(text) => {
+                            this.setState({newPhrase: text});
+                        }}
+                        value={this.state.newPhrase}
+                        inputStyle={styles.text_input}
+                        />
+                        <TouchableOpacity style={{alignItems: "center", justifyContent: "center", backgroundColor: "#64a2b7", height: 40, width: 60, marginRight: 30, borderWidth: 1}} onPress={() => this.speak()}><Text style={{color: "white"}}>Speak</Text></TouchableOpacity>
+                    </View>
                     <TouchableOpacity style={styles.bar} onPress={this.createNewRobot}>
                         <Text style={styles.text}>Add Robot</Text>
                         <Text style={styles.text}>></Text>
@@ -268,10 +334,17 @@ const styles = StyleSheet.create({
         alignItems: "center",
         backgroundColor: "#64a2b7",
     },
+    text_input: {
+        width: 200,
+        borderBottomWidth: 1,
+        marginLeft: 10
+    },
     text: {
         fontSize: 18,
         fontWeight: "bold",
-        margin: 20,
+        marginTop: 15,
+        marginBottom: 15,
+        marginLeft: 30,
         marginRight: 30
     },
     label: {
