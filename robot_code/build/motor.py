@@ -87,6 +87,7 @@ class Motor():
             return 1
         elif message_packet["type"] == "off":
             message_packet = json.loads(self.__bqueue.get())
+            self.move("S1-")
             logger.write(str(datetime.datetime.now()) + " - Brain to Motor: Off Message Received -- " + message_packet["message"])
             return 2
         else:

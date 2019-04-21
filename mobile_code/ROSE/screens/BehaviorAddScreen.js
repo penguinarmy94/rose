@@ -86,13 +86,14 @@ export default class BehaviorAddScreen extends Component {
     renderBlock = (key, index, changeFunction) => {
         return(
             <View key={key} style={styles.block}>
-                <TouchableOpacity key={key} onPress={() => {
-                        actions = this.state.actionSelection; 
-                        actions[key].collapsed = actions[key].collapsed? false: true;
-                        this.setState({actionSelection: actions});
-                    }} 
-                    style={[styles.dropdown, {borderBottomWidth: 0.5, borderColor: "black"}]}>
-                    <FormLabel style={styles.spacing}>Action: </FormLabel>
+                <View key={key} style={[styles.dropdown, {borderBottomWidth: 0.5, borderColor: "black"}]}>
+                    <TouchableOpacity onPress={() => {
+                            actions = this.state.actionSelection; 
+                            actions[key].collapsed = actions[key].collapsed? false: true;
+                            this.setState({actionSelection: actions});
+                            }} >
+                        <FormLabel>Action: </FormLabel>
+                    </TouchableOpacity>
                     <Picker
                         selectedValue={this.state.actionSelection[key].action}
                         mode="dropdown"
@@ -105,7 +106,7 @@ export default class BehaviorAddScreen extends Component {
                             })
                         }
                     </Picker>
-                </TouchableOpacity>
+                </View>
                 <Collapsible collapsedHeight={0} collapsed={this.state.actionSelection[key].collapsed}>
                 <View style={styles.valueParam}>
                     <FormLabel style={{}}>Value: </FormLabel>
