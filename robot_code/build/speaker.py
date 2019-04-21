@@ -53,6 +53,7 @@ class Speaker():
 
         elif message_packet["type"] == "off":
             message_packet = json.loads(self.__spQueue.get())
+            self.__isInMoodState = False
             logger.write(str(datetime.datetime.now()) + " - Brain to Speaker: Off Message Received -- " + message_packet["message"])
             return 2
         else:
@@ -67,7 +68,7 @@ class Speaker():
     def __setMood(self):
         print("Setting Mood")
         try:
-            if self.__mood in self.__config["moods"]:
+            if self.__mood in self.__config["moods"] and self.__isInMoodState:
                 date = datetime.datetime.now()
                 index = (date.hour + date.minute + date.second)%len(self.__config["moods"][self.__mood])
                 choice = self.__config["moods"][self.__mood][index]
