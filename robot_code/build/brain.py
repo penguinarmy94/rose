@@ -229,7 +229,7 @@ class Brain():
         Parameters:
         -----------
         None
-    """  
+    """
     def __read_motor(self):
         try:
             time_stamp = str(datetime.datetime.now())

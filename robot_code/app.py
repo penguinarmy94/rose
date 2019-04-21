@@ -87,7 +87,7 @@ if 'mic' in devices:
     from build import microphone
 
 def runSpeakerThread(config):
-    speaker_object = speaker.Speaker(queues.brain_speaker_queue)
+    speaker_object = speaker.Speaker(queues.brain_speaker_queue, config)
     speaker_thread = Thread(target=functools.partial(speaker_object.run))
     speaker_thread.start()
     return speaker_thread
