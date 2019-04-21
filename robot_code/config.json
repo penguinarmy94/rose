@@ -9,7 +9,7 @@
         "camera": ["Take Picture"],
         "notification": ["Alert"],
         "relay": ["Emergency Light", "Light"],
-        "emotion": ["Emotion"]
+        "speaker": ["Emotion"]
     },
     "bucket": "rose-9876.appspot.com",
     "log_path": "/home/pi/Desktop/Projects/rose/robot_code/logs/",
@@ -19,15 +19,22 @@
     "moods": {
          "happy": [
              "I hope you are having a nice day", 
-             "We love you so much Preet. We can't thank you enough", 
+             "I love you more than you know", 
              "If you are happy and you know it clap your hands",
-             "Do you think that R 2 D 2 is better than me?"
+             "I feel like jumping so high that I touch the sky",
+             "Do you want to go see Star Wars with me?"
         ],
         "sad": [
             "This day is making me sad",
             "I feel like crying",
-            "I hope I feel better soon"
+            "I want ice cream"
+        ],
+        "angry": [
+            "I am going to beat someone up right now",
+            "I don't like you",
+            "Destroy all humans!"
         ]
     },
+    "emotions": ["happy", "sad", "angry"],
     "prompt": "[ID]>"
 }

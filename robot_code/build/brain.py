@@ -520,6 +520,10 @@ class Brain():
             elif action_name in mapper["camera"]:
                 if action_name == "Record" and not self.__updated:
                     self.__write_motor(message_type="automatic", message=str(value))
+            elif action_name in mapper["speaker"]:
+                if action_name == "Emotion":
+                    emotion = self.__config["emotions"][int(value)]
+                    self.__write_speaker(message_type="automatic", message=emotion)
             elif action_name in mapper["relay"]:
                 if action_name == "Emergency Light":
                     self.__write_sensor(message_type="flasher", message="turn on")
