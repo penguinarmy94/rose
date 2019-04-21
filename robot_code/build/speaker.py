@@ -6,7 +6,8 @@ import os, sys
 class Speaker():
     __spQueue = None
     __player = None
-    __mood = "neutral"
+    __mood = "happy"
+    __config = None
     __isInMoodState = False
 
     def __init__(self, queue = None, config = None):
@@ -63,11 +64,15 @@ class Speaker():
 
         logger.write(str(datetime.datetime.now()) + " - Speaker: " + message)
     
-    def __setMood(self):    
-        if self.__mood in self.__config["moods"]:
-            date = datetime.datetime.now()
-            index = (date.hour + date.minute + date.second)%len(self._config["moods"][self.__mood])
-            choice = self.__config["moods"][self.__mood][index]
-            self.say(choice)
+    def __setMood(self):
+        print("Setting Mood")
+        try:
+            if self.__mood in self.__config["moods"]:
+                date = datetime.datetime.now()
+                index = (date.hour + date.minute + date.second)%len(self.__config["moods"][self.__mood])
+                choice = self.__config["moods"][self.__mood][index]
+                self.say(choice)
+        except Exception as e:
+            print(str(e))
         
         self.__isInMoodState = False

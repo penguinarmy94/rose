@@ -13,6 +13,8 @@ class Robot():
     videos = []
     charging = True
     manualPicture = False
+    phrase = ""
+    phrases = []
 
     def isInitialized(self):
         if self.detect_behavior == None or self.idle_behavior == None:
@@ -47,6 +49,10 @@ class Robot():
             self.manualPicture = map["manual_picture"]
         if not map["videos"] == None:
             self.videos = map["videos"]
+        if not map["phrase"] == None:
+            self.phrase = map["phrase"]
+        if not map["phrases"] == None:
+            self.phrases = map["phrases"]
 
     def to_dict(self):
         map = {
@@ -61,7 +67,9 @@ class Robot():
             u'power': self.power,
             u'light': self.light,
             u'camera_angle': self.camera_angle,
-            u'videos': self.videos
+            u'videos': self.videos,
+            u'phrase': self.phrase,
+            u'phrases': self.phrases
         }
 
         return map

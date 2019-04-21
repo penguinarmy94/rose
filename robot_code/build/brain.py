@@ -87,7 +87,7 @@ class Brain():
         #self.__write_motor(message_type="calibrate", message="C5-")
         self.__write_speaker(message_type="speaker", message="blah, Robot 1 ready to party")
         #For testing only:
-        self.__write_camera(message_type="automatic", message="1")
+        #self.__write_camera(message_type="automatic", message="1")
 
         if self.__args.verbose:
             print("Brain.Begin: Entering WHILE [Power On]")
@@ -124,8 +124,7 @@ class Brain():
     def __reset(self):
         self.__write_sensor(message_type="light", message="turn off")
         self.__write_sensor(message_type="flasher", message="turn off")
-        #self.__write_motor(message_type="motor", message="S5-")
-        self.__write_speaker(message_type="automatic", message="neutral")
+        self.__write_speaker(message_type="automatic", message="happy")
         self.__write_camera(message_type="automatic", message="0")
         self.__write_notifier(message_type="notification_off", message="Reset")
 
@@ -219,6 +218,31 @@ class Brain():
             logger.write(time_stamp + ": " + error_message)
 
     """
+        Description: This is the function to check whether the user has asked for the
+        speaker to say something
+
+        The brain reads the robot phrase variable to check for any new content
+
+        Parameters:
+        -----------
+        None
+    """
+    def __read_speaker(self):
+        try:
+            time_stamp = str(datetime.datetime.now())
+            
+            if not self.__robot.phrase is "":
+                self.__write_speaker(message_type="speaker" messasge=self.__robot.phrase)
+                self.__robot.phrase = ""
+                self.__db.update_robot_phrase()
+        except Exception as e:
+            error_message = "Brain.__read_speaker() Error: " + str(e)
+            time_stamp = str(datetime.datetime.now())
+
+            print(time_stamp + ": " + error_message)
+            logger.write(time_stamp + ": " + error_message)
+
+    """
         Description: This is the function to check whether the motors have finished their
         previous task and have sent a response back. 
 
@@ -229,7 +253,7 @@ class Brain():
         Parameters:
         -----------
         None
-    """  
+    """
     def __read_motor(self):
         try:
             time_stamp = str(datetime.datetime.now())
