@@ -127,10 +127,12 @@ class Uploader():
             if isfile(tempFile):
                 if file.startswith("x_"):
                     continue
-                if tempFile.endswith(".jpeg") or tempFile.endswith(".jpg") or tempFile.endswith(".wav"):
+                elif tempFile.endswith(".jpeg") or tempFile.endswith(".jpg") or file.startswith("y_"):
                     new_path = self.__config["capture_path"] + "x_" + file
                     os.rename(tempFile, new_path)
                     self.__upload(file, new_path)
+                else:
+                    continue
 
     """
         Description: This function is used for uploading files (given its file path) to 
