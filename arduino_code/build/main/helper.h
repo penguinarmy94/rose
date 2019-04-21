@@ -16,6 +16,7 @@ void Backward(Motor left, Motor right, int speed);
 void Left(Motor left, Motor right, int speed);
 void Right(Motor left, Motor right, int speed);
 void Halt(Motor left, Motor right);
+extern bool moveRobot;
 
 // Obstacle Avoidance //
 extern void readLaser(); //Defined in main.ino
@@ -24,6 +25,7 @@ extern void readLaser(); //Defined in main.ino
 void calibrateMicrophones(Microphone &a, Microphone &b);
 int getDistance(char arr[]);
 void parsePackage(PIData &package, char fromPi[], int size);
+void sendAck();
 
 // Microphone Functions //
 void record(Microphone &a, Microphone &b);
@@ -36,6 +38,7 @@ void commandForward(PIData package, Motor left, Motor right);
 void commandBackward(PIData package, Motor left, Motor right);
 void commandRight(PIData package, Motor left, Motor right);
 void commandLeft(PIData package, Motor left, Motor right);
+void commandHalt(PIData package, Motor left, Motor right);
 
 
 

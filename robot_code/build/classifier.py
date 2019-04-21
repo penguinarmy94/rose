@@ -3,7 +3,7 @@ import json
 from pyAudioAnalysis import audioTrainTest as aT
 
 class Classifier:
-    __threshold = 0.70
+    __threshold = 0.85
     __config = None
     __model = "svmModel"
     __type = "svm"

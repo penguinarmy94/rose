@@ -18,14 +18,14 @@ void Backward(Motor left, Motor right, int speed)
 
 void Left(Motor left, Motor right, int speed)
 {
-  left.backward(speed);
-  right.forward(speed);
+  left.forward(speed);
+  right.backward(speed);
 }
 
 void Right(Motor left, Motor right, int speed)
 {
-  left.forward(speed);
-  right.backward(speed);
+  left.backward(speed);
+  right.forward(speed);
 }
 
 void Halt(Motor left, Motor right)
@@ -64,23 +64,16 @@ int getDistance(char arr[])
   {
     distance *= 10;
     distance += arr[i] - '0';
+    i++;
   }
   return distance;
 }
 
 void parsePackage(PIData &package, char fromPi[], int size)
 {
-  Serial.readBytesUntil('-', fromPi, size); 
+  Serial.readBytesUntil('-', fromPi, size);
   package.direction = fromPi[0];
-  int dist = 0;
-  int i = 1;
-  while(fromPi[i] >= '0' && i < 10)
-    {
-      dist *= 10;
-      dist += (fromPi[i] - '0');
-      i++;
-    }
-    package.distance = dist;
+  package.distance = getDistance(fromPi);
   for(int i = 0; i < size; i++)
   {
     fromPi[i] = 0;
@@ -92,15 +85,35 @@ void commandFromPi(PIData &package, Microphone &a, Microphone &b, Motor left, Mo
   switch(package.direction)
   {
     case 'Y': warningDetected(a, b, left, right);
+    sendAck();
+    break;
     case 'C': calibrateMicrophones(a, b);
+    sendAck();
+    break;
     case 'F': commandForward(package, left, right);
+    sendAck();
+    break;
     case 'B': commandBackward(package, left, right);
+    sendAck();
+    break;
     case 'R': commandRight(package, left, right);
+    sendAck();
+    break;
     case 'L': commandLeft(package, left, right);
-    default: memset(&package, 0, sizeof(package));
+    sendAck();
+    break;
+    case 'S': commandHalt(package, left, right);
+    sendAck();
+    break;
+    default: Serial.print("err\n");
+    break;
   }
-  Serial.println("ack");
   memset(&package, 0, sizeof(package));
+}
+
+void sendAck()
+{
+  Serial.print("ack\n"); 
 }
 
 void warningDetected(Microphone &a, Microphone &b, Motor left, Motor right)
@@ -108,21 +121,18 @@ void warningDetected(Microphone &a, Microphone &b, Motor left, Motor right)
   unsigned int aMax = a.getMax();
   unsigned int bMax = b.getMax();
   (aMax > bMax) ? Right(left, right, 175) : Left(left, right, 175);  
-  Halt(left, right);   
-  a.clearBuffer();
-  b.clearBuffer();
+  Halt(left, right);  
 }
 
 void commandForward(PIData package, Motor left, Motor right)
 {
   int i = 0;
   Forward(left, right, 150);
-  while (i < package.distance)
-    {
-      //readLaser();
-      i++;
-      delay(1000);
-    }  
+  unsigned long start = millis();
+  while(millis() - start < (package.distance * 1000))
+  {
+    readLaser();
+  }
   Halt(left, right);  
 }
 
@@ -138,7 +148,7 @@ void commandBackward(PIData package, Motor left, Motor right)
   }
   while (i < package.distance)
     {
-      //readLaser();
+      readLaser();
       i++;
     }  
   Halt(left, right);  
@@ -155,7 +165,7 @@ void commandRight(PIData package, Motor left, Motor right)
   }
   while (i < package.distance)
     {
-      //readLaser();
+      readLaser();
       i++;
     } 
   Halt(left, right);   
@@ -172,10 +182,30 @@ void commandLeft(PIData package, Motor left, Motor right)
   }
   while (i < package.distance)
     {
-      //readLaser();
+      readLaser();
       i++;
     }  
   Halt(left, right);  
+}
+
+void commandHalt(PIData package, Motor left, Motor right)
+{
+  unsigned long start = millis();
+  unsigned long halttime = package.distance * 1000;
+  if(package.distance == 1)
+  {
+    while(!Serial.available())
+    {
+      //do nothing
+    }
+  }
+  else
+  {
+    while(millis() - start < halttime)
+    {
+      Halt(left, right);
+    }
+  }
 }
 
 void record(Microphone &a, Microphone &b)
@@ -186,6 +216,6 @@ void record(Microphone &a, Microphone &b)
 
 void storeAmplitude(Microphone &a, Microphone &b)
 {
-  a.storeIntoBuffer();
-  b.storeIntoBuffer();
+  a.storeMax();
+  b.storeMax();
 }

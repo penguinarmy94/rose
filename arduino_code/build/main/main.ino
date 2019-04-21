@@ -9,10 +9,10 @@
 #define TURNBASED
 //#define STOPPED
   
-Motor left(8, 7 , 6); //7, 8, 6
-Motor right(9, 10, 11); //10, 9, 11
-Microphone a(3);
-Microphone b(5);
+Motor left(3, 4, 2); 
+Motor right(5, 6, 7); 
+Microphone a(0);
+Microphone b(1);
 LaserSensor lasersensor;
 int aMax;
 int aSample;
@@ -20,7 +20,6 @@ int bSample;
 int bMax;
 char fromPi[10];
 int count;
-int state;
 PIData piCommand;
 int i = 0;
 int turn;
@@ -29,6 +28,15 @@ LaserSensor laserSensor;
 int waitSensor = 0;
 int turning = 0;
 int wait = 0;
+
+//Obstacle Avoidance
+  int state;
+  bool checkprev;
+  bool checknext;
+  bool turnleftsensor;
+  int prev;
+  int next;
+  unsigned long time;
 
 const unsigned long sampleWindow = 50;
 unsigned long micTime;
@@ -41,21 +49,22 @@ bool turnflag;
 void setup() 
 {
 Serial.begin(9600); //Unusued in project. Mainly for debugging purposes.
+Serial.setTimeout(15); //Approximation of 1000/96, 10 chars max per transaction
 Wire.begin();
-a.clearBuffer();
-b.clearBuffer();
-//laserSensor.setNumber(1);
+laserSensor.setNumber(SENSORS);
 //laserSensor.setHighAccuracy();
 debugTime = millis();
 micTime = millis();
 turnflag = false;
+prev = -1;
+next = 0;
 }
 
 void loop()
 {
-//readLaser();
-if (!Serial.available())
+while (!Serial.available())
 {
+  //readLaser();
   if(millis() - micTime < sampleWindow)
   {
     record(a, b);
@@ -64,124 +73,84 @@ if (!Serial.available())
   {
     storeAmplitude(a, b);
     micTime = millis();
-  }
+  }  
 }
-else
-{
   parsePackage(piCommand, fromPi, sizeof(fromPi));
-  commandFromPi(piCommand, a, b, left, right);
-  
-}
+  commandFromPi(piCommand, a, b, left, right);  
 }
 
-bool checkSensors(unsigned long &time, bool leftsensor, int &prev, int &next, bool checkprev, bool &checknext)
+bool checkSensors(unsigned long &time, bool leftsensor, int &prev, int &next, bool &checkprev, bool &checknext)
 {
-    bool result = false;
+  bool result = false; //Default result to false until next is farther than previous
   if(!checkprev)
   {
-  prev = (leftsensor) ? laserSensor.getValue(LEFT_SENSOR) : laserSensor.getValue(RIGHT_SENSOR);
-  checknext = false;
-  time = millis();
+    prev = (leftsensor) ? laserSensor.getValue(LEFT_SENSOR) : laserSensor.getValue(RIGHT_SENSOR); //Check appropriate sensor value
+
+    //set previous flag to true
+    checknext = false;
+    checkprev = true;
+    time = millis(); //Start timer
   }
   
   else if (millis() - time > 100)
   {
-  next = (leftsensor) ? laserSensor.getValue(LEFT_SENSOR) : laserSensor.getValue(RIGHT_SENSOR);
-  checkprev = false;
-  result = (next > prev);
+    //Code waits 100ms before checking the laser again  
+    next = (leftsensor) ? laserSensor.getValue(LEFT_SENSOR) : laserSensor.getValue(RIGHT_SENSOR);
+
+
+    //Unnecessary but next flag put to true for consistency
+    checkprev = false;
+    checknext = true;
+
+    //Loop ends when next is greater than previous. This happens when robot has moved past the parallel of the wall
+    result = (next > prev);
   }
   
   return result;
 }
 
-
-void readLaser() {
-  Forward(left, right, 150);
-  int state = laserSensor.getState();
-  #ifdef FRONTPRIORITY 
-  if (state)
-  {
-    if (BLOCKED_FRONT & state)
-    {
-      turn = (laserSensor.getValue(LEFT_SENSOR) < laserSensor.getValue(RIGHT_SENSOR)) ? 1: 0; //1 for left, 0 for right
-      while (laserSensor.getState() & BLOCKED_FRONT)
-      {
-        (turn) ? Right(left, right, 175) : Left(left, right, 175);
-        delay(100);
-      }
-    }
-    else if (BLOCKED_LEFT & state)
-    {
-      Left(left, right, 175);
-    }
-    else
-    {
-      Right(left, right, 175);
-    }
-  }
-  delay(100);
-  #endif
-
-  #ifdef STOPPED
-  if (state)
-  {
-    Halt(left, right);
-    delay(930);
-    int leftblock = laserSensor.getValue(LEFT_SENSOR);
-    delay(70);
-    int rightblock = laserSensor.getValue(RIGHT_SENSOR);
-    if (leftblock < rightblock) {
-      Right(left, right, 225);
-      while(state & (BLOCKED_FRONT | BLOCKED_LEFT)){
-        state = laserSensor.getState();
-        delay(70);
-      }
-      Halt(left, right);
-    }
-    else
-    {
-      Left(left, right, 225);
-      while(state & (BLOCKED_FRONT | BLOCKED_RIGHT)){
-        state = laserSensor.getState();
-        delay(70);
-      }
-      Halt(left, right);     
-    }   
-  }
-  delay(70);
-  #endif
-  
-  #ifdef TURNBASED
-  bool checkprev;
-  bool checknext;
-  bool turnleftsensor;
-  int prev;
-  int next;
-  unsigned long time;
-  
-  state = laserSensor.getState(); 
+void noBlock()
+{
   if(!turning & !state){
-  Forward(left, right, 150);
+  Forward(left, right, 200); //Always go forward if there is nothing in the way
+
+  //Reset the previous and next values for when turning is needed
   prev = -1;
   next = 0;
+  }
+}
+
+void readLaser() {  
+  state = laserSensor.getState(); 
+  if(!turning & !state){
+  noBlock();
   }
   
   else
   { 
   if(!turning)
   {
-    turnleftsensor = laserSensor.getValue(LEFT_SENSOR) < laserSensor.getValue(RIGHT_SENSOR);
+    //First instance of something being blocked
+    turnleftsensor = laserSensor.getValue(LEFT_SENSOR) < laserSensor.getValue(RIGHT_SENSOR); //Preference to left, but figure out who turns based on which sensor is less
+
+    //Flags for previous and next being checked are false
     checkprev = false;
     checknext = false;
+
+    //Turn flag is set to true
+    turning = true;
+    
+    //Handle turning of obstacle avoidance. Put in this loop so turning is called once.
+    (turnleftsensor) ? Right(left, right, 200) : Left(left, right, 200); //Turn based on which sensor showed farther values
   }
-  turning = true;
-  (turnleftsensor) ? Right(left, right, 200) : Left(left, right, 200);
+  
   if (checkSensors(time, turnleftsensor, prev, next, checkprev, checknext))
   {
+    //Reset all flags when turning has gone past the parallel point of the wall
     turning = false;
     checkprev = false;
     checknext = false;
+    Forward(left, right, 200);
   }
   }
-#endif
 }
