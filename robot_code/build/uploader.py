@@ -122,17 +122,20 @@ class Uploader():
         None
     """
     def __read_directory(self):
-        for file in listdir(self.__config["capture_path"]):
-            tempFile = join(self.__config["capture_path"], file)
-            if isfile(tempFile):
-                if file.startswith("x_"):
-                    continue
-                elif tempFile.endswith(".jpeg") or tempFile.endswith(".jpg") or file.startswith("y_"):
-                    new_path = self.__config["capture_path"] + "x_" + file
-                    os.rename(tempFile, new_path)
-                    self.__upload(file, new_path)
-                else:
-                    continue
+        try:
+            for x_file in listdir(self.__config["capture_path"]):
+                tempFile = join(self.__config["capture_path"], x_file)
+                if isfile(tempFile):
+                    if x_file.startswith("x_"):
+                        continue
+                    elif tempFile.endswith(".jpeg") or tempFile.endswith(".jpg") or x_file.startswith("y_"):
+                        new_path = self.__config["capture_path"] + "x_" + x_file
+                        os.rename(tempFile, new_path)
+                        self.__upload(x_file, new_path)
+                    else:
+                        continue
+        except Exception as e:
+            print(str(e))
 
     """
         Description: This function is used for uploading files (given its file path) to 
@@ -149,9 +152,9 @@ class Uploader():
         try:
             storage_path = self.__root + "/" + self.__robot.id + "/" + aFile
 
-            with open(file_path) as file:
+            with open(file_path, "rb") as file_to_upload:
                 blob = self.__bucket.blob(storage_path)
-                blob.upload_from_filename(filename=file_path)
+                blob.upload_from_file(file_obj=file_to_upload)
                 if file_path.endswith('.jpeg') or file_path.endswith('.jpg'):
                     self.__robot.videos.append(aFile)
                     self.__robot.num_of_videos += 1

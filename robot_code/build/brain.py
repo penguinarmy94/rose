@@ -95,6 +95,7 @@ class Brain():
             try:
                 self.__report_status()
                 self.__read_motor()
+                self.__read_speaker()
                 self.__read_sensors()
                 self.__read_microphone()
                 self.__read_camera()
@@ -232,7 +233,7 @@ class Brain():
             time_stamp = str(datetime.datetime.now())
             
             if not self.__robot.phrase is "":
-                self.__write_speaker(message_type="speaker" messasge=self.__robot.phrase)
+                self.__write_speaker(message_type="speaker", message=self.__robot.phrase)
                 self.__robot.phrase = ""
                 self.__db.update_robot_phrase()
         except Exception as e:
@@ -342,7 +343,7 @@ class Brain():
                 # Message incoming from uploader
                 if message_packet["type"] == "brain":
                     message_packet = json.loads(self.__uploaderQueue.get())
-                    self.__db.update_robot()
+                    self.__db.update_videos()
                     logger.write(time_stamp + " - Uploader to Brain: Brain Message Received -- " + message_packet["message"])
                 else:
                     return
