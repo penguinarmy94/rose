@@ -10,8 +10,7 @@ class Microphone
 
     //Main Functions
     unsigned int record();
-    void storeIntoBuffer();
-    void clearBuffer();
+    void storeMax();
 
     //Calibration - Unused for the time being as differential more or less removes bias
     void storeCalibrationValue(unsigned int value);
@@ -28,10 +27,8 @@ class Microphone
     //Arduino Input
     int kInputPin;
 
-    //Storing Values of Sound
-    unsigned int kBuffer[20];
-    int kCounter;
-    int kMaxHold;
+    //Maximum Sound Value
+    unsigned int kMax;
 
     //Calibration
     int kCalibrationValue;
@@ -40,8 +37,6 @@ class Microphone
     unsigned int kLowest;
     unsigned int kHighest;
 
-    //Size of Buffer
-    const int bufferSize = sizeof(kBuffer) / sizeof(kBuffer[0]);
 };
 
 #endif

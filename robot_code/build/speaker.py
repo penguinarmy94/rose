@@ -29,7 +29,7 @@ class Speaker():
                     continue
             else:
                 if not self.__isInMoodState:
-                    timer = Timer(random.randint(60,240), self.__setMood)
+                    timer = Timer(60, self.__setMood)
                     timer.start()
                     self.__isInMoodState = True
 
