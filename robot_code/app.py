@@ -370,7 +370,7 @@ def initialize_threads2(db, rob, off = True):
                 else:
                     rob.power = True
                     off = True
-                    db.update_robot()
+                    db.update_power()
 
             elif command == "stop":
                 error = ''
@@ -379,7 +379,7 @@ def initialize_threads2(db, rob, off = True):
                 else:
                     rob.power = False
                     off = False
-                    db.update_robot()
+                    db.update_power()
 
             elif command == "status":
                 error = ''
