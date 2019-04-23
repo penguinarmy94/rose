@@ -67,7 +67,7 @@ class Camera():
 
         if message_packet["type"] == "position":
             
-            pos = self.__pos + 4 * float(message_packet["message"])
+            pos = self.__pos + 2 * float(message_packet["message"])
             logger.write(str(datetime.datetime.now()) + " - Brain to Camera: Camera Message Received -- " + message_packet["message"] + " -- Moving to " + str(pos))
    
             self.__servo.ChangeDutyCycle(pos)

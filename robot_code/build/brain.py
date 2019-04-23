@@ -115,7 +115,7 @@ class Brain():
         self.__microphoneQueue.clear()
         self.__write_microphone(message_type="off", message="turn off")
         self.__write_camera(message_type="off", message="turn off")
-        self.__write_speaker(message_type="speaker", message="Damn. You. Humans.")
+        self.__write_speaker(message_type="speaker", message="Don't bother talk to me anymore. I'm not listening.")
         self.__write_speaker(message_type="off", message="Powered Off")
         self.__write_notifier(message_type="off", message="Powered Off")
         self.__write_uploader(message_type="off", message="Powered Off")
@@ -533,9 +533,10 @@ class Brain():
                 elif action_name == "Light":
                     self.__write_sensor(message_type="light", message="turn on")
             elif action_name in mapper["notification"]:
+                print("Notifications ON")
                 self.__write_notifier(message_type="notification_on", message=value)
             else:
-                self.__write_notifier(message_type="notification_off", message=value)
+                pass
         except Exception as e:
             error_message = "Brain.__send_message() Error: " + str(e)
             time_stamp = str(datetime.datetime.now())
@@ -562,7 +563,7 @@ class Brain():
                         The message that should be sent to the module which gives the motor
                         more steps as to how to execute its instruction
 
-    """ 
+    """
     def __write_motor(self, message_type="motor", message="no message"):
         try:
             time_stamp = str(datetime.datetime.now())
@@ -795,13 +796,13 @@ class Brain():
                 for action in self.__idle_behavior:
                     self.__action_map(action)
                 self.__behaviorSet = True
-            elif self.__state == "detect":
+            elif self.__state == "detect" and not self.__behaviorSet:
                 self.__reset()
-                for action in self.__detect_behavior and not self.__behaviorSet:
+                for action in self.__detect_behavior:
                     self.__action_map(action)
                 
                 self.__behaviorSet = True
-                detect = Thread(functools.partial(self.__detect_thread))
+                detect = Thread(target=functools.partial(self.__detect_thread))
                 detect.start()
 
         except Exception as e:
@@ -823,15 +824,16 @@ class Brain():
 
     """
     def __detect_thread(self):
-        start = datetime.datetime.now()
-        end = datetime.datetime.now()
+        try:
+            start = datetime.datetime.now()
+            end = datetime.datetime.now()
+            change = datetime.timedelta(minutes=self.__config["detect_interval"])
 
-        while start.minutes + self.__config["detect_inteval"] < end and self.__robot.power is True:
-            pass
-        
-        self.__state = "idle"
-        self.__behaviorSet = False
+            while start + change > end and self.__robot.power is True:
+                end = datetime.datetime.now()
 
-
-            
-    
+            print("Behavior back to idle")
+            self.__state = "idle"
+            self.__behaviorSet = False
+        except Exception as e:
+            print("Brain.__detect_thread() Error : " + str(e))
