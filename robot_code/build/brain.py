@@ -431,6 +431,16 @@ class Brain():
                 if message_packet["type"] == "brain":
                     message_packet = json.loads(self.__sensorQueue.get())
                     logger.write(str(datetime.datetime.now()) + " - Sensor to Brain: Brain Message Received -- " + message_packet["message"])
+                    if message_packet["message"] == "turned on":
+                        self.__robot.light = True
+                    elif message_packet["message"] == "turned off":
+                        self.__robot.light = False
+                    else:
+                        print("No such option for switching light")
+
+                    self.__lightOn = self.__robot.light
+                    self.__db.update_light()
+                    return
                 else:
                     return
 
@@ -533,7 +543,6 @@ class Brain():
                 elif action_name == "Light":
                     self.__write_sensor(message_type="light", message="turn on")
             elif action_name in mapper["notification"]:
-                print("Notifications ON")
                 self.__write_notifier(message_type="notification_on", message=value)
             else:
                 pass

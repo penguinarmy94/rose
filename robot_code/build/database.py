@@ -79,6 +79,14 @@ class Database():
         else:
             print("Robot has not been set yet")
     
+    def update_light(self):
+        if not self.__robot == None:
+            self.__robotRef.update({
+                u'light': self.__robot.light
+            })
+        else:
+            print("Robot has not been set yet")
+
     def update_charging(self):
         if not self.__robot == None:
             self.__robotRef.update({

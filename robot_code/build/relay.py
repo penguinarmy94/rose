@@ -44,11 +44,18 @@ class Relay():
 
             if message_packet["message"] == "turn on":
                 self.turnOn(device = message_packet["type"])
+                if message_packet["type"] == "light":
+                    self.__write_brain(message_type="brain", message="turned on")
             elif message_packet["message"] == "turn off":
                 self.turnOff(device = message_packet["type"])
+                if message_packet["type"] == "light":
+                    self.__write_brain(message_type="brain", message="turned off")
             else:
                 return
-        
+    
+    def __write_brain(self, message_type="brain", message=None):
+        self.__queue.put(json.dumps({"type": message_type, "message": message}))
+
     # Fix to keep state by device. See where else this is used        
     def isOn(self, device):
         return self.__isOn[device]

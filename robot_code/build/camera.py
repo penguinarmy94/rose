@@ -44,17 +44,20 @@ class Camera():
                     print("good_camera")
                     continue
             else:
-                if self.__interval > 0:
-                    now = datetime.datetime.now()
-                    minutes_passed = (now - self.__last_capture).total_seconds()/60
-                    if minutes_passed >= self.__interval:
-                        self.__last_capture = now    
-                        logger.write(str(datetime.datetime.now()) + ".CameraThread.CaptureOnIntervasl.Enter")
+                try:
+                    if self.__interval > 0:
+                        now = datetime.datetime.now()
+                        minutes_passed = (now - self.__last_capture).total_seconds()/60
+                        if minutes_passed >= self.__interval:
+                            self.__last_capture = now    
+                            logger.write(str(datetime.datetime.now()) + ".CameraThread.CaptureOnIntervasl.Enter")
 
-                        self.capture_image()
-            
-                        logger.write(str(datetime.datetime.now()) + ".CameraThread.CaptureOnInterval.Exit")
-                        continue
+                            self.capture_image()
+                
+                            logger.write(str(datetime.datetime.now()) + ".CameraThread.CaptureOnInterval.Exit")
+                            continue
+                except Exception as e:
+                    print("Automatic Handler Error: " + str(e))
         
         self.__servo.stop()
         self.__camera.stop_preview()
