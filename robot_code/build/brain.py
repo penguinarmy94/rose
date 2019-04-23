@@ -268,6 +268,7 @@ class Brain():
                 if message_packet["type"] == "brain":
                     message_packet = json.loads(self.__motorQueue.get())
                     logger.write(time_stamp + " - Motor to Brain: Brain Message Received -- " + message_packet["message"])
+                    self.__write_notifier(message_type="notification", message="Moved")
                     self.__motorBusy = False
                 else:
                     return
@@ -305,8 +306,9 @@ class Brain():
                 if message_packet["type"] == "brain":
                     message_packet = json.loads(self.__microphoneQueue.get())
                     logger.write(time_stamp + " - Microphone to Brain: Brain Message Received -- " + message_packet["message"])
-                    #self.__state = "detect"
-                    #self.__behaviorSet = False
+                    self.__write_notifier(message_type="threat_detected", message="Threat Detected")
+                    self.__state = "detect"
+                    self.__behaviorSet = False
                 else:
                     return
             else:
@@ -344,6 +346,7 @@ class Brain():
                 if message_packet["type"] == "brain":
                     message_packet = json.loads(self.__uploaderQueue.get())
                     self.__db.update_videos()
+                    self.__write_notifier(message_type="notification", message="Image Uploaded")
                     logger.write(time_stamp + " - Uploader to Brain: Brain Message Received -- " + message_packet["message"])
                 else:
                     return
