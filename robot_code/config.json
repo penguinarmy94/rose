@@ -17,12 +17,16 @@
     "help_file" : "/home/pi/Desktop/Projects/rose/robot_code/help.json",
     "detect_interval": 1,
     "moods": {
-         "happy": [
+        "neutral": [
+            "What is your name?;Does it look like I care?",
+            "Do you want to play a game?; I thought you might say that"
+        ],
+        "happy": [
              "I hope you are having a nice day", 
              "I love you more than you know", 
              "If you are happy and you know it clap your hands",
              "I feel like jumping so high that I touch the sky",
-             "Do you want to go see Star Wars with me?"
+             "Do you want to go see Star Wars with me?;I guess not"
         ],
         "sad": [
             "This day is making me sad",

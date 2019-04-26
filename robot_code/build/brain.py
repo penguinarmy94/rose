@@ -431,16 +431,10 @@ class Brain():
                 if message_packet["type"] == "brain":
                     message_packet = json.loads(self.__sensorQueue.get())
                     logger.write(str(datetime.datetime.now()) + " - Sensor to Brain: Brain Message Received -- " + message_packet["message"])
-                    if message_packet["message"] == "turned on":
-                        self.__robot.light = True
-                    elif message_packet["message"] == "turned off":
-                        self.__robot.light = False
-                    else:
-                        print("No such option for switching light")
-
-                    self.__lightOn = self.__robot.light
-                    self.__db.update_light()
-                    return
+                elif message_packet["type"] == "button":
+                    message_packet = json.loads(self.__sensorQueue.get())
+                    logger.write(str(datetime.datetime.now()) + " - Button to Brain: Brain Message Received -- " + message_packet["message"])
+                    self.__button_handler(num_of_presses=message_packet["message"])
                 else:
                     return
 
@@ -846,3 +840,20 @@ class Brain():
             self.__behaviorSet = False
         except Exception as e:
             print("Brain.__detect_thread() Error : " + str(e))
+
+    def __button_handler(num_of_presses="0"):
+        
+        try:
+            count = int(num_of_presses)
+
+            if count == 1:
+                pass
+            elif count == 2:
+                pass
+            elif count == 3:
+                pass
+            else:
+                return
+        except Exception as e:
+            print(str(e))
+                

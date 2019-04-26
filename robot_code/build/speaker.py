@@ -6,7 +6,7 @@ import os, sys
 class Speaker():
     __spQueue = None
     __player = None
-    __mood = "happy"
+    __mood = "neutral"
     __config = None
     __isInMoodState = False
 
@@ -60,10 +60,18 @@ class Speaker():
             return -1
 
     def say(self, message=""):
-        self.__player.say(message)
-        self.__player.runAndWait()
+        messages = message.split(";")
 
-        logger.write(str(datetime.datetime.now()) + " - Speaker: " + message)
+        if len(messages) > 1:
+            for mesg in messages:
+                self.__player.say(message)
+                self.__player.runAndWait()
+                time.sleep(20)
+                logger.write(str(datetime.datetime.now()) + " - Speaker: " + message)
+        else:
+            self.__player.say(message)
+            self.__player.runAndWait()
+            logger.write(str(datetime.datetime.now()) + " - Speaker: " + message)
     
     def __setMood(self):
         print("Setting Mood")
