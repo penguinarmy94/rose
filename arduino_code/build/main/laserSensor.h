@@ -26,7 +26,7 @@ class LaserSensor {
     int freeValue;
     void init();
     //int pinXShut[SENSORS] = {9, 10};
-    int pinXShut[SENSORS] = {9, 10, 8}; //33, 34, 32
+    int pinXShut[SENSORS] = {12, 13, 11}; //13 11 12
     VL53L0X sensor[SENSORS];
     
   public:

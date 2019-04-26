@@ -6,7 +6,7 @@
 LaserSensor::LaserSensor() {
   this->number = 1;
   this->stopValue = 400; //Main value used. Defines when a laser is considered blocked
-  this->slowValue = 500;
+  this->slowValue = 1000;
   this->freeValue = 8190;
   }
 
@@ -112,7 +112,7 @@ void LaserSensor::init() {
   for (int i = 0; i < this->number; i++) {
     digitalWrite(pinXShut[i], HIGH);
     delay(10);
-    sensor[i].setAddress(40+(2*i));
+    sensor[i].setAddress(42+(4*i));
     sensor[i].init();
     sensor[i].setTimeout(500);
     sensor[i].startContinuous();
