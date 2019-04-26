@@ -874,10 +874,10 @@ class Brain():
         except Exception as e:
             print("Brain.__detect_thread() Error : " + str(e))
 
-    def __button_handler(num_of_presses="0"):
+    def __button_handler(num_of_presses = 0):
         
         try:
-            count = int(num_of_presses)
+            count = num_of_presses
 
             if count == 1:
                 self.__write_speaker(message_type="speaker", message="Hey! Why are you hitting my head?")
