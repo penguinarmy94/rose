@@ -45,26 +45,29 @@ class Brain():
                         path to image directory, path to app.py directory, etc.
     """
     def __init__(self, database = None, robot = None, config = None, args = None, pin = 7):
-        self.__motorQueue = queues.brain_motor_queue
-        self.__notifierQueue = queues.brain_notifier_queue
-        self.__microphoneQueue = queues.brain_microphone_queue
-        self.__speakerQueue = queues.brain_speaker_queue
-        self.__cameraQueue = queues.brain_camera_queue
-        self.__sensorQueue = queues.brain_sensor_queue
-        self.__uploaderQueue = queues.brain_uploader_queue
-        self.__behaviorRef = {"idle": "", "detect": ""}
-        self.__idle_behavior = []
-        self.__detect_behavior = []
-        self.__db = database
-        self.__robot = robot
-        self.__state = "idle"
-        self.__config = config
-        self.__args = args
-        self.__buttonPin = 7
+        try:
+            self.__motorQueue = queues.brain_motor_queue
+            self.__notifierQueue = queues.brain_notifier_queue
+            self.__microphoneQueue = queues.brain_microphone_queue
+            self.__speakerQueue = queues.brain_speaker_queue
+            self.__cameraQueue = queues.brain_camera_queue
+            self.__sensorQueue = queues.brain_sensor_queue
+            self.__uploaderQueue = queues.brain_uploader_queue
+            self.__behaviorRef = {"idle": "", "detect": ""}
+            self.__idle_behavior = []
+            self.__detect_behavior = []
+            self.__db = database
+            self.__robot = robot
+            self.__state = "idle"
+            self.__config = config
+            self.__args = args
+            self.__buttonPin = 7
 
-        self.__update_behaviors()
+            self.__update_behaviors()
 
-        status_manager.battery_level = self.__robot.battery
+            status_manager.battery_level = self.__robot.battery
+        except Exception as e:
+            print(str(e))
 
     
     """
@@ -84,10 +87,9 @@ class Brain():
         None
     """
     def begin(self):
-
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BOARD)
-        GPIO.setup(BUTTON, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
+        GPIO.setup(self.__buttonPin, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
 
         if self.__args.verbose:
             print("Running brain.begin() while TRUE loop")
@@ -100,9 +102,9 @@ class Brain():
         if self.__args.verbose:
             print("Brain.Begin: Entering WHILE [Power On]")
 
-            buttonSeen = None
-            buttonCounter = 0
-            buttonUp = True
+        buttonSeen = None
+        buttonCounter = 0
+        buttonUp = True
 
         while self.__robot.power:            
             try:
