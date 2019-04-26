@@ -139,15 +139,7 @@ class Brain():
             if  buttonSeen:
                 timeout = (abs(datetime.datetime.now() - buttonSeen).seconds) >= self.__buttonDebounceTime
                 if timeout:
-                    print("Count is" + str(count))
-                    if 0 == count:
-                        # Restart Motor Thread
-						# engine.say("You have to stop pushing my buttons!");
-						# engine.runAndWait()
-                        pass
-                    if count == 1:
-                        print("Count was 1")
-
+                    self.__button_handler(buttonCounter)
                     buttonCounter = 0
                     buttonSeen = None
 
