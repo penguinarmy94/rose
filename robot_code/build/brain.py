@@ -125,7 +125,7 @@ class Brain():
     def __reset(self):
         self.__write_sensor(message_type="light", message="turn off")
         self.__write_sensor(message_type="flasher", message="turn off")
-        self.__write_speaker(message_type="automatic", message="happy")
+        self.__write_speaker(message_type="automatic", message="neutral")
         self.__write_camera(message_type="automatic", message="0")
         self.__write_notifier(message_type="notification_off", message="Reset")
 
@@ -431,10 +431,6 @@ class Brain():
                 if message_packet["type"] == "brain":
                     message_packet = json.loads(self.__sensorQueue.get())
                     logger.write(str(datetime.datetime.now()) + " - Sensor to Brain: Brain Message Received -- " + message_packet["message"])
-                elif message_packet["type"] == "button":
-                    message_packet = json.loads(self.__sensorQueue.get())
-                    logger.write(str(datetime.datetime.now()) + " - Button to Brain: Brain Message Received -- " + message_packet["message"])
-                    self.__button_handler(num_of_presses=message_packet["message"])
                 else:
                     return
 
@@ -847,11 +843,15 @@ class Brain():
             count = int(num_of_presses)
 
             if count == 1:
-                pass
+                self.__write_speaker(message_type="speaker", message="Hey! Why are you hitting my head?")
             elif count == 2:
-                pass
+                self.__write_speaker(message_type="speaker", message="Fine! Fine! I will wake up now")
+                self.__robot.light = True
+                self.__lightOn = True
+                self.__db.update_light()
+                self.__write_sensor(message_type="light", message="turn on")
             elif count == 3:
-                pass
+                self.__write_speaker(message_type="speaker", message="Ow! My head hurts now.")
             else:
                 return
         except Exception as e:

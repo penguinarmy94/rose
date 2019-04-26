@@ -7,7 +7,7 @@ class Microphone():
     __queue = None
     __config = None
     __classifier = None
-    __interval = "15"
+    __interval = "5"
     __currentTime = None
     __uploadInterval = 30
     
@@ -27,9 +27,9 @@ class Microphone():
                 if result == 2:
                     break
                 else:
-                    file_path = self.__record()
-            
-                    self.__classify(file_path)
+                    file_path, date = self.__record()
+                    print(file_path)
+                    self.__classify(file_path, date)
             else:
                 #run the rest of the logic
                 #start microphone, record()

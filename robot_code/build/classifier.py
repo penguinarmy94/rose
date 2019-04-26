@@ -16,27 +16,30 @@ class Classifier:
 
     #Train and Test Split here
     def classify(self, file_path):
-        result =  aT.fileClassification(file_path , self.__model,self.__type)
-        print("Classification Success")
+        try:
+            print("Classification Start")
+            result =  aT.fileClassification(file_path , self.__model,self.__type)
+            print("Classification Success")
     
-        #check the gunshot by parsing the result tuple
-        percentage = result[1]
-        print(percentage)
+            #check the gunshot by parsing the result tuple
+            percentage = result[1]
+            print(percentage)
         
-        act = result[2]
-        print(act)
-        
-        
-        index = act.index("gun_shot")
-        
-        percentageGunshot = percentage[index]
+            act = result[2]
+            print(act)
         
         
-        if percentageGunshot > self.__threshold:
-            return (True, percentageGunshot)
-        else:
-            return (False, percentageGunshot)
-            
+            index = act.index("gun_shot")
+        
+            percentageGunshot = percentage[index]
+        
+        
+            if percentageGunshot > self.__threshold:
+                return (True, percentageGunshot)
+            else:
+                return (False, percentageGunshot)
+        except Exception as e:
+            print("Classifier Exception: " + str(e))
             
         
             

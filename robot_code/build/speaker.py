@@ -64,7 +64,7 @@ class Speaker():
 
         if len(messages) > 1:
             for mesg in messages:
-                self.__player.say(message)
+                self.__player.say(mesg)
                 self.__player.runAndWait()
                 time.sleep(20)
                 logger.write(str(datetime.datetime.now()) + " - Speaker: " + message)
