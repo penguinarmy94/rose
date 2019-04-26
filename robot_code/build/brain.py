@@ -122,29 +122,32 @@ class Brain():
                 logger.write(str(datetime.datetime.now()) + " - Brain Error: " + str(e))
                 break
 
-            # Listen to interrupt from button
-            buttonPressed = GPIO.input(self.__buttonPin)
+            try:
+                # Listen to interrupt from button
+                buttonPressed = GPIO.input(self.__buttonPin)
 
-            if buttonPressed:
-                if buttonUp:
-                    buttonUp = False
-                    if buttonSeen:
-                        if 0 == buttonCounter:
-                            #Suspend Motor Thread
-                            buttonCounter += 1 
-                        buttonSeen = datetime.datetime.now() # Indent to NOT resets start time to delay timeout on buttonPress
-                else:
-                    buttonUp = True
+                if buttonPressed:
+                    if buttonUp:
+                        buttonUp = False
+                        if buttonSeen:
+                            if 0 == buttonCounter:
+                                #Suspend Motor Thread
+                                buttonCounter += 1 
+                            buttonSeen = datetime.datetime.now() # Indent to NOT resets start time to delay timeout on buttonPress
+                    else:
+                        buttonUp = True
 
-                time.sleep(self.__buttonDebounceTime)
+                    time.sleep(self.__buttonDebounceTime)
 
-            if  buttonSeen:
-                timeout = (abs(datetime.datetime.now() - buttonSeen).seconds) >= self.__buttonDebounceTime
-                if timeout:
-                    //self.__button_handler(buttonCounter)
-                    print("You pushed my buttons {} times.".format(buttonCounter))
-                    buttonCounter = 0
-                    buttonSeen = None
+                if  buttonSeen:
+                    timeout = (abs(datetime.datetime.now() - buttonSeen).seconds) >= self.__buttonDebounceTime
+                    if timeout:
+                        #self.__button_handler(buttonCounter)
+                        print("You pushed my buttons {} times.".format(buttonCounter))
+                        buttonCounter = 0
+                        buttonSeen = None
+            except Exception as e:
+                print("Button Handler Error: " + str(e))
 
 
         if self.__args.verbose:
