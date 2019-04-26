@@ -4,13 +4,34 @@
 #include "helper.h"
 
 
+#define CONFIG1
+/*
+ * Below are the four possible configurations for the motors.
+ * This assumes that PWM2 goes with pins 3 and 4 and PWM7 goes
+ * with pins 5 and 6. I assume this part to at least be correct.
+ * Just switch out the configs and test with all of the directionals
+ * to observe which is correct.
+ */
 
-//#define FRONTPRIORITY
-#define TURNBASED
-//#define STOPPED
-  
+#ifdef CONFIG1  
 Motor left(4, 3, 2); 
 Motor right(6, 5, 7); 
+#endif
+
+#ifdef CONFIG2 
+Motor left(3, 4, 2); 
+Motor right(5, 6, 7); 
+#endif
+
+#ifdef CONFIG3 
+Motor left(6, 5, 7); 
+Motor right(4, 3, 2); 
+#endif
+
+#ifdef CONFIG4
+Motor left(5, 6, 7); 
+Motor right(3, 4, 2); 
+#endif
 Microphone a(0);
 Microphone b(1);
 LaserSensor lasersensor;
@@ -23,7 +44,6 @@ int count;
 PIData piCommand;
 int i = 0;
 int turn;
-int debug = True;
 
 LaserSensor laserSensor;
 int waitSensor = 0;
@@ -41,7 +61,6 @@ int wait = 0;
 
 const unsigned long sampleWindow = 50;
 unsigned long micTime;
-unsigned long debugTime;
 
 unsigned long turntimer;
 bool turnflag;
@@ -54,7 +73,6 @@ Serial.setTimeout(15); //Approximation of 1000/96, 10 chars max per transaction
 Wire.begin();
 laserSensor.setNumber(SENSORS);
 //laserSensor.setHighAccuracy();
-debugTime = millis();
 micTime = millis();
 turnflag = false;
 prev = -1;
@@ -63,7 +81,7 @@ next = 0;
 
 void loop()
 {
-while (debug || !Serial.available())
+while (!Serial.available())
 {
 
   getSoundSample(a, b, micTime, sampleWindow);
