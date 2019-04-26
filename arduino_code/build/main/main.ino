@@ -44,7 +44,7 @@ int count;
 PIData piCommand;
 int i = 0;
 int turn;
-int debug = True;
+int debug = true;
 
 LaserSensor laserSensor;
 int waitSensor = 0;
