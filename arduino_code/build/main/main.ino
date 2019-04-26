@@ -44,7 +44,6 @@ int count;
 PIData piCommand;
 int i = 0;
 int turn;
-int debug = true;
 
 LaserSensor laserSensor;
 int waitSensor = 0;
@@ -62,7 +61,6 @@ int wait = 0;
 
 const unsigned long sampleWindow = 50;
 unsigned long micTime;
-unsigned long debugTime;
 
 unsigned long turntimer;
 bool turnflag;
@@ -75,7 +73,6 @@ Serial.setTimeout(15); //Approximation of 1000/96, 10 chars max per transaction
 Wire.begin();
 laserSensor.setNumber(SENSORS);
 //laserSensor.setHighAccuracy();
-debugTime = millis();
 micTime = millis();
 turnflag = false;
 prev = -1;
@@ -84,7 +81,7 @@ next = 0;
 
 void loop()
 {
-while (debug || !Serial.available())
+while (!Serial.available())
 {
 
   getSoundSample(a, b, micTime, sampleWindow);
