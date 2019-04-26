@@ -85,6 +85,10 @@ class Brain():
     """
     def begin(self):
 
+        GPIO.setwarnings(False)
+        GPIO.setmode(GPIO.BOARD)
+        GPIO.setup(BUTTON, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
+
         if self.__args.verbose:
             print("Running brain.begin() while TRUE loop")
 
