@@ -98,8 +98,8 @@ class Brain():
             print("Brain.Begin: Entering WHILE [Power On]")
 
             buttonSeen = None
-			buttonCounter = 0
-			buttonUp = True
+            buttonCounter = 0
+            buttonUp = True
 
         while self.__robot.power:            
             try:
@@ -119,7 +119,8 @@ class Brain():
 
             # Listen to interrupt from button
             buttonPressed = GPIO.input(self.__buttonPin)
-			if buttonPressed:
+
+            if buttonPressed:
 				if buttonUp:
 					buttonUp = False
 					if buttonSeen:
@@ -133,18 +134,19 @@ class Brain():
 		
 				time.sleep(self.__buttonDebounceTime)	 
 
-			if  buttonSeen:
-				timeout = (abs(datetime.now() - buttonSeen).seconds) >= self.__buttonDebounceTime
-				if timeout:
-					if 0 == count:
+            if  buttonSeen:
+                timeout = (abs(datetime.now() - buttonSeen).seconds) >= self.__buttonDebounceTime
+                if timeout:
+                    if 0 == count:
                         # Restart Motor Thread
 						# engine.say("You have to stop pushing my buttons!");
 						# engine.runAndWait()
-					if count == 1:
-						// Do sth
+                        pass
+                    if count == 1:
+                        print("Count was 1")
 
-			        buttonCounter = 0
-			        buttonSeen = None
+                    buttonCounter = 0
+                    buttonSeen = None
 
 
         if self.__args.verbose:
