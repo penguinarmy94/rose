@@ -19,11 +19,12 @@
     "moods": {
         "neutral": [
             "What is your name?;Does it look like I care?",
-            "Do you want to play a game?; I thought you might say that"
+            "Do you want to play a game?;I thought you might say that",
+            "Am I your favorite robot? No? Ok."
         ],
         "happy": [
              "I hope you are having a nice day", 
-             "I love you more than you know", 
+             "I think that this project expo is really entertaining", 
              "If you are happy and you know it clap your hands",
              "I feel like jumping so high that I touch the sky",
              "Do you want to go see Star Wars with me?;I guess not"

@@ -1,7 +1,7 @@
 import json, datetime, time, functools
 from . import queues, logger, status_manager
 from threading import Thread
-import RPi.GPIO as GPIO
+
 
 class Brain():
     __motorQueue = None
@@ -23,9 +23,6 @@ class Brain():
     __numberOfSensors = 1
     __updated = False
     __behaviorSet = False
-    __buttonPin = None
-    __buttonWaitTime = 3
-    __buttonDebounceTime = 0.1
 
     """
         Description: Constructor for Brain class
@@ -44,7 +41,7 @@ class Brain():
                         A dictionary that has all of the constants for the application, such as
                         path to image directory, path to app.py directory, etc.
     """
-    def __init__(self, database = None, robot = None, config = None, args = None, pin = 4):
+    def __init__(self, database = None, robot = None, config = None, args = None):
         self.__motorQueue = queues.brain_motor_queue
         self.__notifierQueue = queues.brain_notifier_queue
         self.__microphoneQueue = queues.brain_microphone_queue
@@ -60,7 +57,6 @@ class Brain():
         self.__state = "idle"
         self.__config = config
         self.__args = args
-        self.__pin = 7
 
         self.__update_behaviors()
 
@@ -95,11 +91,6 @@ class Brain():
 
         if self.__args.verbose:
             print("Brain.Begin: Entering WHILE [Power On]")
-
-            buttonSeen = None
-            buttonCounter = 0
-            buttonUp = True
-
         while self.__robot.power:            
             try:
                 self.__report_status()
@@ -115,38 +106,6 @@ class Brain():
                 print(e)
                 logger.write(str(datetime.datetime.now()) + " - Brain Error: " + str(e))
                 break
-
-            # Listen to interrupt from button
-            buttonPressed = GPIO.input(self.__buttonPin)
-
-            if buttonPressed:
-                if buttonUp:
-                    buttonUp = False
-                    if buttonSeen:
-                        if 0 == buttonCounter:
-                            #Suspend Motor Thread
-                            buttonCounter += 1 
-                        buttonSeen = datetime.datetime.now() # Indent to NOT resets start time to delay timeout on buttonPress
-                else:
-                    buttonUp = True
-
-                time.sleep(self.__buttonDebounceTime)
-
-            if  buttonSeen:
-                timeout = (abs(datetime.datetime.now() - buttonSeen).seconds) >= self.__buttonDebounceTime
-                if timeout:
-                    print("Count is" + str(count))
-                    if 0 == count:
-                        # Restart Motor Thread
-						# engine.say("You have to stop pushing my buttons!");
-						# engine.runAndWait()
-                        pass
-                    if count == 1:
-                        print("Count was 1")
-
-                    buttonCounter = 0
-                    buttonSeen = None
-
 
         if self.__args.verbose:
             print("Brain.Begin: Exiting WHILE [Power Off]")
@@ -472,6 +431,10 @@ class Brain():
                 if message_packet["type"] == "brain":
                     message_packet = json.loads(self.__sensorQueue.get())
                     logger.write(str(datetime.datetime.now()) + " - Sensor to Brain: Brain Message Received -- " + message_packet["message"])
+                elif message_packet["type"] == "button":
+                    message_packet = json.loads(self.__sensorQueue.get())
+                    logger.write(str(datetime.datetime.now()) + " - Button to Brain: Brain Message Received -- " + message_packet["message"])
+                    self.__button_handler(num_of_presses=message_packet["message"])
                 else:
                     return
 
@@ -563,7 +526,7 @@ class Brain():
                     self.__write_motor(message_type="motor", message="F" + value + "-")
             elif action_name in mapper["camera"]:
                 if action_name == "Record" and not self.__updated:
-                    self.__write_motor(message_type="automatic", message=str(value))
+                    self.__write_motor(message_type="automatic", message=value))
             elif action_name in mapper["speaker"]:
                 if action_name == "Emotion":
                     emotion = self.__config["emotions"][int(value)]
@@ -884,15 +847,11 @@ class Brain():
             count = int(num_of_presses)
 
             if count == 1:
-                self.__write_speaker(message_type="speaker", message="Hey! Why are you hitting my head?")
+                pass
             elif count == 2:
-                self.__write_speaker(message_type="speaker", message="Fine! Fine! I will wake up now")
-                self.__robot.light = True
-                self.__lightOn = True
-                self.__db.update_light()
-                self.__write_sensor(message_type="light", message="turn on")
+                pass
             elif count == 3:
-                self.__write_speaker(message_type="speaker", message="Ow! My head hurts now.")
+                pass
             else:
                 return
         except Exception as e:
