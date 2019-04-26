@@ -141,7 +141,8 @@ class Brain():
             if  buttonSeen:
                 timeout = (abs(datetime.datetime.now() - buttonSeen).seconds) >= self.__buttonDebounceTime
                 if timeout:
-                    self.__button_handler(buttonCounter)
+                    //self.__button_handler(buttonCounter)
+                    print("You pushed my buttons {} times.".format(buttonCounter))
                     buttonCounter = 0
                     buttonSeen = None
 
