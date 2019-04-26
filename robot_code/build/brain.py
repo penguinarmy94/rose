@@ -44,7 +44,7 @@ class Brain():
                         A dictionary that has all of the constants for the application, such as
                         path to image directory, path to app.py directory, etc.
     """
-    def __init__(self, database = None, robot = None, config = None, args = None, pin = 4):
+    def __init__(self, database = None, robot = None, config = None, args = None, pin = 7):
         self.__motorQueue = queues.brain_motor_queue
         self.__notifierQueue = queues.brain_notifier_queue
         self.__microphoneQueue = queues.brain_microphone_queue
@@ -60,7 +60,7 @@ class Brain():
         self.__state = "idle"
         self.__config = config
         self.__args = args
-        self.__pin = 7
+        self.__buttonPin = 7
 
         self.__update_behaviors()
 
