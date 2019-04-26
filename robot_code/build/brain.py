@@ -1,7 +1,8 @@
 import json, datetime, time, functools
 from . import queues, logger, status_manager
 from threading import Thread
-
+import RPi.GPIO as GPIO
+from datetime import datetime
 
 class Brain():
     __motorQueue = None
@@ -23,6 +24,9 @@ class Brain():
     __numberOfSensors = 1
     __updated = False
     __behaviorSet = False
+    __buttonPin = None
+    __buttonWaitTime = 3
+	__buttonDebounceTime = 0.1
 
     """
         Description: Constructor for Brain class
@@ -41,7 +45,7 @@ class Brain():
                         A dictionary that has all of the constants for the application, such as
                         path to image directory, path to app.py directory, etc.
     """
-    def __init__(self, database = None, robot = None, config = None, args = None):
+    def __init__(self, database = None, robot = None, config = None, args = None, pin = 4):
         self.__motorQueue = queues.brain_motor_queue
         self.__notifierQueue = queues.brain_notifier_queue
         self.__microphoneQueue = queues.brain_microphone_queue
@@ -57,6 +61,7 @@ class Brain():
         self.__state = "idle"
         self.__config = config
         self.__args = args
+        self.__pin = 7
 
         self.__update_behaviors()
 
@@ -91,6 +96,11 @@ class Brain():
 
         if self.__args.verbose:
             print("Brain.Begin: Entering WHILE [Power On]")
+
+            buttonSeen = None
+			buttonCounter = 0
+			buttonUp = True
+
         while self.__robot.power:            
             try:
                 self.__report_status()
@@ -106,6 +116,35 @@ class Brain():
                 print(e)
                 logger.write(str(datetime.datetime.now()) + " - Brain Error: " + str(e))
                 break
+
+            # Listen to interrupt from button
+            buttonPressed = GPIO.input(self.__buttonPin)
+				if buttonPressed:
+					if buttonUp:
+						buttonUp = False
+						if buttonSeen:
+							if 0 == buttonCounter:
+								#Suspend Motor Thread
+							buttonCounter += 1 
+						buttonSeen = datetime.now() # Indent to NOT resets start time to delay timeout on buttonPress
+
+				else:
+					buttonUp = True
+		
+				time.sleep(self.__buttonDebounceTime)	 
+
+			if  buttonSeen:
+				timeout = (abs(datetime.now() - buttonSeen).seconds) >= self.__buttonDebounceTime
+				if timeout:
+					if 0 == count:
+						engine.say("You have to stop pushing my buttons!");
+						engine.runAndWait()
+					if count == 1:
+						// Do sth
+
+			buttonCounter = 0
+			buttonSeen = None
+
 
         if self.__args.verbose:
             print("Brain.Begin: Exiting WHILE [Power Off]")
