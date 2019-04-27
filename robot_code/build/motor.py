@@ -48,6 +48,7 @@ class Motor():
                 else:
                     self.move(self.__code)
         
+        self.move("F0-")
         logger.write(str(datetime.datetime.now()) + " - Motor: Powered Off")
                 
     def move(self, direction):

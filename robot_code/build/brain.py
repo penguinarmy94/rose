@@ -102,9 +102,10 @@ class Brain():
         if self.__args.verbose:
             print("Brain.Begin: Entering WHILE [Power On]")
 
-        buttonSeen = None
         buttonCounter = 0
         buttonUp = True
+        buttonSeen = datetime.datetime.now()
+        print(buttonSeen)
 
         while self.__robot.power:            
             try:
@@ -125,22 +126,24 @@ class Brain():
             try:
                 # Listen to interrupt from button
                 buttonPressed = GPIO.input(self.__buttonPin)
-
                 if buttonPressed:
                     if buttonUp:
+                        print("buttonUp registered")
                         buttonUp = False
+                        print(buttonSeen)
                         if buttonSeen:
                             if 0 == buttonCounter:
                                 #Suspend Motor Thread
                                 buttonCounter += 1 
                             buttonSeen = datetime.datetime.now() # Indent to NOT resets start time to delay timeout on buttonPress
+                            print(buttonSeen)
                     else:
                         buttonUp = True
 
                     time.sleep(self.__buttonDebounceTime)
 
                 if  buttonSeen:
-                    timeout = (abs(datetime.datetime.now() - buttonSeen).seconds) >= self.__buttonDebounceTime
+                    timeout = (abs(datetime.datetime.now() - buttonSeen).seconds) >= self.__buttonWaitTime
                     if timeout:
                         #self.__button_handler(buttonCounter)
                         print("You pushed my buttons {} times.".format(buttonCounter))
@@ -561,6 +564,12 @@ class Brain():
             if action_name in mapper["motor"]:
                 if action_name == "Move Towards Sound":
                     self.__write_motor(message_type="motor", message="Y" + value + "-")
+                elif action_name == "Move Left":
+                    self.__write_motor(message_type="motor", message="L1-")
+                    self.__write_motor(message_type="motor", message="F" + value + "-")
+                elif action_name == "Move Right":
+                    self.__write_motor(message_type="motor", message="R1-")
+                    self.__write_motor(message_type="motor", message="F" + value + "-")
                 else:
                     self.__write_motor(message_type="motor", message="F" + value + "-")
             elif action_name in mapper["camera"]:
