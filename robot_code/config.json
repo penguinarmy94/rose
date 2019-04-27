@@ -20,7 +20,7 @@
         "neutral": [
             "What is your name?;Does it look like I care?",
             "Do you want to play a game?;I thought you might say that",
-            "Am I your favorite robot? No? Ok."
+            "Am I your favorite robot?; No? Ok."
         ],
         "happy": [
              "I hope you are having a nice day", 

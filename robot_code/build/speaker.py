@@ -9,6 +9,7 @@ class Speaker():
     __mood = "neutral"
     __config = None
     __isInMoodState = False
+    __conversation_delay = 5
 
     def __init__(self, queue = None, config = None):
         self.__spQueue = queue
@@ -66,7 +67,7 @@ class Speaker():
             for mesg in messages:
                 self.__player.say(mesg)
                 self.__player.runAndWait()
-                time.sleep(20)
+                time.sleep(self.__conversation_delay)
                 logger.write(str(datetime.datetime.now()) + " - Speaker: " + message)
         else:
             self.__player.say(message)
