@@ -26,6 +26,7 @@ class Brain():
     __buttonPin = None
     __buttonWaitTime = 3
     __buttonDebounceTime = 0.1
+    __buttonSeen = None
 
     """
         Description: Constructor for Brain class
@@ -104,8 +105,6 @@ class Brain():
 
         buttonCounter = 0
         buttonUp = True
-        buttonSeen = datetime.datetime.now()
-        print(buttonSeen)
 
         while self.__robot.power:            
             try:
@@ -128,27 +127,24 @@ class Brain():
                 buttonPressed = GPIO.input(self.__buttonPin)
                 if buttonPressed:
                     if buttonUp:
-                        print("buttonUp registered")
                         buttonUp = False
-                        print(buttonSeen)
-                        if buttonSeen:
-                            if 0 == buttonCounter:
-                                #Suspend Motor Thread
-                                buttonCounter += 1 
-                            buttonSeen = datetime.datetime.now() # Indent to NOT resets start time to delay timeout on buttonPress
-                            print(buttonSeen)
+                        if self.__buttonSeen:
+                            if buttonCounter == 0:
+                                self.__write_motor(message_type="motor", message="F0-")
+                            buttonCounter += 1          
+                        self.__buttonSeen = datetime.datetime.now() # Indent to NOT resets start time to delay timeout on buttonPress
                     else:
                         buttonUp = True
 
                     time.sleep(self.__buttonDebounceTime)
 
-                if  buttonSeen:
-                    timeout = (abs(datetime.datetime.now() - buttonSeen).seconds) >= self.__buttonWaitTime
+                if  self.__buttonSeen:
+                    timeout = (abs(datetime.datetime.now() - self.__buttonSeen).seconds) >= self.__buttonWaitTime
                     if timeout:
-                        #self.__button_handler(buttonCounter)
+                        self.__button_handler(buttonCounter)
                         print("You pushed my buttons {} times.".format(buttonCounter))
                         buttonCounter = 0
-                        buttonSeen = None
+                        self.__buttonSeen = None
             except Exception as e:
                 print("Button Handler Error: " + str(e))
 
