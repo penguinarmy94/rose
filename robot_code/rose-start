@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cd /home/pi/Desktop/Projects/rose/robot_code
+source rose_env/bin/activate
+python3 app.py -v -p
