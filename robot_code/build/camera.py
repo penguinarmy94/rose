@@ -35,14 +35,18 @@ class Camera():
         self.__camera.start_preview(fullscreen = False, window = (100, 20, 640, 480))
         
         while True:
-            if not self.__queue.empty():
-                result = self.read_queue()
-                if result == 2:
-                    print("something_camera")
-                    break
-                else:
-                    print("good_camera")
-                    continue
+            try:
+                if not self.__queue.empty():
+                    result = self.read_queue()
+                    print("read queue " + str(result))
+                    if result == 2:
+                        print("something_camera")
+                        break
+                    else:
+                        print("good_camera")
+                        continue
+            except Exception as e:
+                print("Camera Loop: " + str(e))
             else:
                 try:
                     if self.__interval > 0:
@@ -59,9 +63,13 @@ class Camera():
                 except Exception as e:
                     print("Automatic Handler Error: " + str(e))
         
+        print("Camera trying to exit")
         self.__servo.stop()
+        print("Servo stopped")
         self.__camera.stop_preview()
+        print("Preview stopped")
         gpio.cleanup()
+        print("Camera exit")
 
         logger.write(str(datetime.datetime.now()) + " - Camera: Powered off")
     
@@ -85,6 +93,8 @@ class Camera():
             self.capture_image()
 
             logger.write(str(datetime.datetime.now()) + ".CameraThread.setManual.Exit")
+            
+            return 1
 
         elif message_packet["type"] == "automatic":
             logger.write(str(datetime.datetime.now()) + ".CameraThread.setAutomatic[" + message_packet["message"] + "].Enter")
@@ -93,6 +103,8 @@ class Camera():
             self.__last_capture = datetime.datetime.now()
 
             logger.write(str(datetime.datetime.now()) + ".CameraThread.setAutomatic.Exit")
+
+            return 1
 
         elif message_packet["type"] == "off":
             message_packet = json.loads(self.__queue.get())

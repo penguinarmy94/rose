@@ -810,8 +810,7 @@ class Brain():
             time_stamp = str(datetime.datetime.now())
 
             if message_type == "off":
-                for sensor in range(self.__numberOfSensors):
-                    self.__sensorQueue.put(json.dumps({"type": message_type, "message": message}))
+                self.__sensorQueue.put(json.dumps({"type": message_type, "message": message}))
             else:
                 self.__sensorQueue.put(json.dumps({"type": message_type, "message": message}))
             

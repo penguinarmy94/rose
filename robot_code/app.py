@@ -184,50 +184,49 @@ def initialize_threads(db, rob, off = True):
             print(str(e))
 
 
-        if not (rob.power or off):
-                 
+        if args.verbose:
+            print("Stopping brain thread...")
+        
+        brain_thread.join()
+
+        if 'mic' in devices:
             if args.verbose:
-                print("Stopping brain thread...")
-            brain_thread.join()
-
-            if 'mic' in devices:
-                if args.verbose:
-                    print("Stopping mic thread...")
-                microphone_thread.join()
+                print("Stopping mic thread...")
+            microphone_thread.join()
                 
-            if 'motor' in devices:
-                if args.verbose:
-                    print("Stopping motor thread...")
-                motor_thread.join()
+        if 'motor' in devices:
+            if args.verbose:
+                print("Stopping motor thread...")
+            motor_thread.join()
   
-            if 'notifier' in devices:
-                if args.verbose:
-                    print("Stopping notifier thread...")              
-                notification_manager_thread.join()
+        if 'notifier' in devices:
+            if args.verbose:
+                print("Stopping notifier thread...")              
+            notification_manager_thread.join()
 
-            if 'speaker' in devices:
-                if args.verbose:
-                    print("Stopping speaker thread...")
-                speaker_thread.join()
+        if 'speaker' in devices:
+            if args.verbose:
+                print("Stopping speaker thread...")
+            speaker_thread.join()
 
-            if 'camera' in devices:
-                if args.verbose:
-                    print("Stopping camera thread...")              
-                camera_thread.join()
+        if 'camera' in devices:
+            if args.verbose:
+                print("Stopping camera thread...")              
+            camera_thread.join()
 
-            # change to relay
-            if 'led' in devices:
-                if args.verbose:
-                    print("Stopping relay thread...")              
-                relay_thread.join()
+        # change to relay
+        #if 'led' in devices:
+        #    if args.verbose:
+        #        print("Stopping relay thread...")              
+        #    relay_thread.join()
 
-            if 'uploader' in devices:
-                if args.verbose:
-                    print("Stopping uploader thread...")              
-                uploader_thread.join()
+        #if 'uploader' in devices:
+        #    if args.verbose:
+        #        print("Stopping uploader thread...")              
+        #    uploader_thread.join()
                 
-            logger.write("turn off")
-            print("Robot has been turned off.")
+        logger.write("turn off")
+        print("Robot has been turned off.")
 
 
 def initialize_threads2(db, rob, off = True):

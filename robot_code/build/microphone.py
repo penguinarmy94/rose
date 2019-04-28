@@ -37,7 +37,8 @@ class Microphone():
                 file_path, date = self.__record()
                 print(file_path)
                 self.__classify(file_path, date)        
-               
+        
+        print("Microphone exit")
         logger.write(str(datetime.datetime.now()) + " - Microphone: Powered Off")
            
     def __read_queue(self):

@@ -27,14 +27,20 @@ class Relay():
                     continue
             else:
                 continue
-        
-        gpio.cleanup()
+
+        #try:
+        #    gpio.cleanup()
+        #except Exception as e:
+        #    print("GPIO cleanup" + str(e))
+
+        printf("relay exit")
         logger.write(str(datetime.datetime.now()) + " - Relay: Powered Off")
     
     def __read_queue(self):
         message_packet = json.loads(self.__queue.peek())
 
         if message_packet["type"] == "off":
+            print("Telling relay to turn off")
             message_packet = json.loads(self.__queue.get())
             logger.write(str(datetime.datetime.now()) + " - Brain to Relay: Off Message Received -- " + message_packet["message"])
             return 2

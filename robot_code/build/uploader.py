@@ -92,7 +92,6 @@ class Uploader():
                 self.__read_directory()
         
         logger.write(str(datetime.datetime.now()) + " - Uploader Powered Off")
-
             
     """
         Description: This function reads from the module's corresponding queue
@@ -128,7 +127,7 @@ class Uploader():
                 if isfile(tempFile):
                     if x_file.startswith("x_"):
                         continue
-                    elif tempFile.endswith(".jpeg") or tempFile.endswith(".jpg") or x_file.startswith("y_"):
+                    elif tempFile.endswith(".jpeg") or tempFile.endswith(".jpg"): #or x_file.startswith("y_"):
                         new_path = self.__config["capture_path"] + "x_" + x_file
                         os.rename(tempFile, new_path)
                         self.__upload(x_file, new_path)

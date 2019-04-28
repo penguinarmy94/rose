@@ -40,6 +40,7 @@ class Classifier:
                 return (False, percentageGunshot)
         except Exception as e:
             print("Classifier Exception: " + str(e))
+            return(False, 0)
             
         
             
