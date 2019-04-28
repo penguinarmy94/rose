@@ -7,7 +7,8 @@ let config = {
         "time": "min",
         "minitime": "sec",
         "distance": "cm",
-        "mood": "mood"
+        "mood": "mood",
+        "active": "--"
     }
 }
 

@@ -17,7 +17,7 @@ class Brain():
     __state = None
     __config = {}
     __args = {}
-    __motorBusy = False
+    __lastMessage = ""
     __lightOn = False
     __cameraPosition = 7
     __numberOfSensors = 1
@@ -97,10 +97,7 @@ class Brain():
         if self.__args.verbose:
             print("Running brain.begin() while TRUE loop")
 
-        #self.__write_motor(message_type="calibrate", message="C5-")
-        self.__write_speaker(message_type="speaker", message="blah, Robot 1 ready to party")
-        #For testing only:
-        #self.__write_camera(message_type="automatic", message="1")
+        self.__write_speaker(message_type="speaker", message=self.__robot.name + " is ready to party")
 
         if self.__args.verbose:
             print("Brain.Begin: Entering WHILE [Power On]")
@@ -171,7 +168,6 @@ class Brain():
 
 
     def __reset(self):
-        self.__write_sensor(message_type="light", message="turn off")
         self.__write_sensor(message_type="flasher", message="turn off")
         self.__write_speaker(message_type="automatic", message="neutral")
         self.__write_camera(message_type="automatic", message="0")
@@ -280,8 +276,9 @@ class Brain():
         try:
             time_stamp = str(datetime.datetime.now())
             
-            if not self.__robot.phrase is "":
+            if not self.__robot.phrase is "" and not self.__lastMessage is self.__robot.phrase:
                 self.__write_speaker(message_type="speaker", message=self.__robot.phrase)
+                self.__lastMessage = self.__robot.phrase
                 self.__robot.phrase = ""
                 self.__db.update_robot_phrase()
         except Exception as e:
@@ -317,7 +314,6 @@ class Brain():
                     message_packet = json.loads(self.__motorQueue.get())
                     logger.write(time_stamp + " - Motor to Brain: Brain Message Received -- " + message_packet["message"])
                     self.__write_notifier(message_type="notification", message="Moved")
-                    self.__motorBusy = False
                 else:
                     return
             else:
@@ -355,6 +351,7 @@ class Brain():
                     message_packet = json.loads(self.__microphoneQueue.get())
                     logger.write(time_stamp + " - Microphone to Brain: Brain Message Received -- " + message_packet["message"])
                     self.__write_notifier(message_type="threat_detected", message="Threat Detected")
+                    self.__write_speaker(message_type="speaker", message="Alert! Alert! Alert!")
                     self.__state = "detect"
                     self.__behaviorSet = False
                 else:
@@ -567,15 +564,13 @@ class Brain():
                 if action_name == "Move Towards Sound":
                     self.__write_motor(message_type="motor", message="Y" + value + "-")
                 elif action_name == "Move Left":
-                    self.__write_motor(message_type="motor", message="L1-")
-                    self.__write_motor(message_type="motor", message="F" + value + "-")
+                    self.__write_motor(message_type="motor", message="L" + value + "-")
                 elif action_name == "Move Right":
-                    self.__write_motor(message_type="motor", message="R1-")
-                    self.__write_motor(message_type="motor", message="F" + value + "-")
+                    self.__write_motor(message_type="motor", message="R" + value + "-")
                 else:
                     self.__write_motor(message_type="motor", message="F" + value + "-")
             elif action_name in mapper["camera"]:
-                if action_name == "Record" and not self.__updated:
+                if action_name == "Take Picture" and not self.__updated:
                     self.__write_motor(message_type="automatic", message=str(value))
             elif action_name in mapper["speaker"]:
                 if action_name == "Emotion":
@@ -623,12 +618,9 @@ class Brain():
 
             # Only writes to the motor if the message is an Off message, Microphone message, or if
             # the motor is waiting for its next instruction
-            if message_type == "off" or message_type == "microphone" or message == "S5-" or self.__motorBusy is False:  
-                self.__motorQueue.put(json.dumps({"type": message_type, "message": message}))
-                logger.write(time_stamp + " - Brain to Motor: " + message)
-                self.__motorBusy = True
-            else:
-                return
+            #if message_type == "off" or message_type == "microphone" or message == "S5-" or self.motorIsBusy:  
+            self.__motorQueue.put(json.dumps({"type": message_type, "message": message}))
+            logger.write(time_stamp + " - Brain to Motor: " + message)
         except Exception as e:
             error_message = "Brain.__write_motor() Error: " + str(e)
             time_stamp = str(datetime.datetime.now())
