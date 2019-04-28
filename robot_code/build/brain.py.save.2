@@ -26,9 +26,6 @@ class Brain():
     __buttonPin = None
     __buttonWaitTime = 3
     __buttonDebounceTime = 0.1
-    __buttonSeen = None
-    __buttonUp = True
-    __buttonCounter = 0
 
     """
         Description: Constructor for Brain class
@@ -105,6 +102,11 @@ class Brain():
         if self.__args.verbose:
             print("Brain.Begin: Entering WHILE [Power On]")
 
+        buttonCounter = 0
+        buttonUp = True
+        buttonSeen = datetime.datetime.now()
+        print(buttonSeen)
+
         while self.__robot.power:            
             try:
                 self.__report_status()
@@ -125,32 +127,28 @@ class Brain():
                 # Listen to interrupt from button
                 buttonPressed = GPIO.input(self.__buttonPin)
                 if buttonPressed:
-                    if self.__buttonUp:
-                        print("Went into button up")
-                        self.__buttonUp = False
-                        if self.__buttonSeen:
-                            print("Went into first button seen")
-                            #if self.__buttonCounter == 0:
-                                #print("Went into button counter == 0")
-                                #self.__write_motor(message_type="motor", message="F0-")
-                            self.__buttonCounter += 1
-                            print(self.__buttonCounter)
-                        self.__buttonSeen = datetime.datetime.now() # Indent to NOT resets start time to delay timeout on buttonPress
-                else:
-                    print("Went into else")
-                    self.__buttonUp = True
+                    if buttonUp:
+                        print("buttonUp registered")
+                        buttonUp = False
+                        print(buttonSeen)
+                        if buttonSeen:
+                            if 0 == buttonCounter:
+                                #Suspend Motor Thread
+                                buttonCounter += 1 
+                            buttonSeen = datetime.datetime.now() # Indent to NOT resets start time to delay timeout on buttonPress
+                            print(buttonSeen)
+                    else:
+                        buttonUp = True
 
-                time.sleep(self.__buttonDebounceTime)
+                    time.sleep(self.__buttonDebounceTime)
 
-                if  self.__buttonSeen:
-                    print("Went into second button seen")
-                    timeout = (abs(datetime.datetime.now() - self.__buttonSeen).seconds) >= self.__buttonWaitTime
+                if  buttonSeen:
+                    timeout = (abs(datetime.datetime.now() - buttonSeen).seconds) >= self.__buttonWaitTime
                     if timeout:
-                        print("Went into timeout")
                         #self.__button_handler(buttonCounter)
-                        print("You pushed my buttons {} times.".format(self.__buttonCounter))
-                        self.__buttonCounter = 0
-                        self.__buttonSeen = None
+                        print("You pushed my buttons {} times.".format(buttonCounter))
+                        buttonCounter = 0
+                        buttonSeen = None
             except Exception as e:
                 print("Button Handler Error: " + str(e))
 
@@ -171,6 +169,7 @@ class Brain():
 
 
     def __reset(self):
+        self.__write_sensor(message_type="light", message="turn off")
         self.__write_sensor(message_type="flasher", message="turn off")
         self.__write_speaker(message_type="automatic", message="neutral")
         self.__write_camera(message_type="automatic", message="0")
@@ -316,6 +315,7 @@ class Brain():
                     message_packet = json.loads(self.__motorQueue.get())
                     logger.write(time_stamp + " - Motor to Brain: Brain Message Received -- " + message_packet["message"])
                     self.__write_notifier(message_type="notification", message="Moved")
+                    self.__motorBusy = False
                 else:
                     return
             else:
@@ -565,11 +565,13 @@ class Brain():
                 if action_name == "Move Towards Sound":
                     self.__write_motor(message_type="motor", message="Y" + value + "-")
                 elif action_name == "Move Left":
-                    self.__write_motor(message_type="motor", message="L" + value + "-")
-                elif action_name == "Move Right":
-                    self.__write_motor(message_type="motor", message="R" + value + "-")
+                    self.__write_motor(message_type="motor", message="L1-")
+                elif action+name == "Move Right":
+                    self.__write_motor(message_type="motor", message="R1-")
                 else:
-                    self.__write_motor(message_type="motor", message="F" + value + "-")
+                    print("Set Moving forward only")
+
+                self.__write_motor(message_type="motor", message="F" + value + "-")
             elif action_name in mapper["camera"]:
                 if action_name == "Record" and not self.__updated:
                     self.__write_motor(message_type="automatic", message=str(value))
@@ -619,9 +621,12 @@ class Brain():
 
             # Only writes to the motor if the message is an Off message, Microphone message, or if
             # the motor is waiting for its next instruction
-            #if message_type == "off" or message_type == "microphone" or message == "S5-" or self.motorIsBusy:  
-            self.__motorQueue.put(json.dumps({"type": message_type, "message": message}))
-            logger.write(time_stamp + " - Brain to Motor: " + message)
+            if message_type == "off" or message_type == "microphone" or message == "S5-" or self.__motorBusy is False:  
+                self.__motorQueue.put(json.dumps({"type": message_type, "message": message}))
+                logger.write(time_stamp + " - Brain to Motor: " + message)
+                self.__motorBusy = True
+            else:
+                return
         except Exception as e:
             error_message = "Brain.__write_motor() Error: " + str(e)
             time_stamp = str(datetime.datetime.now())
@@ -884,7 +889,8 @@ class Brain():
         except Exception as e:
             print("Brain.__detect_thread() Error : " + str(e))
 
-    def __button_handler(self, num_of_presses=0):
+    def __button_handler(num_of_presses = 0):
+        
         try:
             count = num_of_presses
 
@@ -902,3 +908,4 @@ class Brain():
                 return
         except Exception as e:
             print(str(e))
+                
