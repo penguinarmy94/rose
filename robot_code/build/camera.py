@@ -47,8 +47,8 @@ class Camera():
                 try:
                     if self.__interval > 0:
                         now = datetime.datetime.now()
-                        minutes_passed = (now - self.__last_capture).total_seconds()/60
-                        if minutes_passed >= self.__interval:
+                        seconds_passed = (now - self.__last_capture).total_seconds()
+                        if seconds_passed >= self.__interval:
                             self.__last_capture = now    
                             logger.write(str(datetime.datetime.now()) + ".CameraThread.CaptureOnIntervasl.Enter")
 

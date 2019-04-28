@@ -17,7 +17,7 @@ class Brain():
     __state = None
     __config = {}
     __args = {}
-    __motorBusy = False
+    __lastMessage = ""
     __lightOn = False
     __cameraPosition = 7
     __numberOfSensors = 1
@@ -97,10 +97,7 @@ class Brain():
         if self.__args.verbose:
             print("Running brain.begin() while TRUE loop")
 
-        #self.__write_motor(message_type="calibrate", message="C5-")
-        self.__write_speaker(message_type="speaker", message="blah, Robot 1 ready to party")
-        #For testing only:
-        #self.__write_camera(message_type="automatic", message="1")
+        self.__write_speaker(message_type="speaker", message=self.__robot.name + " is ready to party")
 
         if self.__args.verbose:
             print("Brain.Begin: Entering WHILE [Power On]")
@@ -279,8 +276,9 @@ class Brain():
         try:
             time_stamp = str(datetime.datetime.now())
             
-            if not self.__robot.phrase is "":
+            if not self.__robot.phrase is "" and not self.__lastMessage is self.__robot.phrase:
                 self.__write_speaker(message_type="speaker", message=self.__robot.phrase)
+                self.__lastMessage = self.__robot.phrase
                 self.__robot.phrase = ""
                 self.__db.update_robot_phrase()
         except Exception as e:
@@ -571,7 +569,7 @@ class Brain():
                 else:
                     self.__write_motor(message_type="motor", message="F" + value + "-")
             elif action_name in mapper["camera"]:
-                if action_name == "Record" and not self.__updated:
+                if action_name == "Take Picture" and not self.__updated:
                     self.__write_motor(message_type="automatic", message=str(value))
             elif action_name in mapper["speaker"]:
                 if action_name == "Emotion":
