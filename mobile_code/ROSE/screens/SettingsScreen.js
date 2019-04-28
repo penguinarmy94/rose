@@ -277,7 +277,7 @@ export default class SettingsScreen extends Component {
                             enabled={this.state.power? true: false}
                             mode="dropdown"
                             style={{width: 150, marginRight: 15}}>
-                                <Picker.Item label={this.upView} value={0}/>
+                                <Picker.Item label={this.upView} value={0.6}/>
                                 <Picker.Item label={this.middleView} value={1}/>
                                 <Picker.Item label={this.downView} value={2}/>
                         </Picker>

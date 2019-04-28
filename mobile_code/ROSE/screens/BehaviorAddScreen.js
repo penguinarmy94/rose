@@ -112,10 +112,16 @@ export default class BehaviorAddScreen extends Component {
                     <FormLabel style={{}}>Value: </FormLabel>
                     <FormInput placeholder="0"
                         ref={input => this.values[key] = input}
+                        editable={this.state.actionSelection[key].type == "--"? false:true}
                         onChangeText={(text) => {
                                 try {
                                     if(this.state.actionSelection[key].type == "mood") {
                                         if(/^[0-2]?$/.test(text) === false) {
+                                            throw new TypeError("Value is not one of the options " + text);
+                                        }
+                                    }
+                                    else if (this.state.actionSelection[key].type == "--") {
+                                        if(/^[0-1]?$/.test(text) === false) {
                                             throw new TypeError("Value is not one of the options " + text);
                                         }
                                     }
@@ -131,9 +137,14 @@ export default class BehaviorAddScreen extends Component {
                                 }
                         }
                         }
-                        keyboardType="numeric"
-                        value={this.state.actionSelection[key].value}
-                        inputStyle={{width: 40, textAlign: 'center', borderBottomColor: 'black', borderBottomWidth: 1}} 
+                        keyboardType={this.state.actionSelection[key].type == "text"? "text": "numeric"}
+                        value={this.state.actionSelection[key].type == "--"? "1": this.state.actionSelection[key].value}
+                        inputStyle={{
+                            width: this.state.actionSelection[key].type == "text"? 200 : 40, 
+                            textAlign: 'center', 
+                            borderBottomColor: 'black', 
+                            borderBottomWidth: 1
+                        }} 
                     />
                     <FormLabel style={{}}>{this.state.actionSelection[key].type}</FormLabel>
                 </View>
