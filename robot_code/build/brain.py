@@ -578,6 +578,8 @@ class Brain():
                 if action_name == "Emotion":
                     emotion = self.__config["emotions"][int(value)]
                     self.__write_speaker(message_type="automatic", message=emotion)
+                elif action_name == "Speak Time":
+                    self.__write_speaker(message_type="speak-time", message=value)
             elif action_name in mapper["relay"]:
                 if action_name == "Emergency Light":
                     self.__write_sensor(message_type="flasher", message="turn on")

@@ -9,7 +9,7 @@
         "camera": ["Take Picture"],
         "notification": ["Alert"],
         "relay": ["Emergency Light", "Light"],
-        "speaker": ["Emotion"]
+        "speaker": ["Emotion", "Speak Time"]
     },
     "bucket": "rose-9876.appspot.com",
     "log_path": "/home/pi/Desktop/Projects/rose/robot_code/logs/",
