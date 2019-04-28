@@ -122,25 +122,25 @@ class Brain():
                 # Listen to interrupt from button
                 buttonPressed = GPIO.input(self.__buttonPin)
                 if buttonPressed:
+                    print("Button Pressed: up/seen/count={}/{}/{}".format(self.__buttonUp, self.__buttonSeen, self.__buttonCounter))
                     if self.__buttonUp:
-                        print("Went into button up")
                         self.__buttonUp = False
+                        print("...and button was up before. Now: up/seen/count={}/{}/{}".format(self.__buttonUp, self.__buttonSeen, self.__buttonCounter))
                         if self.__buttonSeen:
-                            print("Went into first button seen")
                             #if self.__buttonCounter == 0:
                                 #print("Went into button counter == 0")
                                 #self.__write_motor(message_type="motor", message="F0-")
                             self.__buttonCounter += 1
-                            print(self.__buttonCounter)
+                            print("......button was seen before. Now: up/seen/count={}/{}/{}".format(self.__buttonUp, self.__buttonSeen, self.__buttonCounter))
                         self.__buttonSeen = datetime.datetime.now() # Indent to NOT resets start time to delay timeout on buttonPress
                 else:
-                    print("Went into else")
                     self.__buttonUp = True
+                    print("No button pressed. Now: up/seen/count={}/{}/{}".format(self.__buttonUp, self.__buttonSeen, self.__buttonCounter))
 
                 time.sleep(self.__buttonDebounceTime)
 
                 if  self.__buttonSeen:
-                    print("Went into second button seen")
+                    print("Check if buttonSeen even if no current button press. Now: up/seen/count={}/{}/{}".format(self.__buttonUp, self.__buttonSeen, self.__buttonCounter))
                     timeout = (abs(datetime.datetime.now() - self.__buttonSeen).seconds) >= self.__buttonWaitTime
                     if timeout:
                         print("Went into timeout")
