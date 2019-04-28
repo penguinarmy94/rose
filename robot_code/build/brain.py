@@ -351,6 +351,7 @@ class Brain():
                     message_packet = json.loads(self.__microphoneQueue.get())
                     logger.write(time_stamp + " - Microphone to Brain: Brain Message Received -- " + message_packet["message"])
                     self.__write_notifier(message_type="threat_detected", message="Threat Detected")
+                    self.__write_speaker(message_type="speaker", message="Alert! Alert! Alert!")
                     self.__state = "detect"
                     self.__behaviorSet = False
                 else:

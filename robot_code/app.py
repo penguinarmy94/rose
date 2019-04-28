@@ -142,21 +142,25 @@ def runUploader(rob, config):
 
 def initialize_threads(db, rob, off = True):
     if args.verbose:
-        print("Entering app.initialize_threads()")
+        print("Entering app.initialize_threads2()")
 
-    iCounter = 0
-    iMaxCounter = 4
-    while not rob.power and not args.console:
+    if (args.console):
+        print("\n{} Interactive Shell v{}\n".format(appName, appVersion))
+        prompt = config["prompt"]
+        prompt = prompt.replace('[ID]', config['robotid'])
+
+    while True:
+
+        iCounter = 0
+        iMaxCounter = 4
+        while not rob.power and not args.console:
 	        print("Waiting for robot to turn on" + "." * (iCounter % iMaxCounter) + " " * iMaxCounter, end='\r', flush = True)
 	        iCounter += 1
 	        sleep(.2)
-
-    if rob.power is True and off == True:
-        off = False
-        print("Robot has been turned on.")
+        
+        print("Robot has been turned on.   " + " " * iMaxCounter)
         try:
             brain_thread = runBrainThread(db=db,rob=rob,config=config,args=args)
-            #motor_thread = runMotorThread()
 
             if 'mic' in devices:
                 microphone_thread = runMicrophoneThread(config)
@@ -171,86 +175,59 @@ def initialize_threads(db, rob, off = True):
             if 'led' in devices:
                 relay_thread = runRelayThread(pins = relay_pins)
             if 'uploader' in devices:
-                print("Uploader")
-                uploader_thread = runUploader(rob=rob, config=config)
-            
+                print("Run uploader thread")
+                uploader_thread = runUploader(config=config, rob=rob)
+        
             log_thread = runLoggerThread()
+        
+        except Exception as e:
+            print(str(e))
 
-            if (args.console):
-                print("\n{} Interactive Shell v{}\n".format(appName, appVersion))
-                    
-                while not off:
-                    prompt = config["prompt"]
-                    command = input(prompt)
 
-                    if (command == "help"):
-                        print("Available commands:")
-                        print("help:    This help screen")
-                        print("stop:    Turn off the ROSEbot")
-                        print("start:   Turn on the ROSEbot")
-                        print("status:  Display ROSEbot status")
-                        print("exit:    Stop ROSE controller")
-                    
-                    if (command == "stop"):
-                        rob.power = False
-                        db.update_robot()
-
-                    if (command == "start"):
-                        rob.power = True
-                        db.update_robot()
-
-                    if (command == "status"):
-                        print("Power:   {}".format(rob.power))
-
-                    if (command == "stop"):
-                        rob.power = False
-                        db.update_robot()
-
-                    if (command == "stop"):
-                        rob.power = False
-                        db.update_robot()
-                        sys.exit()
-                    
-
+        if not (rob.power or off):
+                 
+            if args.verbose:
+                print("Stopping brain thread...")
             brain_thread.join()
 
             if 'mic' in devices:
+                if args.verbose:
+                    print("Stopping mic thread...")
                 microphone_thread.join()
-                print("Microphone")
+                
             if 'motor' in devices:
+                if args.verbose:
+                    print("Stopping motor thread...")
                 motor_thread.join()
+  
             if 'notifier' in devices:
+                if args.verbose:
+                    print("Stopping notifier thread...")              
                 notification_manager_thread.join()
+
             if 'speaker' in devices:
+                if args.verbose:
+                    print("Stopping speaker thread...")
                 speaker_thread.join()
+
             if 'camera' in devices:
+                if args.verbose:
+                    print("Stopping camera thread...")              
                 camera_thread.join()
+
+            # change to relay
             if 'led' in devices:
+                if args.verbose:
+                    print("Stopping relay thread...")              
                 relay_thread.join()
+
             if 'uploader' in devices:
-                print("uploader joined")
+                if args.verbose:
+                    print("Stopping uploader thread...")              
                 uploader_thread.join()
-
-
-            # Only runs when all trhreads exited?
-            if args.verbose:
-                print("goimg to turning off...")
-            
+                
             logger.write("turn off")
-            off = True
-            print("Turned off!")
-
-            if args.verbose:
-                print("Exiting app.initialize_threads() from IF clause")
-
-            return off
-        except Exception as e:
-            print(str(e))
-    else:
-        if args.verbose:
-            print("Exiting app.initialize_threads() from ELSE clause")
-
-        return off
+            print("Robot has been turned off.")
 
 
 def initialize_threads2(db, rob, off = True):
@@ -277,7 +254,6 @@ def initialize_threads2(db, rob, off = True):
             print("Robot has been turned on.   " + " " * iMaxCounter)
             try:
                 brain_thread = runBrainThread(db=db,rob=rob,config=config,args=args)
-                #motor_thread = runMotorThread()
 
                 if 'mic' in devices:
                     microphone_thread = runMicrophoneThread(config)
@@ -535,7 +511,7 @@ def init():
                 db.update_robot()
                 off = True
                 
-            off = initialize_threads2(db,rob,off)
+            off = initialize_threads(db,rob,off)
 
         
 if __name__ == "__main__":
