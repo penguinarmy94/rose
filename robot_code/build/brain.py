@@ -171,7 +171,6 @@ class Brain():
 
 
     def __reset(self):
-        self.__write_sensor(message_type="light", message="turn off")
         self.__write_sensor(message_type="flasher", message="turn off")
         self.__write_speaker(message_type="automatic", message="neutral")
         self.__write_camera(message_type="automatic", message="0")
@@ -317,7 +316,6 @@ class Brain():
                     message_packet = json.loads(self.__motorQueue.get())
                     logger.write(time_stamp + " - Motor to Brain: Brain Message Received -- " + message_packet["message"])
                     self.__write_notifier(message_type="notification", message="Moved")
-                    self.__motorBusy = False
                 else:
                     return
             else:
@@ -621,12 +619,9 @@ class Brain():
 
             # Only writes to the motor if the message is an Off message, Microphone message, or if
             # the motor is waiting for its next instruction
-            if message_type == "off" or message_type == "microphone" or message == "S5-" or self.__motorBusy is False:  
-                self.__motorQueue.put(json.dumps({"type": message_type, "message": message}))
-                logger.write(time_stamp + " - Brain to Motor: " + message)
-                self.__motorBusy = True
-            else:
-                return
+            #if message_type == "off" or message_type == "microphone" or message == "S5-" or self.motorIsBusy:  
+            self.__motorQueue.put(json.dumps({"type": message_type, "message": message}))
+            logger.write(time_stamp + " - Brain to Motor: " + message)
         except Exception as e:
             error_message = "Brain.__write_motor() Error: " + str(e)
             time_stamp = str(datetime.datetime.now())
