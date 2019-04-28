@@ -54,16 +54,32 @@ class Motor():
     def move(self, direction):
         directions = ["F", "B", "L", "R", "Y", "C", "S"]
 
-        try:
-            if direction[0] in directions:
-                success = self.__write_serial(direction)
-                self.__isWaiting = True
-                return success
-            else:
-                return "Command Not Found"
-        except Exception as e:
-            logger.write(str(datetime.datetime.now()) + " - Motor Error: " + str(e))
-            return "Error"
+        dir = direction.split(";")
+
+        if len(dir) < 1:
+            try:
+                if direction[0] in directions:
+                    success = self.__write_serial(direction)
+                    self.__isWaiting = True
+                    return success
+                else:
+                    return "Command Not Found"
+            except Exception as e:
+                logger.write(str(datetime.datetime.now()) + " - Motor Error: " + str(e))
+                return "Error"
+        else:
+            try:
+                if dir[0][0] in directions:
+                    success = self.__write_serial(dir[0])
+                    self.__isWaiting = True
+                    self.__code = dir[1] + ";" + dir[0]
+                    return success
+                else:
+                    self.__code = dir[1] + ";" + dir[0]
+                    return "Command Not Found"
+            except Exception as e:
+                logger.write(str(datetime.datetime.now()) + " - Motor Error: " + str(e))
+                return "Error"
     
     def __check_queue(self):
         message_packet = json.loads(self.__bqueue.peek())

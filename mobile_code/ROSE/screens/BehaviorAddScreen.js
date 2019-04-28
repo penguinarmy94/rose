@@ -116,7 +116,7 @@ export default class BehaviorAddScreen extends Component {
                         onChangeText={(text) => {
                                 try {
                                     if(this.state.actionSelection[key].type == "mood") {
-                                        if(/^[0-2]?$/.test(text) === false) {
+                                        if(/^[0-3]?$/.test(text) === false) {
                                             throw new TypeError("Value is not one of the options " + text);
                                         }
                                     }

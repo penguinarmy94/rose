@@ -10,6 +10,7 @@ class Speaker():
     __config = None
     __isInMoodState = False
     __conversation_delay = 5
+    __timeout = 60
 
     def __init__(self, queue = None, config = None):
         self.__spQueue = queue
@@ -31,7 +32,7 @@ class Speaker():
                     continue
             else:
                 if not self.__isInMoodState:
-                    timer = Timer(60, self.__setMood)
+                    timer = Timer(self.__timeout, self.__setMood)
                     timer.start()
                     self.__isInMoodState = True
 
@@ -46,6 +47,11 @@ class Speaker():
             message_packet = json.loads(self.__spQueue.get())
             logger.write(str(datetime.datetime.now()) + " - Brain to Speaker: Speaker Message Received -- " + message_packet["message"])
             self.say(message_packet["message"])
+            return 1
+        elif message_packet["type"] == "speak-time":
+            message_packet = json.loads(self.__spQueue.get())
+            logger.write(str(datetime.datetime.now()) + " - Brain to Speaker: Speaker Message Received -- " + message_packet["message"])
+            self.__timeout = int(message_packet["message"])
             return 1
         elif message_packet["type"] == "automatic":
             message_packet = json.loads(self.__spQueue.get())

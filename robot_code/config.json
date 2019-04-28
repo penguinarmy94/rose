@@ -5,7 +5,7 @@
     "windows_home_path": "C:/Users/Luis/Documents/Projects/ROSE/robot_code",
     "home_path": "/home/pi/Desktop/Projects/rose/robot_code",
     "functions": {
-        "motor": ["Roaming", "Move Towards Sound", "Move Left", "Move Right"],
+        "motor": ["Roaming", "Move Towards Sound", "Move Left", "Move Right", "Revolve-90"],
         "camera": ["Take Picture"],
         "notification": ["Alert"],
         "relay": ["Emergency Light", "Light"],
@@ -33,6 +33,14 @@
             "This day is making me sad",
             "I feel like crying",
             "I want ice cream"
+        ],
+        "funny": [
+            "Woah that's not right. I thought I was human for a second. I'm glad that's over.",
+            " ",
+            "Knock! Knock!;that human;that human that can't change my lightbulb",
+            "I'll be back; Maybe not",
+            " ",
+            "Woooo I am dizzy"
         ],
         "angry": [
             "I am going to beat someone up right now",

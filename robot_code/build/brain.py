@@ -567,6 +567,8 @@ class Brain():
                     self.__write_motor(message_type="motor", message="L" + value + "-")
                 elif action_name == "Move Right":
                     self.__write_motor(message_type="motor", message="R" + value + "-")
+                elif action_name == "Revolve-90":
+                    self.__write_motor(message_type="motor", message="L1-;F" + value + "-" )
                 else:
                     self.__write_motor(message_type="motor", message="F" + value + "-")
             elif action_name in mapper["camera"]:
