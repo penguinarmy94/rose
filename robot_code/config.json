@@ -5,7 +5,7 @@
     "windows_home_path": "C:/Users/Luis/Documents/Projects/ROSE/robot_code",
     "home_path": "/home/pi/Desktop/Projects/rose/robot_code",
     "functions": {
-        "motor": ["Roaming", "Move Towards Sound"],
+        "motor": ["Roaming", "Move Towards Sound", "Move Left", "Move Right"],
         "camera": ["Take Picture"],
         "notification": ["Alert"],
         "relay": ["Emergency Light", "Light"],
