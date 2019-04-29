@@ -2,15 +2,15 @@
 
 void Forward(Motor left, Motor right, int speed)
 {
-  left.forward(speed);
-  right.forward(speed);
+  left.setForward(speed);
+  right.setForward(speed);
 }
 
 //Unused but added for completeness
 void Backward(Motor left, Motor right, int speed)
 {
-  left.backward(speed);
-  right.backward(speed);
+  left.setReverse(speed);
+  right.setReverse(speed);
   delay(100);
   left.halt();
   right.halt();
@@ -18,14 +18,14 @@ void Backward(Motor left, Motor right, int speed)
 
 void Left(Motor left, Motor right, int speed)
 {
-  right.forward(speed);
-  left.backward(speed);
+  right.setForward(speed);
+  left.setReverse(speed);
 }
 
 void Right(Motor left, Motor right, int speed)
 {
-  right.backward(speed);
-  left.forward(speed);
+  right.setReverse(speed);
+  left.setForward(speed);
 }
 
 void Halt(Motor left, Motor right)
@@ -82,6 +82,8 @@ void parsePackage(PIData &package, char fromPi[], int size)
 
 void commandFromPi(PIData &package, Microphone &a, Microphone &b, Motor left, Motor right)
 {
+  Serial.print(package.direction);
+  Serial.print(package.distance);
   switch(package.direction)
   {
     case 'Y': warningDetected(package.distance, a, b, left, right);
@@ -91,7 +93,6 @@ void commandFromPi(PIData &package, Microphone &a, Microphone &b, Motor left, Mo
     sendAck();
     break;
     case 'F': commandForward(package, left, right);
-    sendAck();
     break;
     case 'B': commandBackward(package, left, right);
     sendAck();
@@ -134,14 +135,27 @@ void warningDetected(int time, Microphone &a, Microphone &b, Motor left, Motor r
 void commandForward(PIData package, Motor left, Motor right)
 {
   int i = 0;
-  Forward(left, right, 150);
+  Forward(left, right, MOTOR_MAX_SPEED);
   unsigned long start = millis();
-  while(millis() - start < (package.distance * 1000))
+  if(package.distance == 0)
   {
-    getSoundSample(a, b, micTime, sampleTime);
-    readLaser();
+    Halt(left, right);
+    sendAck();
   }
-  Halt(left, right);  
+  else
+  {
+    while (millis() - start < (package.distance * 1000))
+    {
+      getSoundSample(a, b, micTime, sampleTime);
+      readLaser();
+    }
+    sendAck();  
+    while(!Serial.available())
+    {
+      getSoundSample(a, b, micTime, sampleTime);
+      readLaser();
+    }  
+  }
 }
 
 //Most likely not used but brought in for completeness
@@ -151,7 +165,7 @@ void commandBackward(PIData package, Motor left, Motor right)
   unsigned long turntime = 100;
   while(millis() - start < turntime)
   {
-    Left(left, right, 150);
+    Left(left, right, 255);
   }
   while (millis() - start < (package.distance * 1000))
     {
@@ -164,32 +178,20 @@ void commandBackward(PIData package, Motor left, Motor right)
 void commandRight(PIData package, Motor left, Motor right)
 {
   unsigned long start = millis();
-  unsigned long turntime = 50;
-  while(millis() - start < turntime)
+  while(millis() - start < (package.distance * 1000))
   {
-    Right(left, right, 150);
+    Right(left, right, 255);
   }
-  while (millis() - start < (package.distance * 1000))
-    {
-      getSoundSample(a, b, micTime, sampleTime);
-      readLaser();
-    } 
   Halt(left, right);   
 }
 
 void commandLeft(PIData package, Motor left, Motor right)
 {
   unsigned long start = millis();
-  unsigned long turntime = 50;
   while(millis() - start < (package.distance * 1000))
   {
-    Left(left, right, 150);
+    Left(left, right, 255);
   }
-  while (millis() - start < (package.distance * 1000))
-    {
-      getSoundSample(a, b, micTime, sampleTime);
-      readLaser();
-    }  
   Halt(left, right);  
 }
 

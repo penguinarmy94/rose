@@ -18,6 +18,11 @@
 #define SENSORS 3
 #define START_ADDRESS 40
 
+#define SENSOR_STOP_DISTANCE 250
+#define SENSOR_BLOCK_DISTANCE 500
+
+#define SENSOR_ERROR_BUFFER 10
+
 class LaserSensor {
   private:
     int number;
