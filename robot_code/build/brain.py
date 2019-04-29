@@ -559,6 +559,7 @@ class Brain():
     def __send_message(self, action_name = None, value = None):
         try:
             mapper = self.__config["functions"]
+            print(action_name)
 
             if action_name in mapper["motor"]:
                 if action_name == "Move Towards Sound":
@@ -575,10 +576,12 @@ class Brain():
                 if action_name == "Take Picture" and not self.__updated:
                     self.__write_motor(message_type="automatic", message=str(value))
             elif action_name in mapper["speaker"]:
+                print("Changing speaker")
                 if action_name == "Emotion":
                     emotion = self.__config["emotions"][int(value)]
                     self.__write_speaker(message_type="automatic", message=emotion)
                 elif action_name == "Speak Time":
+                    print("Went into speak time")
                     self.__write_speaker(message_type="speak-time", message=value)
             elif action_name in mapper["relay"]:
                 if action_name == "Emergency Light":
