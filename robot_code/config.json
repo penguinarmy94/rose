@@ -39,7 +39,6 @@
             " ",
             "Knock! Knock!;that human;that human that can't change my lightbulb",
             "I'll be back; Maybe not",
-            " ",
             "Woooo I am dizzy"
         ],
         "angry": [
@@ -48,6 +47,6 @@
             "Destroy all humans!"
         ]
     },
-    "emotions": ["happy", "sad", "angry"],
+    "emotions": ["happy", "sad", "angry", "funny"],
     "prompt": "[ID]>"
 }
