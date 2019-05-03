@@ -15,11 +15,11 @@ In order to use the mobile application, the user needs to have an Android device
 In order to use the ROSE application, you need to have both a user account and at least one physical robot from the ROSE,inc. organization. If you have a robot, but no user account, follow these steps:
 1.	Open the ROSE application
 
-!screenshots/rose.jpg!
+![alt text](screenshots/rose.jpg)!
 
 2.	You will see the ROSE login page. Go to the register page by pressing on the “Register >” option
  
-!screenshots/register.jpg!
+![alt text](screenshots/register.jpg)!
  
 3. Fill out the registration information with a valid email address, a password for your account, a name for the physical robot that you currently have, and the ID number for your robot. The ID can be found on the barcode that is attached to the robot hardware
 4. Click register when you have all the information filled out
