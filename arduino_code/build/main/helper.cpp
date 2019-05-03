@@ -123,7 +123,7 @@ void warningDetected(int time, Microphone &a, Microphone &b, Motor left, Motor r
   unsigned int bMax = b.getMax();
   unsigned long start = millis();
   (aMax > bMax) ? Right(left, right, 175) : Left(left, right, 175); 
-  delay(50);
+  delay(1000);
   Halt(left, right);
   while(millis() - start < (time * 1000))
   {
@@ -211,7 +211,6 @@ void commandHalt(PIData package, Motor left, Motor right)
     while(millis() - start < halttime)
     {
       getSoundSample(a, b, micTime, sampleTime);
-      Halt(left, right);
     }
   }
 }
