@@ -7,7 +7,7 @@ class Microphone():
     __queue = None
     __config = None
     __classifier = None
-    __interval = "5"
+    __interval = "10"
     __currentTime = None
     __uploadInterval = 30
     

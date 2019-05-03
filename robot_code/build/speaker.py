@@ -68,25 +68,27 @@ class Speaker():
 
     def say(self, message=""):
         messages = message.split(";")
-
-        if len(messages) > 1:
-            for mesg in messages:
-                if message.endswith(".wav") or message.endswith(".mp3"):
-                    output = subprocess.check_output("aplay " + self.__config["home_path"] + "audio/" + message)
-                else:
-                    self.__player.say(mesg)
-                    self.__player.runAndWait()
+        try:
+            if len(messages) > 1:
+                for mesg in messages:
+                    if mesg.endswith(".wav") or mesg.endswith(".mp3"):
+                        output = subprocess.check_output("aplay " + self.__config["home_path"] + "/audio/" + mesg, shell=True)
+                    else:
+                        self.__player.say(mesg)
+                        self.__player.runAndWait()
                     
-                time.sleep(self.__conversation_delay)
-                logger.write(str(datetime.datetime.now()) + " - Speaker: " + message)
-        else:
-            if message.endswith(".wav") or message.endswith(".mp3"):
-                output = subprocess.check_output("aplay " + self.__config["home_path"] + "audio/" + message)
+                    time.sleep(self.__conversation_delay)
+                    logger.write(str(datetime.datetime.now()) + " - Speaker: " + message)
             else:
-                self.__player.say(message)
-                self.__player.runAndWait()
+                if message.endswith(".wav") or message.endswith(".mp3"):
+                    output = subprocess.check_output("aplay " + self.__config["home_path"] + "/audio/" + message, shell=True)
+                else:
+                    self.__player.say(message)
+                    self.__player.runAndWait()
             
             logger.write(str(datetime.datetime.now()) + " - Speaker: " + message)
+        except Exception as e:
+            print("Say message Error: " + str(e))
     
     def __setMood(self):
         print("Setting Mood")

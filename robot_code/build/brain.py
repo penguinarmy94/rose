@@ -122,6 +122,8 @@ class Brain():
                 # Listen to interrupt from button
                 buttonPressed = GPIO.input(self.__buttonPin)
                 if buttonPressed:
+                    self.__button_handler(num_of_presses=0)
+                    continue
                     print("Button Pressed: up/seen/count={}/{}/{}".format(self.__buttonUp, self.__buttonSeen, self.__buttonCounter))
                     if self.__buttonUp:
                         self.__buttonUp = False
@@ -904,6 +906,9 @@ class Brain():
             elif count == 3:
                 self.__write_speaker(message_type="speaker", message="Ow! My head hurts now.")
             else:
-                return
+                self.__write_motor(message_type="motor", message="L5-")
+                self.__write_motor(message_type="motor", message="F0-")
+                self.__write_speaker(message_type="speaker", message="wee.wav")
+                print("Button Pressed")
         except Exception as e:
             print(str(e))
