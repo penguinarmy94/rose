@@ -3,7 +3,7 @@ eyeD3==0.8.8
 kiwisolver==1.0.1
 libmagic==1.0
 matplotlib==3.0.2
-numpy==1.15.4
+numpy==1.22.0
 pathlib==1.0.1
 -e git+https://github.com/tyiannak/pyAudioAnalysis.git@8bd78757c139e79595af8348c94c960730db57d1#egg=pyAudioAnalysis
 pydub==0.23.0
